@@ -137,23 +137,38 @@ class Auth extends MY_Controller
     {
         $data = konfigurasi('Register');
         $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[50]');
-        $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[5]|max_length[50]');
+        $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[5]|max_length[50]|valid_email|is_unique[tbl_user.email]');
         $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[20]');
+        $this->form_validation->set_rules('confirm_password', 'Password Confirmation', 'trim|required|matches[password]');
+
         if ($this->form_validation->run() == false) {
             $this->register();
         } else {
             $this->Auth_model->reg();
-            $this->session->set_flashdata('alert', '<p class="box-msg">
-              <div class="info-box alert-success">
-              <div class="info-box-icon">
-              <i class="fa fa-check-circle"></i>
-              </div>
-              <div class="info-box-content" style="font-size:14">
-              <b style="font-size: 20px">SUKSES</b><br>Pendaftaran berhasil, silakan login.</div>
-              </div>
-              </p>
-            ');
+
+            if($this->Auth_model->sendEmail($this->input->post('email'))){
+                //redirect('Login_Controller/index');
+                //$msg = "Successfully registered with the sysytem.Conformation link has been sent to: ".$this->input->post('txt_email');
+                $this->session->set_flashdata('alert', '<p class="box-msg">
+                <div class="info-box alert-success">
+                <div class="info-box-icon">
+                <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="info-box-content" style="font-size:14">
+                <b style="font-size: 20px">SUKSES</b><br>Pendaftaran berhasil, silakan cek email anda untuk melakukan konfirmasi.</div>
+                </div>
+                </p>
+                ');
+                redirect('auth/login');
+            }else{
+                
+                //$error = "Error, Cannot insert new user details!";
+                $this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">Failed!! Please try again.</div>');
+                redirect('auth/login');
+            }
+            
             redirect('auth/login', 'refresh', $data);
+            
         }
     }
 
@@ -275,5 +290,34 @@ class Auth extends MY_Controller
               </p>
 			');
         redirect('auth/login');
+        
+    }
+
+    function confirmEmail($hashcode){
+        if($this->Auth_model->verifyEmail($hashcode)){
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+                <div class="info-box alert-success">
+                <div class="info-box-icon">
+                <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="info-box-content" style="font-size:14">
+                <b style="font-size: 20px">SUKSES</b><br>Konfirmasi berhasil, silakan lakukan login dihalaman yang tersedia.</div>
+                </div>
+                </p>
+                ');
+            redirect('Auth/login');
+        }else{
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+        			<div class="info-box alert-danger">
+        			<div class="info-box-icon">
+        			<i class="fa fa-warning"></i>
+        			</div>
+        			<div class="info-box-content" style="font-size:14">
+        			<b style="font-size: 20px">GAGAL</b><br>Konfirmasi email gagal</div>
+        			</div>
+        			</p>
+              ');
+            redirect('Auth/login');
+        }
     }
 }

@@ -23,15 +23,18 @@ class Home extends MY_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('Pelatihan_model');
         $this->check_login();
         if ($this->session->userdata('id_role') != "1") {
             redirect('', 'refresh');
         }
+        
     }
 
     public function index()
     {
-        $data = konfigurasi('Dashboard');
-        $this->template->load('layouts/template', 'admin/dashboard', $data);
+        $this->data = konfigurasi('Dashboard');
+        $this->data["jumlah_pelatihan"]     = $this->db->get('tbl_pelatihan')->num_rows();
+        $this->template->load('layouts/template', 'admin/dashboard', $this->data);
     }
 }
