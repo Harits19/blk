@@ -3,27 +3,30 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 ?>
 <style>
-* {
-  box-sizing: border-box;
-}
+    * {
+        box-sizing: border-box;
+    }
 
-/* Create two equal columns that floats next to each other */
-.column {
-  float: left;
-  width: 50%;
-  
-  padding-left: 20px;
-  padding-right: 20px;
-}
+    /* Create two equal columns that floats next to each other */
+    .column {
+        float: left;
+        width: 50%;
 
-/* Clear floats after the columns */
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
+        padding-left: 20px;
+        padding-right: 20px;
+    }
 
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
 </style>
+
+<div class="msg" style="display:none;">
+    <?= @$this->session->flashdata('msg'); ?>
+</div>
 <section class="content">
     <div class="row">
         <div class="col-md-12">
@@ -35,7 +38,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <div class="column">
                             <h4><strong> Data Pelatihan</strong></h4>
                         </div>
-                        <div class="column" >
+                        <div class="column">
                             <div class="pull-right">
                                 <a href="<?php echo base_url() ?>admin/pelatihan/tambah" class="btn btn-default btn-flat"><i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Tambah Pelatihan</a>
                             </div>
@@ -58,9 +61,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             foreach ($get_all as $pelatihan) {
 
                                 $tanggal = strtotime($pelatihan->tgl_buka);
-                                $tgl_buka = date('d-m-Y',$tanggal);
+                                $tgl_buka = date('d-m-Y', $tanggal);
                                 $tanggal = strtotime($pelatihan->tgl_tutup);
-                                $tgl_tutup = date('d-m-Y',$tanggal);
+                                $tgl_tutup = date('d-m-Y', $tanggal);
 
                                 $no++;
                                 echo "<tr>";
@@ -74,7 +77,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <a class="edit btn" href="<?php echo base_url('admin/pelatihan/edit/'), $pelatihan->id ?>">
                                     <i class="fa fa-wrench" aria-hidden="true"></i>&nbsp;Edit
                                 </a>
-                                <a class="hapus btn" href="<?php echo base_url('admin/pelatihan/hapus/'),$pelatihan->id?>"  onclick="return confirm('Apakah anda yakin?')">
+                                <a class="hapus btn" href="<?php echo base_url('admin/pelatihan/hapus/'), $pelatihan->id ?>" onclick="return confirm('Apakah anda yakin?')">
                                     <i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Hapus</i>
                                 </a>
                             <?php

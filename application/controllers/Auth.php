@@ -146,6 +146,7 @@ class Auth extends MY_Controller
 
     public function send_token()
     {
+        $data = konfigurasi('Forgot Password');
         $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
 
 
@@ -158,15 +159,26 @@ class Auth extends MY_Controller
             $userInfo = $this->Auth_model->getUserInfoByEmail($clean);
 
             if (!$userInfo) {
-                //    $this->session->set_flashdata('sukses', 'email address salah, silakan coba lagi.');  
-                redirect('Auth/login');
+                $this->session->set_flashdata('alert', '<p class="box-msg">
+        			<div class="info-box alert-danger">
+        			<div class="info-box-icon">
+        			<i class="fa fa-warning"></i>
+        			</div>
+        			<div class="info-box-content" style="font-size:14">
+        			<b style="font-size: 20px">GAGAL</b><br>Email yang Anda masukkan tidak terdaftar.</div>
+        			</div>
+        			</p>
+            ');
+
+                redirect('auth/forgot', 'refresh', $data);
             }
 
             //build token   
 
             $token = $this->Auth_model->insertToken($userInfo->id);
+            
             $qstring = $this->base64url_encode($token);
-            $url = site_url() . '/auth/reset_password/token/' . $qstring;
+            $url = site_url() . 'auth/reset_password/token/' . $qstring;
             $link = '<a href="' . $url . '">' . $url . '</a>';
 
             $message = '';
@@ -181,18 +193,29 @@ class Auth extends MY_Controller
 
     public function reset_password()
     {
+
+        $data = konfigurasi('Reset Password');
         $token = $this->base64url_decode($this->uri->segment(4));
         $cleanToken = $this->security->xss_clean($token);
 
         $user_info = $this->Auth_model->isTokenValid($cleanToken); //either false or array();          
 
         if (!$user_info) {
-            $this->session->set_flashdata('sukses', 'Token tidak valid atau kadaluarsa');
-            redirect('auth/login', 'refresh');
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+        			<div class="info-box alert-danger">
+        			<div class="info-box-icon">
+        			<i class="fa fa-warning"></i>
+        			</div>
+        			<div class="info-box-content" style="font-size:14">
+        			<b style="font-size: 20px">GAGAL</b><br>Token tidak valid atau kadaluwarsa, isi email anda kembali</div>
+        			</div>
+        			</p>
+            ');
+            // redirect(site_url('auth/forget'), 'refresh');
+            $this->template->load('authentication/layouts/template', 'authentication/login', $data);
         }
 
         $data = array(
-            'title' => 'Halaman Reset Password | Tutorial reset password CodeIgniter @ https://recodeku.blogspot.com',
             'nama' => $user_info->username,
             'email' => $user_info->email,
             'token' => $this->base64url_encode($token)
@@ -202,10 +225,12 @@ class Auth extends MY_Controller
         $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required|matches[password]');
 
         if ($this->form_validation->run() == FALSE) {
-            $this->load->view('authentication/new_password', $data);
+            $this->template->load('authentication/layouts/template', 'authentication/new_password', $data);
+
+            // red
         } else {
 
-                   
+
             $cleanPost['password'] = get_hash($this->input->post('password'));
             $cleanPost['id'] = $user_info->id;
 
@@ -213,10 +238,18 @@ class Auth extends MY_Controller
             if (!$this->User_model->updatePassword($cleanPost)) {
                 $this->session->set_flashdata('sukses', 'Update password gagal.');
             } else {
-                $this->session->set_flashdata('sukses', 'Password anda sudah  
-             diperbaharui. Silakan login.');
+                $this->session->set_flashdata('alert', '<p class="box-msg">
+                <div class="info-box alert-success">
+                <div class="info-box-icon">
+                <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="info-box-content" style="font-size:14">
+                <b style="font-size: 20px">SUKSES</b><br>Password berhasil diperbarui, silakan lakukan login dihalaman yang tersedia</div>
+                </div>
+                </p>
+                ');
             }
-            redirect(site_url('auth/login'), 'refresh');
+            redirect(site_url('auth/login'), 'refresh', $data);
         }
     }
 

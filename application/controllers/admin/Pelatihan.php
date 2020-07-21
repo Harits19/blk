@@ -57,7 +57,7 @@ class Pelatihan extends MY_Controller
 
     public function tambah_pelatihan_proses()
     {
-        $data = konfigurasi('Perlaatihan');
+        $data = konfigurasi('Perlatihan');
         $this->form_validation->set_rules('nama_pelatihan', 'Nama Pelatihan', 'required');
         $this->form_validation->set_rules('tgl_buka', 'Tanggal Buka', 'required');
         $this->form_validation->set_rules('tgl_tutup', 'Tanggal Tutup', 'required');
@@ -67,6 +67,7 @@ class Pelatihan extends MY_Controller
 
         if ($this->form_validation->run() == false) {
             $this->tambah();
+            
         } else {
 
             // $date = strtr($this->input->post('tgl_buka'), '/', '-');
@@ -93,13 +94,14 @@ class Pelatihan extends MY_Controller
             if ($this->Pelatihan_model->insert($data)) {
                 //redirect('Login_Controller/index');
                 //$msg = "Successfully registered with the sysytem.Conformation link has been sent to: ".$this->input->post('txt_email');
-                $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Pelatihan berhasil ditambahkan</div>');
-
+                // $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Pelatihan berhasil ditambahkan</div>');
+                $this->session->set_flashdata('msg', show_succ_msg('Pelatihan Berhasil Ditambahkan'));
                 redirect('admin/pelatihan');
             } else {
 
                 //$error = "Error, Cannot insert new user details!";
-                $this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">Failed!! Please try again.</div>');
+                // $this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">Failed!! Please try again.</div>');
+                $this->session->set_flashdata('msg', show_err_msg('Pelatihan Gagal Ditambahkan'));
                 $this->tambah();
             }
 

@@ -19,12 +19,12 @@
 		<div class="form-group has-feedback">
 			<input type="password" name="password" class="form-control" required placeholder="Password">
 			<span class="glyphicon glyphicon-lock form-control-feedback"></span>
-			<?php echo form_error('password','<div class="text-danger"><small>','</small></div>') ;?>
+			<?php echo form_error('password', '<div class="text-danger"><small>','</small></div>') ;?>
 		</div>
 		<div class="form-group has-feedback">
 			<input type="password" name="confirm_password" class="form-control" required placeholder="Confirm Password">
 			<span class="glyphicon glyphicon-lock form-control-feedback"></span>
-			<?php echo form_error('Confirmation Password','<div class="text-danger"><small>','</small></div>') ;?>
+			<?php echo form_error('confirm_password', '<div class="text-danger"><small>','</small></div>');?>
 		</div>
 		<div class="row">
 			<div class="col-xs-4">

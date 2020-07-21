@@ -2,11 +2,15 @@
 <html>
 
 <head>
-    
+
 </head>
 
 <body>
-    
+
+<div class="msg" style="display:none;">
+    <?= @$this->session->flashdata('msg'); ?>
+</div>
+
     <form action="<?php echo base_url('admin/pelatihan/tambah_pelatihan_proses') ?>" method="post" enctype="application/x-www-form-urlencoded">
         <!-- Nama Pelatihan  -->
         <div class="form-group">
