@@ -1,4 +1,4 @@
-<?php 
+<?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
@@ -25,6 +25,8 @@ class Auth extends MY_Controller
         parent::__construct();
         $this->load->database();
         $this->load->model('Auth_model');
+
+        $this->load->model('User_model');
     }
 
     public function profile()
@@ -55,8 +57,8 @@ class Auth extends MY_Controller
 
                 //delete file
                 $user = $this->Auth_model->get_by_id($this->session->userdata('id'));
-                if (file_exists('assets/uploads/images/foto_profil/'.$user->photo) && $user->photo) {
-                    unlink('assets/uploads/images/foto_profil/'.$user->photo);
+                if (file_exists('assets/uploads/images/foto_profil/' . $user->photo) && $user->photo) {
+                    unlink('assets/uploads/images/foto_profil/' . $user->photo);
                 }
 
                 $data['photo'] = $upload;
@@ -127,10 +129,95 @@ class Auth extends MY_Controller
         return $this->upload->data('file_name');
     }
 
+
+
+
     public function register()
     {
         $data = konfigurasi('Register');
         $this->template->load('authentication/layouts/template', 'authentication/register', $data);
+    }
+
+    public function forgot()
+    {
+        $data = konfigurasi('Forgot Password');
+        $this->template->load('authentication/layouts/template', 'authentication/forgot_password', $data);
+    }
+
+    public function send_token()
+    {
+        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+
+
+        if ($this->form_validation->run() == FALSE) {
+
+            $this->load->view('authentication/forgot_password');
+        } else {
+            $email = $this->input->post('email');
+            $clean = $this->security->xss_clean($email);
+            $userInfo = $this->Auth_model->getUserInfoByEmail($clean);
+
+            if (!$userInfo) {
+                //    $this->session->set_flashdata('sukses', 'email address salah, silakan coba lagi.');  
+                redirect('Auth/login');
+            }
+
+            //build token   
+
+            $token = $this->Auth_model->insertToken($userInfo->id);
+            $qstring = $this->base64url_encode($token);
+            $url = site_url() . '/auth/reset_password/token/' . $qstring;
+            $link = '<a href="' . $url . '">' . $url . '</a>';
+
+            $message = '';
+            $message .= '<strong>Hai, anda menerima email ini karena ada permintaan untuk memperbaharui  
+                 password anda.</strong><br>';
+            $message .= '<strong>Silakan klik link ini:</strong> ' . $link;
+
+            echo $message; //send this through mail  
+            exit;
+        }
+    }
+
+    public function reset_password()
+    {
+        $token = $this->base64url_decode($this->uri->segment(4));
+        $cleanToken = $this->security->xss_clean($token);
+
+        $user_info = $this->Auth_model->isTokenValid($cleanToken); //either false or array();          
+
+        if (!$user_info) {
+            $this->session->set_flashdata('sukses', 'Token tidak valid atau kadaluarsa');
+            redirect('auth/login', 'refresh');
+        }
+
+        $data = array(
+            'title' => 'Halaman Reset Password | Tutorial reset password CodeIgniter @ https://recodeku.blogspot.com',
+            'nama' => $user_info->username,
+            'email' => $user_info->email,
+            'token' => $this->base64url_encode($token)
+        );
+
+        $this->form_validation->set_rules('password', 'Password', 'required|min_length[5]');
+        $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required|matches[password]');
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->load->view('authentication/new_password', $data);
+        } else {
+
+                   
+            $cleanPost['password'] = get_hash($this->input->post('password'));
+            $cleanPost['id'] = $user_info->id;
+
+
+            if (!$this->User_model->updatePassword($cleanPost)) {
+                $this->session->set_flashdata('sukses', 'Update password gagal.');
+            } else {
+                $this->session->set_flashdata('sukses', 'Password anda sudah  
+             diperbaharui. Silakan login.');
+            }
+            redirect(site_url('auth/login'), 'refresh');
+        }
     }
 
     public function check_register()
@@ -146,7 +233,7 @@ class Auth extends MY_Controller
         } else {
             $this->Auth_model->reg();
 
-            if($this->Auth_model->sendEmail($this->input->post('email'))){
+            if ($this->Auth_model->sendEmailVerification($this->input->post('email'))) {
                 //redirect('Login_Controller/index');
                 //$msg = "Successfully registered with the sysytem.Conformation link has been sent to: ".$this->input->post('txt_email');
                 $this->session->set_flashdata('alert', '<p class="box-msg">
@@ -160,17 +247,17 @@ class Auth extends MY_Controller
                 </p>
                 ');
                 redirect('auth/login');
-            }else{
-                
+            } else {
+
                 //$error = "Error, Cannot insert new user details!";
                 $this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">Failed!! Please try again.</div>');
                 redirect('auth/login');
             }
-            
+
             redirect('auth/login', 'refresh', $data);
-            
         }
     }
+
 
     public function check_account()
     {
@@ -193,7 +280,7 @@ class Auth extends MY_Controller
         			</p>
             ');
         } elseif ($query === 2) {
-            $this->session->set_flashdata('alert','<p class="box-msg">
+            $this->session->set_flashdata('alert', '<p class="box-msg">
               <div class="info-box alert-info">
               <div class="info-box-icon">
               <i class="fa fa-info-circle"></i>
@@ -201,8 +288,7 @@ class Auth extends MY_Controller
               <div class="info-box-content" style="font-size:14">
               <b style="font-size: 20px">GAGAL</b><br>Akun yang Anda masukkan tidak aktif, silakan hubungi Administrator.</div>
               </div>
-              </p>'
-            );
+              </p>');
         } elseif ($query === 3) {
             $this->session->set_flashdata('alert', '<p class="box-msg">
         			<div class="info-box alert-danger">
@@ -217,24 +303,25 @@ class Auth extends MY_Controller
         } else {
             //membuat session dengan nama userData yang artinya nanti data ini bisa di ambil sesuai dengan data yang login
             $userdata = array(
-              'is_login'    => true,
-              'id'          => $query->id,
-              'password'    => $query->password,
-              'id_role'     => $query->id_role,
-              'username'    => $query->username,
-              'first_name'  => $query->first_name,
-              'last_name'   => $query->last_name,
-              'email'       => $query->email,
-              'phone'       => $query->phone,
-              'photo'       => $query->photo,
-              'last_login'  => $query->last_login,
-              'created_at'  => $query->created_at,
-              'updated_at'  => $query->updated_at,
+                'is_login'    => true,
+                'id'          => $query->id,
+                'password'    => $query->password,
+                'id_role'     => $query->id_role,
+                'username'    => $query->username,
+                'first_name'  => $query->first_name,
+                'last_name'   => $query->last_name,
+                'email'       => $query->email,
+                'phone'       => $query->phone,
+                'photo'       => $query->photo,
+                'last_login'  => $query->last_login,
+                'created_at'  => $query->created_at,
+                'updated_at'  => $query->updated_at,
             );
             $this->session->set_userdata($userdata);
             return true;
         }
     }
+
     public function login()
     {
         $data = konfigurasi('Login');
@@ -273,12 +360,12 @@ class Auth extends MY_Controller
         date_default_timezone_set('ASIA/JAKARTA');
         $date = array('last_login' => date('Y-m-d H:i:s'));
         $id = $this->session->userdata('id');
-		$this->Auth_model->logout($date, $id);
-		$user_data = $this->session->userdata();
-		foreach ($user_data as $key => $value) {
-			if ($key!='__ci_last_regenerate' && $key != '__ci_vars')
-			$this->session->unset_userdata($key);
-		}
+        $this->Auth_model->logout($date, $id);
+        $user_data = $this->session->userdata();
+        foreach ($user_data as $key => $value) {
+            if ($key != '__ci_last_regenerate' && $key != '__ci_vars')
+                $this->session->unset_userdata($key);
+        }
         $this->session->set_flashdata('alert', '<p class="box-msg">
               <div class="info-box alert-success">
               <div class="info-box-icon">
@@ -290,11 +377,11 @@ class Auth extends MY_Controller
               </p>
 			');
         redirect('auth/login');
-        
     }
 
-    function confirmEmail($hashcode){
-        if($this->Auth_model->verifyEmail($hashcode)){
+    function confirmEmail($hashcode)
+    {
+        if ($this->Auth_model->verifyEmail($hashcode)) {
             $this->session->set_flashdata('alert', '<p class="box-msg">
                 <div class="info-box alert-success">
                 <div class="info-box-icon">
@@ -306,7 +393,7 @@ class Auth extends MY_Controller
                 </p>
                 ');
             redirect('Auth/login');
-        }else{
+        } else {
             $this->session->set_flashdata('alert', '<p class="box-msg">
         			<div class="info-box alert-danger">
         			<div class="info-box-icon">
@@ -319,5 +406,15 @@ class Auth extends MY_Controller
               ');
             redirect('Auth/login');
         }
+    }
+
+    public function base64url_encode($data)
+    {
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    }
+
+    public function base64url_decode($data)
+    {
+        return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
     }
 }

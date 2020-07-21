@@ -124,7 +124,7 @@ class Pelatihan extends MY_Controller
         );
 
         $this->Pelatihan_model->update($this->input->post('id'), $data);
-        $this->session->set_flashdata('message', '<div class="alert alert-success">Mobil berhasil di edit</div>');
+        $this->session->set_flashdata('message', '<div class="alert alert-success">Mobil berhasil di edit</div>'); // TIDAK MUNCUL
 
 
 
