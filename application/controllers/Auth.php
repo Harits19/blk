@@ -27,6 +27,7 @@ class Auth extends MY_Controller
         $this->load->model('Auth_model');
 
         $this->load->model('User_model');
+        $this->load->model('Pendaftar_model');
     }
 
     public function profile()
@@ -449,5 +450,35 @@ class Auth extends MY_Controller
     public function base64url_decode($data)
     {
         return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
+    }
+
+    public function kehadiran($hashcode){
+
+        if ($this->Pendaftar_model->verifikasi_kehadiran($hashcode)) {
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+                <div class="info-box alert-success">
+                <div class="info-box-icon">
+                <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="info-box-content" style="font-size:14">
+                <b style="font-size: 20px">SUKSES</b><br>Konfirmasi berhasil, silakan lakukan login dihalaman yang tersedia.</div>
+                </div>
+                </p>
+                ');
+            redirect('Auth/login');
+        } else {
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+        			<div class="info-box alert-danger">
+        			<div class="info-box-icon">
+        			<i class="fa fa-warning"></i>
+        			</div>
+        			<div class="info-box-content" style="font-size:14">
+        			<b style="font-size: 20px">GAGAL</b><br>Konfirmasi email gagal</div>
+        			</div>
+        			</p>
+              ');
+            redirect('Auth/login');
+        }
+
     }
 }

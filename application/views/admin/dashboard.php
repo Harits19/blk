@@ -12,7 +12,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                     <span class="info-box-number"><?php echo $jumlah_pelatihan; ?></span>
                 </div>
 
-                <a  href="<?php echo base_url() ?>admin/pelatihan" class="btn"><i class="fa fa-database" aria-hidden="true"></i> Lihat Detail</a>
+                <a href="<?php echo base_url() ?>admin/pelatihan" class="btn"><i class="fa fa-database" aria-hidden="true"></i> Lihat Detail</a>
             </div>
 
         </div>
@@ -20,9 +20,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
             <div class="info-box">
                 <span class="info-box-icon bg-green"><i class="fa fa-check"></i></span>
                 <div class="info-box-content">
-                    <span class="info-box-text">Jumlah Pelatihan</span>
-                    <span class="info-box-number"><?php echo $jumlah_pelatihan; ?></span>
+                    <span class="info-box-text">Jumlah Pendaftar</span>
+                    <span class="info-box-number"><?php echo $jumlah_pendaftar; ?></span>
                 </div>
+                <a href="<?php echo base_url() ?>admin/pendaftar" class="btn"><i class="fa fa-database" aria-hidden="true"></i> Lihat Detail</a>
             </div>
         </div>
 

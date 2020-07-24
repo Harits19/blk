@@ -26,11 +26,13 @@
         <?php echo form_error('nama') ?>
       </div>
 
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label for="nama" class="font-weight-bold">Status</label>
         <?php echo form_input($status, $pelatihan->status) ?>
         <?php echo form_error('nama') ?>
-      </div>
+      </div> -->
+
+      <input type="hidden" name="id" value="<?php echo $pelatihan->status ?>">
       
       <!-- Submit -->
       <div class="form-group">

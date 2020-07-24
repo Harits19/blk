@@ -1,5 +1,5 @@
 <?php
-class pelatihan_model extends CI_Model
+class Pelatihan_model extends CI_Model
 {
   var $table = 'tbl_pelatihan';
 
@@ -14,6 +14,12 @@ class pelatihan_model extends CI_Model
   {
     $this->db->where('id', $id);
     $this->db->update($this->table, $data);
+  }
+
+  public function update_status($id)
+  {
+    $sql = "UPDATE `tbl_pelatihan` SET `status` = '0' WHERE `tbl_pelatihan`.`id` = $id";
+    $this->db->query($sql);
   }
 
   //delete pelatihan
@@ -42,6 +48,13 @@ class pelatihan_model extends CI_Model
     //     $this->db->join('mobil','mobil.mobil_id = transaksi.transaksi_mobil');
     //     return $this->db->get($this->table)->result();
     return $this->db->get($this->table)->result();
+  }
+
+  public function get_kuota($id)
+  {
+    $sql = "SELECT tbl_pelatihan.kuota FROM tbl_pelatihan WHERE tbl_pelatihan.id =" . $id;
+
+    return $this->db->query($sql)->row();
   }
 
 

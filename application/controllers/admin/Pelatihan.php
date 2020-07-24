@@ -24,6 +24,7 @@ class Pelatihan extends MY_Controller
     {
         parent::__construct();
         $this->load->model('Pelatihan_model');
+        $this->load->model('Pendaftar_model');
         $this->check_login();
         if ($this->session->userdata('id_role') != "1") {
             redirect('', 'refresh');
@@ -35,7 +36,7 @@ class Pelatihan extends MY_Controller
         $this->data = konfigurasi('Pelatihan');
         $this->data["get_all"] = $this->Pelatihan_model->get_all();
 
-        $this->template->load('layouts/template', 'admin/pelatihan', $this->data);
+        $this->template->load('layouts/template', 'admin/pelatihan/index', $this->data);
     }
 
     public function hapus($id)
@@ -52,7 +53,7 @@ class Pelatihan extends MY_Controller
         $this->data = konfigurasi('Pelatihan');
         $this->data["get_all"] = $this->Pelatihan_model->get_all();
 
-        $this->template->load('layouts/template', 'admin/tambah', $this->data);
+        $this->template->load('layouts/template', 'admin/pelatihan/tambah', $this->data);
     }
 
     public function tambah_pelatihan_proses()
@@ -108,10 +109,37 @@ class Pelatihan extends MY_Controller
             redirect('admin/pelatihan', 'refresh', $data);
         }
     }
+    public function tutup($id)
+    {
+        //Ganti Status ke Tutup/ nilai 0
+        $this->data = konfigurasi('Pelatihan');
+        // $this->data["get_all"] = $this->Pelatihan_model->get_all();
 
-    public function edit_pelatihan_proses()
+        // $this->Pelatihan_model->update_status($id);
+
+        //Kirim verifikasi email
+        $kuota = $this->Pelatihan_model->get_kuota($id)->kuota;
+
+        $receiver = $this->Pendaftar_model->get_pendaftar_kuota($kuota, $id);
+        
+
+        foreach($receiver as $data){
+            $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data->email);
+        };
+
+        // $this->Pendaftar_model->pendaftar_cadangan();
+        // redirect('admin/pelatihan', 'refresh', $this->data);
+
+    }
+
+
+
+    public function edit_pelatihan_proses($id)
     {
         $this->data = konfigurasi('Pelatihan');
+
+        $this->Pelatihan_model->update($this->input->post('id'));
+        redirect('admin/pelatihan', 'refresh', $this->data);
         
 
         // $tanggal = strtotime($this->input->post('tgl_buka'));
@@ -187,7 +215,7 @@ class Pelatihan extends MY_Controller
 
 
 
-            $this->template->load('layouts/template', 'admin/edit', $this->data);
+            $this->template->load('layouts/template', 'admin/pelatihan/edit', $this->data);
         }
     }
 }

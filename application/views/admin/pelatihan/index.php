@@ -53,6 +53,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <th>Tanggal Buka</th>
                                 <th>Tanggal Tutup</th>
                                 <th>Status</th>
+                                <th>Kuota</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,6 +65,17 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 $tgl_buka = date('d-m-Y', $tanggal);
                                 $tanggal = strtotime($pelatihan->tgl_tutup);
                                 $tgl_tutup = date('d-m-Y', $tanggal);
+                                $status = "";
+
+                                if ($pelatihan->status == 0) {
+
+                                    $status = "Tutup";
+                                } elseif ($pelatihan->status == 1) {
+
+                                    $status = "Buka";
+                                } else {
+                                    $status = "-";
+                                }
 
                                 $no++;
                                 echo "<tr>";
@@ -71,7 +83,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 echo "<td>$pelatihan->nama</td>";
                                 echo "<td>$tgl_buka</td>";
                                 echo "<td>$tgl_tutup</td>";
-                                echo "<td>$pelatihan->status</td>";
+                                echo "<td>$status</td>";
+                                echo "<td>$pelatihan->kuota</td>";
                                 echo "<td class='text-center'>";
                             ?>
                                 <a class="edit btn" href="<?php echo base_url('admin/pelatihan/edit/'), $pelatihan->id ?>">
@@ -79,6 +92,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 </a>
                                 <a class="hapus btn" href="<?php echo base_url('admin/pelatihan/hapus/'), $pelatihan->id ?>" onclick="return confirm('Apakah anda yakin?')">
                                     <i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Hapus</i>
+                                </a>
+                                <a class="hapus btn" href="<?php echo base_url('admin/pelatihan/tutup/'), $pelatihan->id ?>" onclick="return confirm('Apakah anda yakin?')">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Tutup Pendaftaran</i>
                                 </a>
                             <?php
                                 echo "</td>";
