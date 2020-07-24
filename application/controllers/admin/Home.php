@@ -35,6 +35,7 @@ class Home extends MY_Controller
     {
         $this->data = konfigurasi('Dashboard');
         $this->data["jumlah_pelatihan"]     = $this->db->get('tbl_pelatihan')->num_rows();
+        $this->data["jumlah_user"]     = $this->db->get('tbl_user')->num_rows();
         $this->template->load('layouts/template', 'admin/dashboard', $this->data);
     }
 }

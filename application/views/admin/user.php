@@ -35,9 +35,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <div class="column">
                             <h4><strong> Data Pelatihan</strong></h4>
                         </div>
-                        
+                        <div class="column" >
+                            <div class="pull-right">
+                                <a href="<?php echo base_url() ?>admin/pelatihan/tambah" class="btn btn-default btn-flat"><i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Tambah Pelatihan</a>
+                            </div>
+                        </div>
                     </div>
-                    <input class="form-control" id="myInput" type="text" placeholder="Search..">
+
                     <table class="table table-striped table-hover table-condensed">
                         <thead>
                             <tr>
@@ -48,7 +52,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody id="myTable">
+                        <tbody>
                             <?php
                             $no = 0;
                             foreach ($get_all as $pelatihan) {
@@ -59,7 +63,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 $tgl_tutup = date('d-m-Y',$tanggal);
 
                                 $no++;
-                                // echo "<tbody id='myTable'>";
                                 echo "<tr>";
                                 echo "<td class='text-center'>$no</td>";
                                 echo "<td>$pelatihan->nama</td>";
@@ -68,11 +71,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 echo "<td>$pelatihan->status</td>";
                                 echo "<td class='text-center'>";
                             ?>
-                                <a class="edit btn" href="<?php echo base_url('member/home/detail/'), $pelatihan->id ?>">
-                                    <i class="fa fa-wrench" aria-hidden="true"></i>&nbsp;Detail Pelatihan
+                                <a class="edit btn" href="<?php echo base_url('admin/pelatihan/edit/'), $pelatihan->id ?>">
+                                    <i class="fa fa-wrench" aria-hidden="true"></i>&nbsp;Edit
                                 </a>
                                 <a class="hapus btn" href="<?php echo base_url('admin/pelatihan/hapus/'),$pelatihan->id?>"  onclick="return confirm('Apakah anda yakin?')">
-                                    <i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Daftar</i>
+                                    <i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Hapus</i>
                                 </a>
                             <?php
                                 echo "</td>";
@@ -86,44 +89,4 @@ defined('BASEPATH') or exit('No direct script access allowed');
             </div>
         </div>
     </div>
-    <h2>Modal Example</h2>
-  <!-- Button to Open the Modal -->
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-    Open modal
-  </button>
-
-  <!-- The Modal -->
-  <div class="modal" id="myModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-      
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h4 class="modal-title">Modal Heading</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        
-        <!-- Modal body -->
-        <div class="modal-body">
-          Modal body..
-        </div>
-        
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
-        
-      </div>
-    </div>
-  </div>
 </section>
-<script>
-$(document).ready(function(){
-  $("#myInput").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $("#myTable tr").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-  });
-});
-</script>

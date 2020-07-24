@@ -3,31 +3,31 @@
     <div class="col-lg-12">
       
       <br>
-      <h4 class="text-uppercase">Edit Mobil</h4>
+      <h4 class="text-uppercase">Edit Pelatihan</h4>
       <hr>
       <?php echo form_open('admin/pelatihan/edit_pelatihan_proses') ?>
       <input type="hidden" name="id" value="<?php echo $pelatihan->id ?>">
-      <!-- Merk Mobil -->
+
       <div class="form-group">
-        <label for="nama" class="font-weight-bold">Merk Mobil</label>
+        <label for="nama" class="font-weight-bold">Nama Pelatihan</label>
         <?php echo form_input($nama, $pelatihan->nama) ?>
         <?php echo form_error('nama') ?>
       </div>
 
       <div class="form-group">
-        <label for="nama" class="font-weight-bold">Merk Mobil</label>
+        <label for="nama" class="font-weight-bold">Tanggal dibuka Pelatihan</label>
         <?php echo form_input($tgl_buka, $pelatihan->tgl_buka) ?>
         <?php echo form_error('nama') ?>
       </div>
 
       <div class="form-group">
-        <label for="nama" class="font-weight-bold">Merk Mobil</label>
+        <label for="nama" class="font-weight-bold">Tanggal ditutup pelatihan</label>
         <?php echo form_input($tgl_tutup, $pelatihan->tgl_tutup) ?>
         <?php echo form_error('nama') ?>
       </div>
 
       <div class="form-group">
-        <label for="nama" class="font-weight-bold">Merk Mobil</label>
+        <label for="nama" class="font-weight-bold">Status Pelatihan</label>
         <?php echo form_input($status, $pelatihan->status) ?>
         <?php echo form_error('nama') ?>
       </div>
