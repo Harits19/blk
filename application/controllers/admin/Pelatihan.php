@@ -30,6 +30,35 @@ class Pelatihan extends MY_Controller
             redirect('', 'refresh');
         }
     }
+    
+    
+
+    public function tutup($id_pelatihan)
+    {
+        //Ganti Status ke Tutup/ nilai 0
+        $this->data = konfigurasi('Pelatihan');
+        // $this->data["get_all"] = $this->Pelatihan_model->get_all();
+
+        // $this->Pelatihan_model->update_status($id);
+
+        //Kirim verifikasi email
+        $kuota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota;
+
+        $data_penerima = $this->Pendaftar_model->get_pendaftar_kuota($kuota, $id_pelatihan);
+        
+        $this->Pendaftar_model->update_status_cadangan($id_pelatihan); //Update status seluruh peserta menjadi cadangan
+
+        //Mengirim email verifikasi dan update peserta menjadi pending
+        foreach($data_penerima as $data_row){
+            $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
+        };
+
+        
+
+        // $this->Pendaftar_model->pendaftar_cadangan();
+        // redirect('admin/pelatihan', 'refresh', $this->data);
+
+    }
 
     public function index()
     {
@@ -109,28 +138,7 @@ class Pelatihan extends MY_Controller
             redirect('admin/pelatihan', 'refresh', $data);
         }
     }
-    public function tutup($id)
-    {
-        //Ganti Status ke Tutup/ nilai 0
-        $this->data = konfigurasi('Pelatihan');
-        // $this->data["get_all"] = $this->Pelatihan_model->get_all();
-
-        // $this->Pelatihan_model->update_status($id);
-
-        //Kirim verifikasi email
-        $kuota = $this->Pelatihan_model->get_kuota($id)->kuota;
-
-        $receiver = $this->Pendaftar_model->get_pendaftar_kuota($kuota, $id);
-        
-
-        foreach($receiver as $data){
-            $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data->email);
-        };
-
-        // $this->Pendaftar_model->pendaftar_cadangan();
-        // redirect('admin/pelatihan', 'refresh', $this->data);
-
-    }
+    
 
 
 

@@ -36,6 +36,210 @@ class Auth extends MY_Controller
         $this->template->load('layouts/template', 'authentication/profile', $data);
     }
 
+    public function kehadiran(){
+
+        // if ($this->Pendaftar_model->verifikasi_kehadiran($hashcode)) {
+        //     $this->session->set_flashdata('alert', '<p class="box-msg">
+        //         <div class="info-box alert-success">
+        //         <div class="info-box-icon">
+        //         <i class="fa fa-check-circle"></i>
+        //         </div>
+        //         <div class="info-box-content" style="font-size:14">
+        //         <b style="font-size: 20px">SUKSES</b><br>Konfirmasi berhasil, silakan lakukan login dihalaman yang tersedia.</div>
+        //         </div>
+        //         </p>
+        //         ');
+        //     redirect('Auth/login');
+        // } else {
+        //     $this->session->set_flashdata('alert', '<p class="box-msg">
+        // 			<div class="info-box alert-danger">
+        // 			<div class="info-box-icon">
+        // 			<i class="fa fa-warning"></i>
+        // 			</div>
+        // 			<div class="info-box-content" style="font-size:14">
+        // 			<b style="font-size: 20px">GAGAL</b><br>Konfirmasi email gagal</div>
+        // 			</div>
+        // 			</p>
+        //       ');
+        //     redirect('Auth/login');
+        // }
+
+        // ========================================================
+        $data = konfigurasi('Konfirmasi Kehadiran');
+        $token = $this->base64url_decode($this->uri->segment(4));
+        $cleanToken = $this->security->xss_clean($token);
+
+        $user_info = $this->Pendaftar_model->isTokenValid($cleanToken);
+
+        if (!$user_info) {
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+        			<div class="info-box alert-danger">
+        			<div class="info-box-icon">
+        			<i class="fa fa-warning"></i>
+        			</div>
+        			<div class="info-box-content" style="font-size:14">
+        			<b style="font-size: 20px">GAGAL</b><br>Konfirmasi Kehadiran tidak valid atau kadaluwarsa</div>
+        			</div>
+        			</p>
+            ');
+            // redirect(site_url('auth/forget'), 'refresh');
+            $this->template->load('authentication/layouts/template', 'authentication/login', $data);
+        }else{
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+                <div class="info-box alert-success">
+                <div class="info-box-icon">
+                <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="info-box-content" style="font-size:14">
+                <b style="font-size: 20px">SUKSES</b><br>Konfirmasi berhasil, silakan lakukan login dihalaman yang tersedia.</div>
+                </div>
+                </p>
+                ');
+
+                $this->Pendaftar_model->update_status_pending($user_info->id, 1);
+
+                $this->template->load('authentication/layouts/template', 'authentication/login', $data);
+        }
+
+        
+
+
+
+    }
+
+    public function kehadiran_cadangan(){
+
+        // if ($this->Pendaftar_model->verifikasi_kehadiran($hashcode)) {
+        //     $this->session->set_flashdata('alert', '<p class="box-msg">
+        //         <div class="info-box alert-success">
+        //         <div class="info-box-icon">
+        //         <i class="fa fa-check-circle"></i>
+        //         </div>
+        //         <div class="info-box-content" style="font-size:14">
+        //         <b style="font-size: 20px">SUKSES</b><br>Konfirmasi berhasil, silakan lakukan login dihalaman yang tersedia.</div>
+        //         </div>
+        //         </p>
+        //         ');
+        //     redirect('Auth/login');
+        // } else {
+        //     $this->session->set_flashdata('alert', '<p class="box-msg">
+        // 			<div class="info-box alert-danger">
+        // 			<div class="info-box-icon">
+        // 			<i class="fa fa-warning"></i>
+        // 			</div>
+        // 			<div class="info-box-content" style="font-size:14">
+        // 			<b style="font-size: 20px">GAGAL</b><br>Konfirmasi email gagal</div>
+        // 			</div>
+        // 			</p>
+        //       ');
+        //     redirect('Auth/login');
+        // }
+
+        // ========================================================
+        $data = konfigurasi('Konfirmasi Kehadiran Cadangan');
+        $token = $this->base64url_decode($this->uri->segment(4));
+        $cleanToken = $this->security->xss_clean($token);
+
+        $user_info = $this->Pendaftar_model->isTokenValid($cleanToken);
+
+        if (!$user_info) {
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+        			<div class="info-box alert-danger">
+        			<div class="info-box-icon">
+        			<i class="fa fa-warning"></i>
+        			</div>
+        			<div class="info-box-content" style="font-size:14">
+        			<b style="font-size: 20px">GAGAL</b><br>Konfirmasi Kehadiran tidak valid atau kadaluwarsa</div>
+        			</div>
+        			</p>
+            ');
+            // redirect(site_url('auth/forget'), 'refresh');
+            $this->template->load('authentication/layouts/template', 'authentication/login', $data);
+        }else{
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+                <div class="info-box alert-success">
+                <div class="info-box-icon">
+                <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="info-box-content" style="font-size:14">
+                <b style="font-size: 20px">SUKSES</b><br>Konfirmasi berhasil, silakan lakukan login dihalaman yang tersedia.</div>
+                </div>
+                </p>
+                ');
+
+                $this->Pendaftar_model->update_status_pending($user_info->id, 5);
+
+                $this->template->load('authentication/layouts/template', 'authentication/login', $data);
+        }
+
+        
+
+
+
+    }
+
+    public function reset_password()
+    {
+
+        $data = konfigurasi('Reset Password');
+        $token = $this->base64url_decode($this->uri->segment(4));
+        $cleanToken = $this->security->xss_clean($token);
+
+        $user_info = $this->Auth_model->isTokenValid($cleanToken); //either false or array();          
+
+        if (!$user_info) {
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+        			<div class="info-box alert-danger">
+        			<div class="info-box-icon">
+        			<i class="fa fa-warning"></i>
+        			</div>
+        			<div class="info-box-content" style="font-size:14">
+        			<b style="font-size: 20px">GAGAL</b><br>Token tidak valid atau kadaluwarsa, isi email anda kembali</div>
+        			</div>
+        			</p>
+            ');
+            // redirect(site_url('auth/forget'), 'refresh');
+            $this->template->load('authentication/layouts/template', 'authentication/login', $data);
+        }
+
+        $data = array(
+            'nama' => $user_info->username,
+            'email' => $user_info->email,
+            'token' => $this->base64url_encode($token)
+        );
+
+        $this->form_validation->set_rules('password', 'Password', 'required|min_length[5]');
+        $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required|matches[password]');
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->template->load('authentication/layouts/template', 'authentication/new_password', $data);
+
+            // red
+        } else {
+
+
+            $cleanPost['password'] = get_hash($this->input->post('password'));
+            $cleanPost['id'] = $user_info->id;
+
+
+            if (!$this->User_model->updatePassword($cleanPost)) {
+                $this->session->set_flashdata('sukses', 'Update password gagal.');
+            } else {
+                $this->session->set_flashdata('alert', '<p class="box-msg">
+                <div class="info-box alert-success">
+                <div class="info-box-icon">
+                <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="info-box-content" style="font-size:14">
+                <b style="font-size: 20px">SUKSES</b><br>Password berhasil diperbarui, silakan lakukan login dihalaman yang tersedia</div>
+                </div>
+                </p>
+                ');
+            }
+            redirect(site_url('auth/login'), 'refresh', $data);
+        }
+    }
+
     public function updateProfile()
     {
         $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[4]|max_length[15]');
@@ -192,67 +396,7 @@ class Auth extends MY_Controller
         }
     }
 
-    public function reset_password()
-    {
-
-        $data = konfigurasi('Reset Password');
-        $token = $this->base64url_decode($this->uri->segment(4));
-        $cleanToken = $this->security->xss_clean($token);
-
-        $user_info = $this->Auth_model->isTokenValid($cleanToken); //either false or array();          
-
-        if (!$user_info) {
-            $this->session->set_flashdata('alert', '<p class="box-msg">
-        			<div class="info-box alert-danger">
-        			<div class="info-box-icon">
-        			<i class="fa fa-warning"></i>
-        			</div>
-        			<div class="info-box-content" style="font-size:14">
-        			<b style="font-size: 20px">GAGAL</b><br>Token tidak valid atau kadaluwarsa, isi email anda kembali</div>
-        			</div>
-        			</p>
-            ');
-            // redirect(site_url('auth/forget'), 'refresh');
-            $this->template->load('authentication/layouts/template', 'authentication/login', $data);
-        }
-
-        $data = array(
-            'nama' => $user_info->username,
-            'email' => $user_info->email,
-            'token' => $this->base64url_encode($token)
-        );
-
-        $this->form_validation->set_rules('password', 'Password', 'required|min_length[5]');
-        $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required|matches[password]');
-
-        if ($this->form_validation->run() == FALSE) {
-            $this->template->load('authentication/layouts/template', 'authentication/new_password', $data);
-
-            // red
-        } else {
-
-
-            $cleanPost['password'] = get_hash($this->input->post('password'));
-            $cleanPost['id'] = $user_info->id;
-
-
-            if (!$this->User_model->updatePassword($cleanPost)) {
-                $this->session->set_flashdata('sukses', 'Update password gagal.');
-            } else {
-                $this->session->set_flashdata('alert', '<p class="box-msg">
-                <div class="info-box alert-success">
-                <div class="info-box-icon">
-                <i class="fa fa-check-circle"></i>
-                </div>
-                <div class="info-box-content" style="font-size:14">
-                <b style="font-size: 20px">SUKSES</b><br>Password berhasil diperbarui, silakan lakukan login dihalaman yang tersedia</div>
-                </div>
-                </p>
-                ');
-            }
-            redirect(site_url('auth/login'), 'refresh', $data);
-        }
-    }
+    
 
     public function check_register()
     {
@@ -452,33 +596,5 @@ class Auth extends MY_Controller
         return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
     }
 
-    public function kehadiran($hashcode){
-
-        if ($this->Pendaftar_model->verifikasi_kehadiran($hashcode)) {
-            $this->session->set_flashdata('alert', '<p class="box-msg">
-                <div class="info-box alert-success">
-                <div class="info-box-icon">
-                <i class="fa fa-check-circle"></i>
-                </div>
-                <div class="info-box-content" style="font-size:14">
-                <b style="font-size: 20px">SUKSES</b><br>Konfirmasi berhasil, silakan lakukan login dihalaman yang tersedia.</div>
-                </div>
-                </p>
-                ');
-            redirect('Auth/login');
-        } else {
-            $this->session->set_flashdata('alert', '<p class="box-msg">
-        			<div class="info-box alert-danger">
-        			<div class="info-box-icon">
-        			<i class="fa fa-warning"></i>
-        			</div>
-        			<div class="info-box-content" style="font-size:14">
-        			<b style="font-size: 20px">GAGAL</b><br>Konfirmasi email gagal</div>
-        			</div>
-        			</p>
-              ');
-            redirect('Auth/login');
-        }
-
-    }
+    
 }

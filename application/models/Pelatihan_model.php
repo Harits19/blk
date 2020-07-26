@@ -50,12 +50,12 @@ class Pelatihan_model extends CI_Model
     return $this->db->get($this->table)->result();
   }
 
-  public function get_kuota($id)
-  {
-    $sql = "SELECT tbl_pelatihan.kuota FROM tbl_pelatihan WHERE tbl_pelatihan.id =" . $id;
+  // public function get_kuota($id)
+  // {
+  //   $sql = "SELECT tbl_pelatihan.kuota FROM tbl_pelatihan WHERE tbl_pelatihan.id =" . $id;
 
-    return $this->db->query($sql)->row();
-  }
+  //   return $this->db->query($sql)->row();
+  // }
 
 
 
