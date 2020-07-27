@@ -20,7 +20,7 @@
         </div>
 
         <div class="form-group">
-            <label for="tgl_buka" class="font-weight-bold">Tanggal Pinjam</label>
+            <label for="tgl_buka" class="font-weight-bold">Tanggal Buka</label>
             <div class="input-group">
                 <!-- <div class="input-group-prepend">
                 <div class="input-group-text">

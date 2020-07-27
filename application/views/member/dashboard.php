@@ -24,6 +24,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
   }
 </style>
 <section class="content">
+  <div class="msg" style="display:none;">
+    <?= @$this->session->flashdata('msg'); ?>
+  </div>
   <div class="row">
     <div class="col-md-12">
       <div class="box">
@@ -168,61 +171,76 @@ defined('BASEPATH') or exit('No direct script access allowed');
   });
 </script>
 
-
-
-<!-- Modal daftar -->
-<div class="modal fade" id="myModalDaftar" role="dialog">
+<div class="modal fade" id="myModalDaftar" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
   <div class="modal-dialog">
-
-    <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Pendaftaran</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h3 class="modal-title" id="myModalLabel">Pendaftaran Pelatihan</h3>
       </div>
-      <div class="modal-body">
-        <table class="table table-striped table-hover table-condensed">
-          <thead>
-            <tr>
-              <!-- <td>id_pelatihan :</td> -->
-              <td><input type="hidden" id="id_pelatihan"></td>
-            </tr>
-            <tr>
-              <td>Nama : </td>
-              <td><input type="text" id="tgl_buka"></td>
-            </tr>
-            <tr>
-              <td>Jenis Kelamin : </td>
-              <td><input type="text" id="tgl_tutup"></td>
-            </tr>
-            <tr>
-              <td>Alamat : </td>
-              <td><textarea id="detail_pelatihan"></textarea></td>
-            </tr>
-            <tr>
-              <td>Email : </td>
-              <td><input type="text" id="nama_pelatih"></td>
-            </tr>
-            <tr>
-              <td>No. HP : </td>
-              <td><input type="text" id="kontak_pelatih"></td>
-            </tr>
-            <tr>
-              <td>Pendidikan Terakhir : </td>
-              <td><input type="text" id="kontak_pelatih"></td>
-            </tr>
-            <tr>
-              <td>Alasan mengikuti pelatihan ini : </td>
-              <td><textarea id="detail_pelatihan"></textarea></td>
-            </tr>
+      <form class="form-horizontal" method="post" action="<?php echo base_url() . 'member/home/proses_daftar' ?>">
+        <div class="modal-body">
+        <input type="hidden" name="id_pelatihan" value="<?php echo $pelatihan->id ?>">
+          <div class="form-group">
+            <label class="control-label col-xs-3">Nama</label>
+            <div class="col-xs-8">
+              <input name="nama" class="form-control" type="text" placeholder="Isikan Nama Anda..." required>
+            </div>
+          </div>
 
-          </thead>
-        </table>
-        <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Daftar Sekarang</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <div class="form-group">
+            <label class="control-label col-xs-3">Alamat</label>
+            <div class="col-xs-8">
+              <input name="alamat" class="form-control" type="textarea" placeholder="Isikan Alamat Anda..." required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-3">Jenis Kelamin</label>
+            <div class="col-xs-8">
+              <select name="jenis_kelamin" class="form-control" required>
+                <option value="">-PILIH-</option>
+                <option value="laki-laki">Laki-Laki</option>
+                <option value="perempuan">Perempuan</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-3">Email</label>
+            <div class="col-xs-8">
+              <input name="email" class="form-control" type="email"  value="<?= $userdata->email; ?>" placeholder="Isikan Email Anda..." required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-3">No. Hp</label>
+            <div class="col-xs-8">
+              <input name="no_hp" class="form-control" type="number" placeholder="No. Hp..." required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-3">Pendidikan Terakhir</label>
+            <div class="col-xs-8">
+              <input name="pendidikan_terakhir" class="form-control" type="text" placeholder="Pendidikan Terakhir Anda..." required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-3">Alasan Mengikuti</label>
+            <div class="col-xs-8">
+              <input name="alasan_mengikuti" class="form-control" type="textarea" placeholder="Alasan Mengikuti Anda..." required>
+            </div>
+          </div>
+
         </div>
-      </div>
+
+        <div class="modal-footer">
+          <button class="btn" data-dismiss="modal" aria-hidden="true">Tutup</button>
+          <button class="btn btn-info">Simpan</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

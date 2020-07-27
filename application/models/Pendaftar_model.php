@@ -144,6 +144,8 @@ class Pendaftar_model extends CI_Model
         $this->db->update('tbl_pendaftar', $data);    //update status as 1 to make active user
     }
 
+
+
     function update_status_cadangan($id_pelatihan){
         $data = array('status' => 3);
         $this->db->where('id_pelatihan', $id_pelatihan);
@@ -169,6 +171,18 @@ class Pendaftar_model extends CI_Model
     {
         $this->db->where('id', $id);
         return $this->db->get($this->table)->row();
+    }
+    public function get_by_($data)
+    {
+        $this->db->where($data);
+        return $this->db->get($this->table);
+    }
+    
+
+    public function get_data_per_wilayah($wilayah)
+    {
+        $this->db->where('wilayah', $wilayah);
+        return $this->db->get($this->table);
     }
 
     //update pelatihan
@@ -203,7 +217,8 @@ class Pendaftar_model extends CI_Model
     public function get_all_by_id($id)
     {
 
-        $sql = "SELECT tbl_pendaftar.id, tbl_pendaftar.email, tbl_pendaftar.status, tbl_pelatihan.nama, tbl_pendaftar.id_pelatihan FROM tbl_pendaftar INNER JOIN tbl_pelatihan on tbl_pendaftar.id_pelatihan =" . $id . " GROUP BY tbl_pendaftar.id";
+        $sql = "SELECT tbl_pendaftar.id, tbl_pendaftar.email, tbl_pendaftar.wilayah, tbl_pendaftar.status, tbl_pelatihan.nama, tbl_pendaftar.id_pelatihan FROM tbl_pendaftar INNER JOIN tbl_pelatihan on tbl_pendaftar.id_pelatihan =" . $id . " GROUP BY tbl_pendaftar.id ORDER BY tbl_pendaftar.wilayah DESC
+        ";
         return $this->db->query($sql)->result();
     }
 
@@ -222,7 +237,7 @@ class Pendaftar_model extends CI_Model
         return $this->db->query($sql)->row();
     }
 
-    public function get_pendaftar_kuota($kuota, $id)
+    public function get_pendaftar_kuota($kuota, $id, $jenis_kota)
     {
         // $sql = "SELECT * FROM tbl_pendaftar WHERE id_pelatihan =" . $id . " LIMIT 3";
         $sql = "SELECT * FROM tbl_pendaftar WHERE id_pelatihan =" . $id . " LIMIT " . $kuota;

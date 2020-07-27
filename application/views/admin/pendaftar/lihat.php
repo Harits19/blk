@@ -56,7 +56,7 @@
                             // $hadir = 0;
                             // $kuota = 3;
                             $kuota_tambahan = 0;
-                            
+
                             foreach ($get_all_by_id as $pelatihan_pendaftar) {
 
                                 $status = "";
@@ -79,7 +79,7 @@
                                 } elseif ($pelatihan_pendaftar->status == "3") {
                                     $status = "Cadangan";
                                     // $cadangan++;
-                                } elseif ($pelatihan_pendaftar->status == "4") {
+                                } elseif ($pelatihan_pendaftar->status == "4" ) {
                                     $status = "Cadangan Proses Konfirmasi(new)";
                                     $kuota_tambahan--;
                                     // $cadangan++;
@@ -89,9 +89,9 @@
                                     // $cadangan++;
                                 } elseif ($pelatihan_pendaftar->status == "6") {
                                     $status = "Cadangan Tidak Hadir(new)";
-                                    
+
                                     // $cadangan++;
-                                }else {
+                                } else {
                                     $status = "null";
                                 };
 
@@ -128,8 +128,15 @@
                                     // $cadangan--;
                                     // $kuota--;
                                     $kuota_tambahan--;
-                                    $kirim_kuota = $kuota_tambahan;
-                                ?>
+                                    // $kirim_kuota = $kuota_tambahan;
+
+                                // if ($status == "Cadangan" && $kuota_tambahan > 0 ) {
+                                //     // $tidak_hadir--;
+                                //     // $cadangan--;
+                                //     // $kuota--;
+                                //     // $kuota_tambahan--;
+                                //     // $kirim_kuota = $kuota_tambahan;
+                                // ?>
 
 
 
@@ -138,7 +145,7 @@
                                     </a>
                             <?php
 
-                                } elseif ($status == "Hadir" || $status == "Tidak Hadir" || $status == "Cadangan Hadir(new)" || $status =="Cadangan Tidak Hadir(new)"  ) {
+                                } elseif ($status == "Hadir" || $status == "Tidak Hadir" || $status == "Cadangan Hadir(new)" || $status == "Cadangan Tidak Hadir(new)") {
                                     echo "<a style=color:#000>&nbsp;Terkomfirmasi</a>";
                                 } elseif ($status == "Cadangan" && $kuota_tambahan == 0) {
                                     echo "<a style=color:#e6e6e6>&nbsp;Dalam Antrian</a>";

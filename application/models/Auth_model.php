@@ -188,7 +188,7 @@ class Auth_model extends CI_Model
     public function sendEmailVerification($receiver)
     {
         $from = "bentzie19@gmail.com";    //senders email address
-        $subject = 'Ngetes cuk, iki harits';  //email subject
+        $subject = 'Test Email Verifikasi Akun';  //email subject
 
         //sending confirmEmail($receiver) function calling link to the user, inside message body
         $message = 'Dear User,<br><br> Please click on the below activation link to verify your email address<br><br>

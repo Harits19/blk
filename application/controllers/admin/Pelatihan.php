@@ -30,8 +30,8 @@ class Pelatihan extends MY_Controller
             redirect('', 'refresh');
         }
     }
-    
-    
+
+
 
     public function tutup($id_pelatihan)
     {
@@ -42,21 +42,77 @@ class Pelatihan extends MY_Controller
         // $this->Pelatihan_model->update_status($id);
 
         //Kirim verifikasi email
-        $kuota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota;
+        // $kuota_luar_kota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota_luar_kota;
+        $this->Pendaftar_model->update_status_cadangan($id_pelatihan);
+        $kuota_luar_kota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota_luar_kota;
+        $kuota_kota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota_kota;
+        $kuota_utama = $kuota_luar_kota + $kuota_kota;
 
-        $data_penerima = $this->Pendaftar_model->get_pendaftar_kuota($kuota, $id_pelatihan);
-        
-        $this->Pendaftar_model->update_status_cadangan($id_pelatihan); //Update status seluruh peserta menjadi cadangan
+
+
+        $data = array(
+            'id_pelatihan' => $id_pelatihan
+        );
+        $data_pendaftar = $this->Pendaftar_model->get_by_($data);
+        $total_pendaftar = $data_pendaftar->num_rows();
+
+        $data = array(
+            'wilayah' => 'kota'
+        );
+        $data_pendaftar_kota = $this->Pendaftar_model->get_by_($data);
+        $total_pendaftar_kota = $data_pendaftar_kota->num_rows();
+
+        $data = array(
+            'wilayah' => 'luar kota'
+        );
+        $data_pendaftar_luar_kota = $this->Pendaftar_model->get_by_($data);
+        $total_pendaftar_luar_kota = $data_pendaftar_luar_kota->num_rows();
+
+        $counter = 0;
+
+        if ($total_pendaftar <= ($kuota_luar_kota + $kuota_kota)) {
+            // Mengirim email verifikasi dan update peserta menjadi pending
+            foreach ($data_pendaftar->result() as $data_row) {
+                $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
+            };
+        } else {
+            foreach ($data_pendaftar_kota->result() as $data_row) {
+                $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
+                $counter++;
+                if ($counter == $kuota_kota) {
+                    break;
+                }
+            };
+
+            $kuota_luar_kota = $kuota_utama - $counter;
+            foreach ($data_pendaftar_luar_kota->result() as $data_row) {
+                $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
+                $kuota_luar_kota--;
+                if ($kuota_luar_kota == 0) {
+                    break;
+                }
+            };
+        }
+
+
+        // $kuota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota;
+
+        // $data_penerima = $this->Pendaftar_model->get_pendaftar_kuota($kuota, $id_pelatihan);
+
+         //Update status seluruh peserta menjadi cadangan
+
+
 
         //Mengirim email verifikasi dan update peserta menjadi pending
-        foreach($data_penerima as $data_row){
-            $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
-        };
+        // foreach($data_penerima as $data_row){
+        //     $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
 
-        
+        // };
+
+
 
         // $this->Pendaftar_model->pendaftar_cadangan();
-        // redirect('admin/pelatihan', 'refresh', $this->data);
+        redirect('admin/pelatihan', 'refresh', $this->data);
 
     }
 
@@ -64,8 +120,28 @@ class Pelatihan extends MY_Controller
     {
         $this->data = konfigurasi('Pelatihan');
         $this->data["get_all"] = $this->Pelatihan_model->get_all();
+        $this->data["kuota_luar_kota"] = $this->Pelatihan_model->get_by_id(40)->kuota_luar_kota;
+        $this->data["kuota_kota"] = $this->Pelatihan_model->get_by_id(40)->kuota_kota;
 
-        $this->template->load('layouts/template', 'admin/pelatihan/index', $this->data);
+        $data = array(
+            'id_pelatihan' => 40
+        );
+        $this->data["total_pendaftar"] = $this->Pendaftar_model->get_by_($data)->num_rows();
+
+        $data = array(
+            'wilayah' => 'kota'
+        );
+        $this->data["total_pendaftar_kota"] = $this->Pendaftar_model->get_by_($data)->num_rows();
+
+        $data = array(
+            'wilayah' => 'luar kota'
+        );
+        $this->data["total_pendaftar_luar_kota"] = $this->Pendaftar_model->get_by_($data)->num_rows();
+
+
+
+
+        $this->template->load('layouts/template', 'admin/pelatihan/dashboard', $this->data);
     }
 
     public function hapus($id)
@@ -88,16 +164,18 @@ class Pelatihan extends MY_Controller
     public function tambah_pelatihan_proses()
     {
         $data = konfigurasi('Perlatihan');
-        $this->form_validation->set_rules('nama_pelatihan', 'Nama Pelatihan', 'required');
+        $this->form_validation->set_rules('nama', 'Nama Pelatihan', 'required');
         $this->form_validation->set_rules('tgl_buka', 'Tanggal Buka', 'required');
         $this->form_validation->set_rules('tgl_tutup', 'Tanggal Tutup', 'required');
         $this->form_validation->set_rules('status', 'Status', 'required');
+        $this->form_validation->set_rules('kuota_kota', 'Kuota Kota', 'required');
+        $this->form_validation->set_rules('kuota_luar_kota', 'Kuota Luar Kota', 'required');
 
 
 
         if ($this->form_validation->run() == false) {
-            $this->tambah();
-            
+            $this->session->set_flashdata('msg', show_err_msg('Input yang anda masukkan salah'));
+            redirect('admin/pelatihan');
         } else {
 
             // $date = strtr($this->input->post('tgl_buka'), '/', '-');
@@ -114,10 +192,12 @@ class Pelatihan extends MY_Controller
 
 
             $data = array(
-                'nama' => $this->input->post('nama_pelatihan'),
+                'nama' => $this->input->post('nama'),
                 'tgl_buka' => $tgl_buka,
                 'tgl_tutup' => $tgl_tutup,
                 'status' => $this->input->post('status'),
+                'kuota_kota' => $this->input->post('kuota_kota'),
+                'kuota_luar_kota' => $this->input->post('kuota_luar_kota'),
             );
 
 
@@ -131,24 +211,22 @@ class Pelatihan extends MY_Controller
 
                 //$error = "Error, Cannot insert new user details!";
                 // $this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">Failed!! Please try again.</div>');
-                $this->session->set_flashdata('msg', show_err_msg('Pelatihan Gagal Ditambahkan'));
-                $this->tambah();
+                $this->session->set_flashdata('msg', show_err_msg('2 Pelatihan Gagal Ditambahkan'));
+                redirect('admin/pelatihan');
             }
 
             redirect('admin/pelatihan', 'refresh', $data);
         }
     }
-    
 
 
 
-    public function edit_pelatihan_proses($id)
+
+    public function edit_pelatihan_proses()
     {
         $this->data = konfigurasi('Pelatihan');
 
-        $this->Pelatihan_model->update($this->input->post('id'));
-        redirect('admin/pelatihan', 'refresh', $this->data);
-        
+
 
         // $tanggal = strtotime($this->input->post('tgl_buka'));
         // $tgl_buka = date('Y-m-d', $tanggal);
@@ -159,15 +237,16 @@ class Pelatihan extends MY_Controller
             "tgl_buka" => $this->input->post('tgl_buka'),
             "tgl_tutup" => $this->input->post('tgl_tutup'),
             "status" => $this->input->post('status'),
+            "kuota_kota" => $this->input->post('kuota_kota'),
+            "kuota_luar_kota" => $this->input->post('kuota_luar_kota'),
         );
 
         $this->Pelatihan_model->update($this->input->post('id'), $data);
-        $this->session->set_flashdata('message', '<div class="alert alert-success">Mobil berhasil di edit</div>'); // TIDAK MUNCUL
+        $this->session->set_flashdata('msg', show_succ_msg('Pelatihan Berhasil Diperbaharui'));
 
 
 
         redirect('admin/pelatihan', 'refresh', $this->data);
-        
     }
 
     public function edit($id)

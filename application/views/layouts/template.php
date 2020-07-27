@@ -16,12 +16,12 @@
 	<script src="<?php echo base_url('assets');?>/vendor/jquery/jquery.min.js"></script>
 </head>
 
-<body class="hold-transition skin-blue fixed sidebar-mini">
+<body class="hold-transition skin-blue sidebar-collapse sidebar-mini">
 	<div class="wrapper">
 		<!-- header -->
 		<?php require_once('_header.php') ;?>
 		<!-- sidebar -->
-		<?php require_once('_sidebar.php') ;?>
+		
 		<!-- content -->
 		<div class="content-wrapper">
 			<!-- Main content -->
