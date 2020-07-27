@@ -34,7 +34,7 @@ class Home extends MY_Controller
     {
         $this->data = konfigurasi('Pelatihan');
         $this->data["get_all"] = $this->Pelatihan_model->get_all();
-        $this->template->load('layouts/template', 'member/pelatihan', $this->data);
+        $this->template->load('layouts/template', 'member/dashboard', $this->data);
     }
 
     public function daftar($id)

@@ -219,6 +219,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
           </thead>
         </table>
         <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Daftar Sekarang</button>
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>
