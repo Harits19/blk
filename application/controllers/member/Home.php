@@ -85,5 +85,22 @@ class Home extends MY_Controller
             );
             $this->template->load('layouts/template', 'member/daftar', $this->data);
         }
+
+        // $this->data = konfigurasi('Dashboard',$get_pelatihan);
+        $this->data = konfigurasi('Dashboard');
+        $this->data["get_all"]  = $this->Pelatihan_model->get_all();
+        $this->template->load('layouts/template', 'member/dashboard', $this->data);
+    }
+
+    public function detail($id)
+    {
+        $data['detailpelatihan'] = $this->Pelatihan_model->get_by_id($id);
+        $this->load->view('member/detail_pelatihan', $data);
+    }
+
+    public function pendaftaran($id)
+    {
+        $data['detailpelatihan'] = $this->Pelatihan_model->get_by_id($id);
+        $this->load->view('member/pendaftaran_pelatihan', $data);
     }
 }
