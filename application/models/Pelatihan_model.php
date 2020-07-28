@@ -13,12 +13,12 @@ class Pelatihan_model extends CI_Model
   public function update($id, $data)
   {
     $this->db->where('id', $id);
-    $this->db->update($this->table, $data);
+    return $this->db->update($this->table, $data);
   }
 
-  public function update_status($id)
+  public function update_status_pelatihan($id)
   {
-    $sql = "UPDATE `tbl_pelatihan` SET `status` = '0' WHERE `tbl_pelatihan`.`id` = $id";
+    $sql = "UPDATE `tbl_pelatihan` SET `status` = 'tutup' WHERE `tbl_pelatihan`.`id` = $id";
     $this->db->query($sql);
   }
 
@@ -26,7 +26,7 @@ class Pelatihan_model extends CI_Model
   public function delete($id)
   {
     $this->db->where('id', $id);
-    $this->db->delete($this->table);
+    return $this->db->delete($this->table);
   }
 
   //input data pelatihan baru

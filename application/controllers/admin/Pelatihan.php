@@ -35,14 +35,12 @@ class Pelatihan extends MY_Controller
 
     public function tutup($id_pelatihan)
     {
-        //Ganti Status ke Tutup/ nilai 0
         $this->data = konfigurasi('Pelatihan');
-        // $this->data["get_all"] = $this->Pelatihan_model->get_all();
 
-        // $this->Pelatihan_model->update_status($id);
 
-        //Kirim verifikasi email
-        // $kuota_luar_kota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota_luar_kota;
+        //UPDATE STATUS PELATIHAN MENJADI TUTUP
+        $this->Pelatihan_model->update_status_pelatihan($id_pelatihan);
+
         $this->Pendaftar_model->update_status_cadangan($id_pelatihan);
         $kuota_luar_kota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota_luar_kota;
         $kuota_kota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota_kota;
@@ -66,10 +64,12 @@ class Pelatihan extends MY_Controller
             'wilayah' => 'luar kota'
         );
         $data_pendaftar_luar_kota = $this->Pendaftar_model->get_by_($data);
-        $total_pendaftar_luar_kota = $data_pendaftar_luar_kota->num_rows();
+        // $total_pendaftar_luar_kota = $data_pendaftar_luar_kota->num_rows();
 
         $counter = 0;
 
+
+        // BELUM ADA ERROR HANDLING
         if ($total_pendaftar <= ($kuota_luar_kota + $kuota_kota)) {
             // Mengirim email verifikasi dan update peserta menjadi pending
             foreach ($data_pendaftar->result() as $data_row) {
@@ -93,54 +93,13 @@ class Pelatihan extends MY_Controller
                 }
             };
         }
-
-
-        // $kuota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota;
-
-        // $data_penerima = $this->Pendaftar_model->get_pendaftar_kuota($kuota, $id_pelatihan);
-
-         //Update status seluruh peserta menjadi cadangan
-
-
-
-        //Mengirim email verifikasi dan update peserta menjadi pending
-        // foreach($data_penerima as $data_row){
-        //     $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
-
-        // };
-
-
-
-        // $this->Pendaftar_model->pendaftar_cadangan();
         redirect('admin/pelatihan', 'refresh', $this->data);
-
     }
 
     public function index()
     {
         $this->data = konfigurasi('Pelatihan');
         $this->data["get_all"] = $this->Pelatihan_model->get_all();
-        $this->data["kuota_luar_kota"] = $this->Pelatihan_model->get_by_id(40)->kuota_luar_kota;
-        $this->data["kuota_kota"] = $this->Pelatihan_model->get_by_id(40)->kuota_kota;
-
-        $data = array(
-            'id_pelatihan' => 40
-        );
-        $this->data["total_pendaftar"] = $this->Pendaftar_model->get_by_($data)->num_rows();
-
-        $data = array(
-            'wilayah' => 'kota'
-        );
-        $this->data["total_pendaftar_kota"] = $this->Pendaftar_model->get_by_($data)->num_rows();
-
-        $data = array(
-            'wilayah' => 'luar kota'
-        );
-        $this->data["total_pendaftar_luar_kota"] = $this->Pendaftar_model->get_by_($data)->num_rows();
-
-
-
-
         $this->template->load('layouts/template', 'admin/pelatihan/dashboard', $this->data);
     }
 
@@ -148,18 +107,22 @@ class Pelatihan extends MY_Controller
     {
         $this->data = konfigurasi('Pelatihan');
         $this->data["get_all"] = $this->Pelatihan_model->get_all();
-
-        $this->Pelatihan_model->delete($id);
+        if ($this->Pelatihan_model->delete($id)) {
+            $this->session->set_flashdata('msg', show_succ_msg('Pelatihan Berhasil Dihapus'));
+        } else {
+            $this->session->set_flashdata('msg', show_err_msg('Pelatihan Gagal Dihapus'));
+        }
 
         redirect('admin/pelatihan', 'refresh', $this->data);
     }
-    public function tambah()
-    {
-        $this->data = konfigurasi('Pelatihan');
-        $this->data["get_all"] = $this->Pelatihan_model->get_all();
 
-        $this->template->load('layouts/template', 'admin/pelatihan/tambah', $this->data);
-    }
+    // TAMBAH MENGGUNAKAN FORM BARU (TIDAK DIGUNAKAN)
+    // public function tambah()
+    // {
+    //     $this->data = konfigurasi('Pelatihan');
+    //     $this->data["get_all"] = $this->Pelatihan_model->get_all();
+    //     $this->template->load('layouts/template', 'admin/pelatihan/tambah', $this->data);
+    // }
 
     public function tambah_pelatihan_proses()
     {
@@ -178,13 +141,6 @@ class Pelatihan extends MY_Controller
             redirect('admin/pelatihan');
         } else {
 
-            // $date = strtr($this->input->post('tgl_buka'), '/', '-');
-            // $tanggal = strtotime($date);
-            // $tgl_buka = date('Y-m-d', $tanggal);
-            // $date = strtr($this->input->post('tgl_tutup'), '/', '-');
-            // $tanggal = strtotime($date);
-            // $tgl_tutup = date('Y-m-d', $tanggal);
-
             $tanggal = strtotime($this->input->post('tgl_buka'));
             $tgl_buka = date('Y-m-d', $tanggal);
             $tanggal = strtotime($this->input->post('tgl_tutup'));
@@ -202,16 +158,10 @@ class Pelatihan extends MY_Controller
 
 
             if ($this->Pelatihan_model->insert($data)) {
-                //redirect('Login_Controller/index');
-                //$msg = "Successfully registered with the sysytem.Conformation link has been sent to: ".$this->input->post('txt_email');
-                // $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Pelatihan berhasil ditambahkan</div>');
                 $this->session->set_flashdata('msg', show_succ_msg('Pelatihan Berhasil Ditambahkan'));
                 redirect('admin/pelatihan');
             } else {
-
-                //$error = "Error, Cannot insert new user details!";
-                // $this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">Failed!! Please try again.</div>');
-                $this->session->set_flashdata('msg', show_err_msg('2 Pelatihan Gagal Ditambahkan'));
+                $this->session->set_flashdata('msg', show_err_msg('Pelatihan Gagal Ditambahkan'));
                 redirect('admin/pelatihan');
             }
 
@@ -219,19 +169,9 @@ class Pelatihan extends MY_Controller
         }
     }
 
-
-
-
     public function edit_pelatihan_proses()
     {
         $this->data = konfigurasi('Pelatihan');
-
-
-
-        // $tanggal = strtotime($this->input->post('tgl_buka'));
-        // $tgl_buka = date('Y-m-d', $tanggal);
-        // $tanggal = strtotime($this->input->post('tgl_tutup'));
-        // $tgl_tutup = date('Y-m-d', $tanggal);
         $data = array(
             "nama" => $this->input->post('nama'),
             "tgl_buka" => $this->input->post('tgl_buka'),
@@ -241,68 +181,65 @@ class Pelatihan extends MY_Controller
             "kuota_luar_kota" => $this->input->post('kuota_luar_kota'),
         );
 
-        $this->Pelatihan_model->update($this->input->post('id'), $data);
-        $this->session->set_flashdata('msg', show_succ_msg('Pelatihan Berhasil Diperbaharui'));
-
-
-
+        if ($this->Pelatihan_model->update($this->input->post('id'), $data)) {
+            $this->session->set_flashdata('msg', show_succ_msg('Pelatihan Berhasil Diperbaharui'));
+        } else {
+            $this->session->set_flashdata('msg', show_err_msg('Pelatihan Gagal Diperbaharui'));
+        }
         redirect('admin/pelatihan', 'refresh', $this->data);
     }
 
-    public function edit($id)
-    {
-        $this->data = konfigurasi('Pelatihan');
+    // EDIT MENGGUNAKAN FORM BARU (TIDAK DIGUNAKAN)
+    // public function edit($id)
+    // {
+    //     $this->data = konfigurasi('Pelatihan');
 
 
-        $this->data["pelatihan"] = $this->Pelatihan_model->get_by_id($id);
+    //     $this->data["pelatihan"] = $this->Pelatihan_model->get_by_id($id);
 
 
-        $row = $this->Pelatihan_model->get_by_id($id);
+    //     $row = $this->Pelatihan_model->get_by_id($id);
 
-        if ($row) {
-            //merk mobil
-            $this->data["nama"] = array(
-                "name"    => "nama",
-                "class"   => "form-control mb-1",
-                "id"      => "nama",
-            );
-            //No.Plat Kendaraan
-            $this->data["tgl_buka"] = array(
-                "name"    => "tgl_buka",
-                "class"   => "form-control mb-1",
-                "id"      => "tgl_buka",
-            );
+    //     if ($row) {
+    //         $this->data["nama"] = array(
+    //             "name"    => "nama",
+    //             "class"   => "form-control mb-1",
+    //             "id"      => "nama",
+    //         );
+    //         $this->data["tgl_buka"] = array(
+    //             "name"    => "tgl_buka",
+    //             "class"   => "form-control mb-1",
+    //             "id"      => "tgl_buka",
+    //         );
 
-            //warna
-            $this->data["tgl_tutup"] = array(
-                "name"     => "tgl_tutup",
-                "class"    => "form-control mb-1",
-                "id"       => "tgl_tutup",
-            );
+    //         $this->data["tgl_tutup"] = array(
+    //             "name"     => "tgl_tutup",
+    //             "class"    => "form-control mb-1",
+    //             "id"       => "tgl_tutup",
+    //         );
 
-            //status
-            $this->data["status"] = array(
-                "name"  => "status",
-                "class" => "form-control",
-                "id"    => "status"
-            );
+    //         $this->data["status"] = array(
+    //             "name"  => "status",
+    //             "class" => "form-control",
+    //             "id"    => "status"
+    //         );
 
-            $this->data["option_status"] = array(
-                "0" => "Tutup",
-                "1" => "Buka",
-            );
+    //         $this->data["option_status"] = array(
+    //             "0" => "Tutup",
+    //             "1" => "Buka",
+    //         );
 
-            $this->data["submit"] = array(
-                "name" => "submit",
-                "class" => "btn btn-success",
-                "type" => "submit",
-                "value" => "Edit",
-            );
+    //         $this->data["submit"] = array(
+    //             "name" => "submit",
+    //             "class" => "btn btn-success",
+    //             "type" => "submit",
+    //             "value" => "Edit",
+    //         );
 
 
 
 
-            $this->template->load('layouts/template', 'admin/pelatihan/edit', $this->data);
-        }
-    }
+    //         $this->template->load('layouts/template', 'admin/pelatihan/edit', $this->data);
+    //     }
+    // }
 }

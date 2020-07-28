@@ -213,11 +213,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
     </div>
 
     <?php
-    echo "$kuota_luar_kota<br>";
-    echo "$kuota_kota <br>";
-    echo "$total_pendaftar<br>";
-    echo "$total_pendaftar_kota <br>";
-    echo "$total_pendaftar_luar_kota <br>";
+    // Testing
+    // echo "$kuota_luar_kota<br>";
+    // echo "$kuota_kota <br>";
+    // echo "$total_pendaftar<br>";
+    // echo "$total_pendaftar_kota <br>";
+    // echo "$total_pendaftar_luar_kota <br>";
     foreach ($get_all as $pelatihan) :
 
     ?>
