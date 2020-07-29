@@ -93,7 +93,7 @@ class Pelatihan extends MY_Controller
                 }
             };
         }
-        redirect('admin/pelatihan', 'refresh', $this->data);
+        // redirect('admin/pelatihan', 'refresh', $this->data);
     }
 
     public function index()
@@ -124,12 +124,16 @@ class Pelatihan extends MY_Controller
     //     $this->template->load('layouts/template', 'admin/pelatihan/tambah', $this->data);
     // }
 
+    // UNTUK MEMPERSIMPLE CODE/MERAPIKAN FOKUSKAN CONTROLLER UNTUK HUBUNGAN VIEW DAN MODEL REF https://www.mynotescode.com/crud-dengan-codeigniter-dan-mysql/
+
     public function tambah_pelatihan_proses()
     {
         $data = konfigurasi('Perlatihan');
         $this->form_validation->set_rules('nama', 'Nama Pelatihan', 'required');
         $this->form_validation->set_rules('tgl_buka', 'Tanggal Buka', 'required');
         $this->form_validation->set_rules('tgl_tutup', 'Tanggal Tutup', 'required');
+        $this->form_validation->set_rules('tgl_verifikasi', 'Tanggal Verifikasi ', 'required');
+        $this->form_validation->set_rules('tgl_verifikasi_cadangan', 'Tanggal Verifikasi Cadangan', 'required');
         $this->form_validation->set_rules('status', 'Status', 'required');
         $this->form_validation->set_rules('kuota_kota', 'Kuota Kota', 'required');
         $this->form_validation->set_rules('kuota_luar_kota', 'Kuota Luar Kota', 'required');
@@ -141,16 +145,13 @@ class Pelatihan extends MY_Controller
             redirect('admin/pelatihan');
         } else {
 
-            $tanggal = strtotime($this->input->post('tgl_buka'));
-            $tgl_buka = date('Y-m-d', $tanggal);
-            $tanggal = strtotime($this->input->post('tgl_tutup'));
-            $tgl_tutup = date('Y-m-d', $tanggal);
-
 
             $data = array(
                 'nama' => $this->input->post('nama'),
-                'tgl_buka' => $tgl_buka,
-                'tgl_tutup' => $tgl_tutup,
+                'tgl_buka' => $this->input->post('tgl_buka'),
+                'tgl_tutup' => $this->input->post('tgl_tutup'),
+                'tgl_verifikasi' => $this->input->post('tgl_verifikasi'),
+                'tgl_verifikasi_cadangan' => $this->input->post('tgl_verifikasi_cadangan'),
                 'status' => $this->input->post('status'),
                 'kuota_kota' => $this->input->post('kuota_kota'),
                 'kuota_luar_kota' => $this->input->post('kuota_luar_kota'),
@@ -172,21 +173,59 @@ class Pelatihan extends MY_Controller
     public function edit_pelatihan_proses()
     {
         $this->data = konfigurasi('Pelatihan');
-        $data = array(
-            "nama" => $this->input->post('nama'),
-            "tgl_buka" => $this->input->post('tgl_buka'),
-            "tgl_tutup" => $this->input->post('tgl_tutup'),
-            "status" => $this->input->post('status'),
-            "kuota_kota" => $this->input->post('kuota_kota'),
-            "kuota_luar_kota" => $this->input->post('kuota_luar_kota'),
-        );
+        $this->form_validation->set_rules('nama', 'Nama Pelatihan', 'required');
+        $this->form_validation->set_rules('tgl_buka', 'Tanggal Buka', 'required');
+        $this->form_validation->set_rules('tgl_tutup', 'Tanggal Tutup', 'required');
+        $this->form_validation->set_rules('tgl_verifikasi', 'Tanggal Verifikasi ', 'required');
+        $this->form_validation->set_rules('tgl_verifikasi_cadangan', 'Tanggal Verifikasi Cadangan', 'required');
+        $this->form_validation->set_rules('status', 'Status', 'required');
+        $this->form_validation->set_rules('kuota_kota', 'Kuota Kota', 'required');
+        $this->form_validation->set_rules('kuota_luar_kota', 'Kuota Luar Kota', 'required');
 
-        if ($this->Pelatihan_model->update($this->input->post('id'), $data)) {
-            $this->session->set_flashdata('msg', show_succ_msg('Pelatihan Berhasil Diperbaharui'));
+        $tgl_buka = strtotime($this->input->post('tgl_buka'));
+        $tgl_tutup = strtotime($this->input->post('tgl_tutup'));
+        $tgl_verifikasi = strtotime($this->input->post('tgl_verifikasi'));
+        $tgl_verifikasi_cadangan= strtotime($this->input->post('tgl_verifikasi_cadangan'));
+
+        // echo "$tgl_buka";
+
+        // Cek tanggal yang dimasukkan 
+        // $status_tgl = false;
+        // if($tgl_buka<$tgl_tutup && $tgl_tutup<$tgl_verifikasi && $tgl_verifikasi<$tgl_verifikasi_cadangan){
+        //     $status_tgl = true; 
+        //     echo "Tanggal Benar";
+        // }
+
+
+
+        if ($this->form_validation->run() == false && !$status_tgl ) {
+            $this->session->set_flashdata('msg', show_err_msg('Input yang anda masukkan salah'));
+            redirect('admin/pelatihan');
         } else {
-            $this->session->set_flashdata('msg', show_err_msg('Pelatihan Gagal Diperbaharui'));
+
+
+            $data = array(
+                'nama' => $this->input->post('nama'),
+                'tgl_buka' => $this->input->post('tgl_buka'),
+                'tgl_tutup' => $this->input->post('tgl_tutup'),
+                'tgl_verifikasi' => $this->input->post('tgl_verifikasi'),
+                'tgl_verifikasi_cadangan' => $this->input->post('tgl_verifikasi_cadangan'),
+                'status' => $this->input->post('status'),
+                'kuota_kota' => $this->input->post('kuota_kota'),
+                'kuota_luar_kota' => $this->input->post('kuota_luar_kota'),
+            );
+
+            // $data = array(
+            //     'nama' => $this->input->post('nama'),
+            // );
+
+            if ($this->Pelatihan_model->update($this->input->post('id'), $data)) {
+                $this->session->set_flashdata('msg', show_succ_msg('Pelatihan Berhasil Diperbaharui'));
+            } else {
+                $this->session->set_flashdata('msg', show_err_msg('Pelatihan Gagal Diperbaharui'));
+            }
+            redirect('admin/pelatihan', 'refresh', $this->data);
         }
-        redirect('admin/pelatihan', 'refresh', $this->data);
     }
 
     // EDIT MENGGUNAKAN FORM BARU (TIDAK DIGUNAKAN)

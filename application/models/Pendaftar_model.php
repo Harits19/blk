@@ -108,14 +108,14 @@ class Pendaftar_model extends CI_Model
         if ($this->db->affected_rows() > 0) {
             $row = $q->row();
 
-            $created = $row->created;
-            $createdTS = strtotime($created);
-            $today = date('Y-m-d');
-            $todayTS = strtotime($today);
+            // $created = $row->created;
+            // $createdTS = strtotime($created);
+            // $today = date('Y-m-d');
+            // $todayTS = strtotime($today);
 
-            if ($createdTS != $todayTS) {
-                return false;
-            }
+            // if ($createdTS != $todayTS) {
+            //     return false;
+            // }
 
             $user_info = $this->getUserInfo($row->user_id);
             return $user_info;
@@ -158,6 +158,14 @@ class Pendaftar_model extends CI_Model
         $this->db->update('tbl_pendaftar', $data);
     }
 
+    function update_status($where, $data){
+       
+        $this->db->where($where);
+        $this->db->update('tbl_pendaftar', $data);
+    }
+
+    
+
     // public function getUserInfoByEmail($email)
     // {
     //     $q = $this->db->get_where('tbl_pendaftar', array('email' => $email), 1);
@@ -192,6 +200,8 @@ class Pendaftar_model extends CI_Model
         $this->db->update($this->table, $data);
     }
 
+    
+
     //delete pelatihan
     public function delete($id)
     {
@@ -217,7 +227,7 @@ class Pendaftar_model extends CI_Model
     public function get_all_by_id($id)
     {
 
-        $sql = "SELECT tbl_pendaftar.id, tbl_pendaftar.email, tbl_pendaftar.wilayah, tbl_pendaftar.status, tbl_pelatihan.nama, tbl_pendaftar.id_pelatihan FROM tbl_pendaftar INNER JOIN tbl_pelatihan on tbl_pendaftar.id_pelatihan =" . $id . " GROUP BY tbl_pendaftar.id ORDER BY tbl_pendaftar.wilayah DESC
+        $sql = "SELECT tbl_pendaftar.id, tbl_pelatihan.tgl_verifikasi_cadangan, tbl_pendaftar.email, tbl_pendaftar.wilayah, tbl_pendaftar.status, tbl_pelatihan.nama, tbl_pelatihan.tgl_verifikasi, tbl_pendaftar.id_pelatihan FROM tbl_pendaftar INNER JOIN tbl_pelatihan on tbl_pendaftar.id_pelatihan =" . $id . " GROUP BY tbl_pendaftar.id ORDER BY tbl_pendaftar.wilayah ASC
         ";
         return $this->db->query($sql)->result();
     }

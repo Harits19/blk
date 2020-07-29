@@ -67,21 +67,28 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 echo "<td>$tgl_buka</td>";
                 echo "<td>$tgl_tutup</td>";
                 echo "<td>$pelatihan->status</td>";
-                // echo "<td class='text-center'>";
+                echo "<td class='text-center'>";
               ?>
-                <td>
-                  <button class="btn btn-primary" id="button_detail" data-toggle="modal" href="#myModalDetail" data-nama="<?php echo $pelatihan->nama ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-tgl_tutup="<?php echo $pelatihan->tgl_tutup ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-detail_pelatihan="<?php echo $pelatihan->detail_pelatihan ?>" data-nama_pelatih="<?php echo $pelatihan->nama_pelatih ?>" data-kontak_pelatih="<?php echo $pelatihan->kontak_pelatih ?>">Detail</button>
-                  <br><br>
-                  <button class="btn btn-primary" id="button_daftar" data-toggle="modal" href="#myModalDaftar" data-id_pelatihan="<?php echo $pelatihan->id ?>">Daftar</button>
+                <a class="btn btn-primary" id="button_detail" data-toggle="modal" href="#myModalDetail" data-nama="<?php echo $pelatihan->nama ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-tgl_tutup="<?php echo $pelatihan->tgl_tutup ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-detail_pelatihan="<?php echo $pelatihan->detail_pelatihan ?>" data-nama_pelatih="<?php echo $pelatihan->nama_pelatih ?>" data-kontak_pelatih="<?php echo $pelatihan->kontak_pelatih ?>">Detail</a>
 
-                </td>
+                <a class="btn btn-primary" id="button_daftar" data-toggle="modal" href="#myModalDaftar" data-id_pelatihan="<?php echo $pelatihan->id ?>">Daftar</a>
+
               <?php
-                // echo "</td>";
+                echo "</td>";
                 echo "</tr>";
               }
               ?>
             </tbody>
           </table>
+
+          <?php
+          if (!$get_all) {
+
+            echo "<br>";
+
+            echo "<strong> Data Belum Tersedia </strong>";
+          }
+          ?>
 
         </div>
       </div>
@@ -137,7 +144,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
       </div>
     </div>
   </div>
-  </div>
 </section>
 <script>
   $(document).ready(function() {
@@ -180,7 +186,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
       </div>
       <form class="form-horizontal" method="post" action="<?php echo base_url() . 'member/home/proses_daftar' ?>">
         <div class="modal-body">
-        <input type="hidden" name="id_pelatihan" value="<?php echo $pelatihan->id ?>">
+          <input type="hidden" name="id_pelatihan" value="<?php echo $pelatihan->id ?>">
           <div class="form-group">
             <label class="control-label col-xs-3">Nama</label>
             <div class="col-xs-8">
@@ -209,7 +215,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
           <div class="form-group">
             <label class="control-label col-xs-3">Email</label>
             <div class="col-xs-8">
-              <input name="email" class="form-control" type="email"  value="<?= $userdata->email; ?>" placeholder="Isikan Email Anda..." required>
+              <input name="email" class="form-control" type="email" value="<?= $userdata->email; ?>" placeholder="Isikan Email Anda..." required>
             </div>
           </div>
 
@@ -230,7 +236,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
           <div class="form-group">
             <label class="control-label col-xs-3">Alasan Mengikuti</label>
             <div class="col-xs-8">
-              <input name="alasan_mengikuti" class="form-control" type="textarea" placeholder="Alasan Mengikuti Anda..." required>
+              <textarea class="form-control" name="alasan_mengikuti" rows="3" placeholder="Alasan Mengikuti Anda..." required></textarea>
             </div>
           </div>
 

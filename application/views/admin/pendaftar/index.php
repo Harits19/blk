@@ -1,4 +1,3 @@
-
 <style>
     * {
         box-sizing: border-box;
@@ -30,10 +29,12 @@
                                 <th>Jumlah Pendaftar</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             <?php
                             $no = 0;
-                            $nama_pelatihan ="";
+                            $nama_pelatihan = "";
+
                             foreach ($get_all as $pelatihan_pendaftar) {
 
 
@@ -52,9 +53,20 @@
                                 echo "</td>";
                                 echo "</tr>";
                             }
+
                             ?>
+
                         </tbody>
+
                     </table>
+                    <?php
+                    if (!$get_all) {
+
+                        echo "<br>";
+                        
+                        echo "<strong> Data Belum Tersedia </strong>";
+                    }
+                    ?>
 
                 </div>
             </div>

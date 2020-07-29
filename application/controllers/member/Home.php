@@ -58,18 +58,6 @@ class Home extends MY_Controller
             redirect('member/home');
         } else {
 
-            // $date = strtr($this->input->post('tgl_buka'), '/', '-');
-            // $tanggal = strtotime($date);
-            // $tgl_buka = date('Y-m-d', $tanggal);
-            // $date = strtr($this->input->post('tgl_tutup'), '/', '-');
-            // $tanggal = strtotime($date);
-            // $tgl_tutup = date('Y-m-d', $tanggal);
-
-            // $tanggal = strtotime($this->input->post('tgl_buka'));
-            // $tgl_buka = date('Y-m-d', $tanggal);
-            // $tanggal = strtotime($this->input->post('tgl_tutup'));
-            // $tgl_tutup = date('Y-m-d', $tanggal);
-
 
             $data = array(
                 'email' => $this->input->post('email'),
@@ -78,17 +66,11 @@ class Home extends MY_Controller
 
 
             if ($this->Pendaftar_model->insert($data)) {
-                //redirect('Login_Controller/index');
-                //$msg = "Successfully registered with the sysytem.Conformation link has been sent to: ".$this->input->post('txt_email');
-                // $this->session->set_flashdata('alert', '<div class="alert alert-danger text-center">Pelatihan berhasil ditambahkan</div>');
                 $this->session->set_flashdata('msg', show_succ_msg('Berhasil Melakukan Pendaftaran'));
                 redirect('member/home');
             } else {
 
-                //$error = "Error, Cannot insert new user details!";
-                // $this->session->set_flashdata('msg', '<div class="alert alert-danger text-center">Failed!! Please try again.</div>');
-                $this->session->set_flashdata('msg', show_err_msg('Pelatihan Gagal Ditambahkan'));
-                // $this->index();
+                $this->session->set_flashdata('msg', show_err_msg('Gagal Melakukan Pendaftaran'));
                 redirect('member/home');
             }
 
@@ -151,15 +133,4 @@ class Home extends MY_Controller
     //     $this->template->load('layouts/template', 'member/dashboard', $this->data);
     // }
 
-    public function detail($id)
-    {
-        $data['detailpelatihan'] = $this->Pelatihan_model->get_by_id($id);
-        $this->load->view('member/detail_pelatihan', $data);
-    }
-
-    public function pendaftaran($id)
-    {
-        $data['detailpelatihan'] = $this->Pelatihan_model->get_by_id($id);
-        $this->load->view('member/pendaftaran_pelatihan', $data);
-    }
 }

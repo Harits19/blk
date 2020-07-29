@@ -28,6 +28,7 @@ class Auth extends MY_Controller
 
         $this->load->model('User_model');
         $this->load->model('Pendaftar_model');
+        $this->load->model('Pelatihan_model');
     }
 
     public function profile()
@@ -36,7 +37,8 @@ class Auth extends MY_Controller
         $this->template->load('layouts/template', 'authentication/profile', $data);
     }
 
-    public function kehadiran(){
+    public function kehadiran()
+    {
 
         // if ($this->Pendaftar_model->verifikasi_kehadiran($hashcode)) {
         //     $this->session->set_flashdata('alert', '<p class="box-msg">
@@ -71,7 +73,17 @@ class Auth extends MY_Controller
 
         $user_info = $this->Pendaftar_model->isTokenValid($cleanToken);
 
-        if (!$user_info) {
+        $tgl_verifikasi = $this->Pelatihan_model->get_by_id($user_info->id_pelatihan)->tgl_verifikasi;
+
+
+        // $tgl_verifikasi = $this->Pendaftar_model->get_by_($user_info->id_pelatihan)->tgl_verifikasi;
+        date_default_timezone_set('Asia/Jakarta');
+        $current_date = date('Y-m-d');
+        // echo $current_date;
+        // echo $tgl_verifikasi;
+
+            // TANDA BESAR MENYESUAIKAN
+        if (!$user_info || $current_date > $tgl_verifikasi) {
             $this->session->set_flashdata('alert', '<p class="box-msg">
         			<div class="info-box alert-danger">
         			<div class="info-box-icon">
@@ -84,7 +96,7 @@ class Auth extends MY_Controller
             ');
             // redirect(site_url('auth/forget'), 'refresh');
             $this->template->load('authentication/layouts/template', 'authentication/login', $data);
-        }else{
+        } else {
             $this->session->set_flashdata('alert', '<p class="box-msg">
                 <div class="info-box alert-success">
                 <div class="info-box-icon">
@@ -96,18 +108,14 @@ class Auth extends MY_Controller
                 </p>
                 ');
 
-                $this->Pendaftar_model->update_status_pending($user_info->id, 1);
+            $this->Pendaftar_model->update_status_pending($user_info->id, 1);
 
-                $this->template->load('authentication/layouts/template', 'authentication/login', $data);
+            $this->template->load('authentication/layouts/template', 'authentication/login', $data);
         }
-
-        
-
-
-
     }
 
-    public function kehadiran_cadangan(){
+    public function kehadiran_cadangan()
+    {
 
         // if ($this->Pendaftar_model->verifikasi_kehadiran($hashcode)) {
         //     $this->session->set_flashdata('alert', '<p class="box-msg">
@@ -142,7 +150,15 @@ class Auth extends MY_Controller
 
         $user_info = $this->Pendaftar_model->isTokenValid($cleanToken);
 
-        if (!$user_info) {
+        
+        $tgl_verifikasi_cadangan = $this->Pelatihan_model->get_by_id($user_info->id_pelatihan)->tgl_verifikasi_cadangan;
+
+
+        // $tgl_verifikasi = $this->Pendaftar_model->get_by_($user_info->id_pelatihan)->tgl_verifikasi;
+        date_default_timezone_set('Asia/Jakarta');
+        $current_date = date('Y-m-d');
+
+        if (!$user_info || $current_date > $tgl_verifikasi_cadangan) {
             $this->session->set_flashdata('alert', '<p class="box-msg">
         			<div class="info-box alert-danger">
         			<div class="info-box-icon">
@@ -155,7 +171,7 @@ class Auth extends MY_Controller
             ');
             // redirect(site_url('auth/forget'), 'refresh');
             $this->template->load('authentication/layouts/template', 'authentication/login', $data);
-        }else{
+        } else {
             $this->session->set_flashdata('alert', '<p class="box-msg">
                 <div class="info-box alert-success">
                 <div class="info-box-icon">
@@ -167,15 +183,10 @@ class Auth extends MY_Controller
                 </p>
                 ');
 
-                $this->Pendaftar_model->update_status_pending($user_info->id, 5);
+            $this->Pendaftar_model->update_status_pending($user_info->id, 5);
 
-                $this->template->load('authentication/layouts/template', 'authentication/login', $data);
+            $this->template->load('authentication/layouts/template', 'authentication/login', $data);
         }
-
-        
-
-
-
     }
 
     public function reset_password()
@@ -381,7 +392,7 @@ class Auth extends MY_Controller
             //build token   
 
             $token = $this->Auth_model->insertToken($userInfo->id);
-            
+
             $qstring = $this->base64url_encode($token);
             $url = site_url() . 'auth/reset_password/token/' . $qstring;
             $link = '<a href="' . $url . '">' . $url . '</a>';
@@ -396,7 +407,7 @@ class Auth extends MY_Controller
         }
     }
 
-    
+
 
     public function check_register()
     {
@@ -595,6 +606,4 @@ class Auth extends MY_Controller
     {
         return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
     }
-
-    
 }
