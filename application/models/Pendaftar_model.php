@@ -3,6 +3,66 @@ class Pendaftar_model extends CI_Model
 {
     var $table = 'tbl_pendaftar';
 
+    // private function _uploadImage()
+    // {
+    //     $config['upload_path']          = './upload/product/';
+    //     $config['allowed_types']        = 'gif|jpg|png';
+    //     $config['file_name']            = $this->product_id;
+    //     $config['overwrite']            = true;
+    //     $config['max_size']             = 1024; // 1MB
+    //     // $config['max_width']            = 1024;
+    //     // $config['max_height']           = 768;
+
+    //     $this->load->library('upload', $config);
+
+    //     if ($this->upload->do_upload('image')) {
+    //         return $this->upload->data("file_name");
+    //     }
+
+    //     return "default.jpg";
+    // }
+
+    // public function upload_image()
+    // {
+    //     $config['upload_path']          = './gambar/';
+    //     $config['file_name']            = $this->input->post('nik');
+    //     $config['allowed_types']        = 'jpg|png';
+    //     $config['max_size']             = 1024;
+    //     // $config['max_width']            = 1024;
+    //     // $config['max_height']           = 768;
+
+    //     $this->load->library('upload', $config);
+
+    //     if (!$this->upload->do_upload('foto_ktp')) {
+    //         // $error = array('error' => $this->upload->display_errors());
+    //         // $this->load->view('v_upload', $error);
+    //     } else {
+    //         $data = array('upload_data' => $this->upload->data());
+    //         // $this->load->view('v_upload_sukses', $data);
+    //     }
+    // }
+
+    public function upload()
+    {
+        $config['upload_path'] = './gambar/';
+        $config['allowed_types'] = 'jpg|png|jpeg';
+        $config['max_size']  = '1000';
+        $config['file_name'] = $this->input->post('nik');
+        // $config['remove_space'] = TRUE;
+
+        $this->load->library('upload', $config); // Load konfigurasi uploadnya
+        if ($this->upload->do_upload('foto_ktp')) { // Lakukan upload dan Cek jika proses upload berhasil
+            // Jika berhasil :
+            $return = array('result' => 'success', 'file' => $this->upload->data(), 'error' => '');
+            
+            return $this->upload->data('file_name');
+        } else {
+            // Jika gagal :
+            $return = array('result' => 'failed', 'file' => '', 'error' => $this->upload->display_errors());
+            return $return;
+        }
+    }
+
 
     public function kirim_konfirmasi_kehadiran($data_pendaftar, $kode_status)
     {
@@ -18,12 +78,12 @@ class Pendaftar_model extends CI_Model
 
         $qstring = $this->base64url_encode($token);
         $url = "";
-        if($kode_status == 0 ){
+        if ($kode_status == 0) {
             $url = site_url() . 'auth/kehadiran/token/' . $qstring;
-        }elseif($kode_status == 4){
+        } elseif ($kode_status == 4) {
             $url = site_url() . 'auth/kehadiran_cadangan/token/' . $qstring;
         }
-        
+
         $link = '<a href="' . $url . '">' . $url . '</a>';
 
         $message = '';
@@ -32,7 +92,7 @@ class Pendaftar_model extends CI_Model
 
         // echo $message;
 
-        
+
         $from = "bentzie19@gmail.com";    //senders email address
         $subject = 'Konfirmasi Kehadiran Balai Latihan Kerja';  //email subject
 
@@ -76,7 +136,7 @@ class Pendaftar_model extends CI_Model
         exit;
     }
 
-    
+
 
     public function insertToken($pendaftar_id)
     {
@@ -98,13 +158,13 @@ class Pendaftar_model extends CI_Model
         $tkn = substr($token, 0, 30);
         $uid = substr($token, 30);
 
-        
+
 
         $q = $this->db->get_where('tokens', array(
             'tokens.token' => $tkn,
             'tokens.user_id' => $uid
         ), 1);
-        
+
         if ($this->db->affected_rows() > 0) {
             $row = $q->row();
 
@@ -146,25 +206,28 @@ class Pendaftar_model extends CI_Model
 
 
 
-    function update_status_cadangan($id_pelatihan){
+    function update_status_cadangan($id_pelatihan)
+    {
         $data = array('status' => 3);
         $this->db->where('id_pelatihan', $id_pelatihan);
         $this->db->update('tbl_pendaftar', $data);
     }
 
-    function update_status_pending($id, $status){
+    function update_status_pending($id, $status)
+    {
         $data = array('status' => $status);
         $this->db->where('id', $id);
         $this->db->update('tbl_pendaftar', $data);
     }
 
-    function update_status($where, $data){
-       
+    function update_status($where, $data)
+    {
+
         $this->db->where($where);
         $this->db->update('tbl_pendaftar', $data);
     }
 
-    
+
 
     // public function getUserInfoByEmail($email)
     // {
@@ -182,10 +245,13 @@ class Pendaftar_model extends CI_Model
     }
     public function get_by_($data)
     {
-        $this->db->where($data);
-        return $this->db->get($this->table);
+        if ($this->db->where($data)) {
+            return $this->db->get($this->table);
+        } else {
+            return false;
+        }
     }
-    
+
 
     public function get_data_per_wilayah($wilayah)
     {
@@ -200,7 +266,7 @@ class Pendaftar_model extends CI_Model
         $this->db->update($this->table, $data);
     }
 
-    
+
 
     //delete pelatihan
     public function delete($id)
@@ -265,10 +331,4 @@ class Pendaftar_model extends CI_Model
     {
         return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
     }
-
-
-
-
-   
-    
 }

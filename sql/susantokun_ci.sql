@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 03, 2020 at 12:45 PM
+-- Generation Time: Aug 03, 2020 at 05:43 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.2
 
@@ -86,10 +86,18 @@ INSERT INTO `tbl_pelatihan` (`id`, `nama`, `tgl_buka`, `tgl_tutup`, `tgl_verifik
 
 CREATE TABLE `tbl_pendaftar` (
   `id` int(11) NOT NULL,
+  `nik` varchar(16) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `id_pelatihan` int(11) NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0=Proses Konfirmasi 1=Hadir 2=Tidak Hadir 3=Cadangan 4=Cadangan Proses Konfirmasi 5=Cadangan Hadir 6=Cadangan Tidak Hadir',
-  `wilayah` enum('luar kota','kota') NOT NULL
+  `wilayah` enum('luar kota','kota') NOT NULL,
+  `nama` varchar(255) DEFAULT NULL,
+  `alamat` text DEFAULT NULL,
+  `jenis_kelamin` enum('laki-laki','perempuan') DEFAULT NULL,
+  `no_hp` varchar(255) DEFAULT NULL,
+  `pendidikan_terakhir` varchar(255) DEFAULT NULL,
+  `alasan_mengikuti` text DEFAULT NULL,
+  `foto_ktp` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -141,7 +149,7 @@ CREATE TABLE `tbl_user` (
 
 INSERT INTO `tbl_user` (`id`, `id_role`, `username`, `password`, `password_reset_key`, `first_name`, `last_name`, `email`, `phone`, `photo`, `activated`, `last_login`, `created_at`, `updated_at`) VALUES
 (1, 1, 'admin', '$2y$05$OA.OoeNHoEkbGGKazYqPU.UOaI5jmgro8x2pRSV56ClTWlDf0EEn2', '', 'ADMIN', '', 'admin@mail.com', '081906515912', '1526456245974.png', 1, '2020-08-03 17:11:02', '2020-03-14 21:58:17', NULL),
-(2, 2, 'member', '$2y$05$C53Jmt2hAeqr0EnQPjsm6.XBlNkDE8l7aFllR72PY9zHSkAMLiixW', '', 'MEMBER', '', 'member@mail.com', '081906515912', '1583991814826.png', 1, '2020-08-03 17:26:29', '2020-03-14 22:00:32', NULL),
+(2, 2, 'member', '$2y$05$C53Jmt2hAeqr0EnQPjsm6.XBlNkDE8l7aFllR72PY9zHSkAMLiixW', '', 'MEMBER', 'asd', 'member@mail.com', '081906515912', '1596468728042.png', 1, '2020-08-03 17:26:29', '2020-03-14 22:00:32', NULL),
 (23, 2, 'harits', '$2y$05$d64LQD00aY9aifl.K5qVJOZ7qpKA3kvDpY1kn2Lzn.BAGERln65TW', NULL, '', '', 'harits.abdullah19@gmail.com', '', 'member.png', 1, '2020-08-03 15:03:39', '2020-08-03 14:59:42', NULL),
 (24, 2, 'harits', '$2y$05$1YsJQDPH0ytpMcYTbg75oeK...3Dx4iyIvWHlQ.0m1HsTw5Ya1aN2', NULL, '', '', '_harits19@student.ub.ac.id', '', '1583991814826.png', 1, '2020-08-03 17:09:48', '2020-08-03 16:52:04', NULL);
 
@@ -898,7 +906,7 @@ ALTER TABLE `tbl_pelatihan`
 -- AUTO_INCREMENT for table `tbl_pendaftar`
 --
 ALTER TABLE `tbl_pendaftar`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=197;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=207;
 
 --
 -- AUTO_INCREMENT for table `tbl_role`

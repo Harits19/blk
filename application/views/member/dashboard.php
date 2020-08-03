@@ -40,86 +40,113 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
           </div>
           <?php
-          if (!$get_all && $terdaftar) {
-            echo "<br>";
-            echo "Anda Sudah Terdaftar, Tidak bisa mendaftar 2 pelatihan sekaligus.";
-          } elseif (!$get_all) {
-            echo "<strong> Data Belum Tersedia </strong>";
-          } else {
+          $sudah_daftar = false;
+          foreach ($get_all as $pelatihan) {
+            if ($pendaftar_info && $pendaftar_info->id_pelatihan == $pelatihan->id) {
+
+              $sudah_daftar = true;
+            }
+          }
+          // if (!$get_all && $terdaftar) {
+          //   echo "<br>";
+          //   echo "Anda Sudah Terdaftar, Tidak bisa mendaftar 2 pelatihan sekaligus.";
+          // } elseif (!$get_all) {
+          //   echo "<strong> Data Belum Tersedia </strong>";
+          // } else {
 
           ?>
 
-            <input class="form-control" id="myInput" type="text" placeholder="Search..">
+          <input class="form-control" id="myInput" type="text" placeholder="Search..">
 
-            <table class="table table-striped table-hover table-condensed">
-              <thead>
-                <tr>
-                  <th>Nama Pelatihan</th>
-                  <th>Tanggal Buka</th>
-                  <th>Tanggal Tutup</th>
-                  <th>Status</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="myTable">
-                <?php
-                date_default_timezone_set('Asia/Jakarta');
-                $current_date = date('Y-m-d');
-                $no = 0;
-                foreach ($get_all as $pelatihan) {
-
-                  if ($pelatihan->status == 'tutup') {
-                    continue;
-                  }
-
-
-
-                  $tanggal = strtotime($pelatihan->tgl_buka);
-                  $tgl_buka = date('d-m-Y', $tanggal);
-                  $tanggal = strtotime($pelatihan->tgl_tutup);
-                  $tgl_tutup = date('d-m-Y', $tanggal);
-
-                  $no++;
-                  // echo "<tbody id='myTable'>";
-                  echo "<tr>";
-                  echo "<td>$pelatihan->nama</td>";
-                  echo "<td>$tgl_buka</td>";
-                  echo "<td>$tgl_tutup</td>";
-                  echo "<td>$pelatihan->status</td>";
-                  echo "<td class='text-center'>";
-
-                ?>
-                  <a class="btn btn-primary" id="button_detail" data-toggle="modal" href="#myModalDetail" data-nama="<?php echo $pelatihan->nama ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-tgl_tutup="<?php echo $pelatihan->tgl_tutup ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-detail_pelatihan="<?php echo $pelatihan->detail_pelatihan ?>" data-nama_pelatih="<?php echo $pelatihan->nama_pelatih ?>" data-kontak_pelatih="<?php echo $pelatihan->kontak_pelatih ?>">Detail</a>
-
-
-                  <?php
-                  if ($current_date < $pelatihan->tgl_buka) {
-                  ?>
-
+          <table class="table table-striped table-hover table-condensed">
+            <thead>
+              <tr>
+                <th>Nama Pelatihan</th>
+                <th>Tanggal Buka</th>
+                <th>Tanggal Tutup</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="myTable">
               <?php
-                  }else{
-                    ?>
-                    <a class="btn btn-primary" id="button_daftar" data-toggle="modal" href="#myModalDaftar" data-id_pelatihan="<?php echo $pelatihan->id ?>">Daftar</a>
 
-              <?php
-                  }
+              date_default_timezone_set('Asia/Jakarta');
+              $current_date = date('Y-m-d');
+              $no = 0;
 
-                  echo "</td>";
-                  echo "</tr>";
+              foreach ($get_all as $pelatihan) {
+
+                // if ($pelatihan->status == 'tutup') {
+                //   continue;
+                // }
+
+
+
+                $tanggal = strtotime($pelatihan->tgl_buka);
+                $tgl_buka = date('d-m-Y', $tanggal);
+                $tanggal = strtotime($pelatihan->tgl_tutup);
+                $tgl_tutup = date('d-m-Y', $tanggal);
+
+                $no++;
+                // echo "<tbody id='myTable'>";
+                echo "<tr>";
+                echo "<td>$pelatihan->nama</td>";
+                echo "<td>$tgl_buka</td>";
+                echo "<td>$tgl_tutup</td>";
+                echo "<td>$pelatihan->status</td>";
+                echo "<td class='text-center'>";
+
+                if ($pendaftar_info && $pendaftar_info->id_pelatihan == $pelatihan->id) {
+                  $sudah_daftar = true;
                 }
-              }
 
               ?>
-              </tbody>
-            </table>
+                <a class="btn btn-primary" id="button_detail" data-toggle="modal" href="#myModalDetail" data-nama="<?php echo $pelatihan->nama ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-tgl_tutup="<?php echo $pelatihan->tgl_tutup ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-detail_pelatihan="<?php echo $pelatihan->detail_pelatihan ?>" data-nama_pelatih="<?php echo $pelatihan->nama_pelatih ?>" data-kontak_pelatih="<?php echo $pelatihan->kontak_pelatih ?>">Detail</a>
 
-            <?php
-            ?>
+
+                <?php
+                // if ($current_date < $pelatihan->tgl_buka) {
+                ?>
+
+                <?php
+                if ($sudah_daftar == false) {
+                ?>
+                  <a class="btn btn-primary" id="button_daftar" data-toggle="modal" href="#myModalDaftar" data-id_pelatihan="<?php echo $pelatihan->id ?>">Daftar</a>
+
+                <?php
+                } elseif ($pendaftar_info && $pelatihan->id == $pendaftar_info->id_pelatihan) {
+                ?>
+                  <a class="btn btn-primary" id="button_daftar" data-toggle="modal" href="#myModalDataAnda" data-id_pelatihan="<?php echo $pelatihan->id ?>">Lihat Data Anda</a>
+
+
+              <?php
+                }
+
+                echo "</td>";
+                echo "</tr>";
+              }
+
+
+
+              // }
+
+              ?>
+            </tbody>
+          </table>
+
+          <?php
+          if ($sudah_daftar == true) {
+            echo "Catatan : Anda Sudah Terdaftar, Tidak bisa mendaftar 2 pelatihan sekaligus.";
+          }
+          ?>
 
         </div>
       </div>
     </div>
+
   </div>
+
 
   <!-- Modal Detail -->
   <div class="modal fade" id="myModalDetail" role="dialog">
@@ -132,35 +159,48 @@ defined('BASEPATH') or exit('No direct script access allowed');
           <h4 class="modal-title">Detail Pelatihan</h4>
         </div>
         <div class="modal-body">
+          <form class="form-horizontal">
 
-          <table class="table table-striped table-hover table-condensed">
-            <thead>
-              <tr>
-                <td>Nama Pelatihan :</td>
-                <td><input type="text" id="nama"></td>
-              </tr>
-              <tr>
-                <td>Tanggal Dibuka : </td>
-                <td><input type="text" id="tgl_buka"></td>
-              </tr>
-              <tr>
-                <td>Tanggal Ditutup : </td>
-                <td><input type="text" id="tgl_tutup"></td>
-              </tr>
-              <tr>
-                <td>Detail Pelatihan : </td>
-                <td><textarea id="detail_pelatihan"></textarea></td>
-              </tr>
-              <tr>
-                <td>Nama Pelatih : </td>
-                <td><input type="text" id="nama_pelatih"></td>
-              </tr>
-              <tr>
-                <td>Kontak Pelatih : </td>
-                <td><input type="text" id="kontak_pelatih"></td>
-              </tr>
-            </thead>
-          </table>
+
+            <div class="form-group">
+              <label class="control-label col-xs-3">Nama Pelatihan</label>
+              <div class="col-xs-8">
+                <input id="nama" class="form-control" type="text" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-xs-3">Tanggal Dibuka</label>
+              <div class="col-xs-8">
+                <input id="tgl_buka" class="form-control" type="text" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-xs-3">Tanggal Ditutup</label>
+              <div class="col-xs-8">
+                <input id="tgl_tutup" class="form-control" type="text" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-xs-3">Detail Pelatihan</label>
+              <div class="col-xs-8">
+                <input id="detail_pelatihan" class="form-control" type="text" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-xs-3">Nama Pelatih</label>
+              <div class="col-xs-8">
+                <input id="nama_pelatih" class="form-control" type="text" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-xs-3">Kontak Pelatihan</label>
+              <div class="col-xs-8">
+                <input id="kontak_pelatih" class="form-control" type="text" disabled>
+              </div>
+            </div>
+
+          </form>
+
 
 
         </div>
@@ -210,15 +250,18 @@ defined('BASEPATH') or exit('No direct script access allowed');
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
         <h3 class="modal-title" id="myModalLabel">Pendaftaran Pelatihan</h3>
       </div>
-      <form class="form-horizontal" method="post" action="<?php echo base_url() . 'member/home/proses_daftar' ?>">
+      <!-- <form class="form-horizontal" method="post"   action="<?php echo base_url() . 'member/home/proses_daftar' ?>"> -->
+      <form class="form-horizontal" method="post" enctype="multipart/form-data" action="<?php echo base_url() . 'member/home/proses_daftar' ?>">
         <div class="modal-body">
-          <input type="hidden" name="id_pelatihan" id="id_pelatihan"?>
+          <input type="hidden" name="id_pelatihan" id="id_pelatihan" ?>
 
           <div class="form-group">
             <label class="control-label col-xs-3">NIK</label>
             <div class="col-xs-8">
-              <input name="nama" class="form-control" type="text" placeholder="Isikan Nama Anda..." required>
+              <input name="nik" class="form-control" type="number" placeholder="Isikan NIK Anda..." required>
+              <a href="#" class="text">Cek NIK</a>
             </div>
+
           </div>
 
           <div class="form-group">
@@ -231,7 +274,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
           <div class="form-group">
             <label class="control-label col-xs-3">Alamat</label>
             <div class="col-xs-8">
-              <input name="alamat" class="form-control" type="textarea" placeholder="Isikan Alamat Anda..." required>
+              <!-- <input name="alamat" class="form-control" type="textarea" placeholder="Isikan Alamat Anda..." required> -->
+              <textarea class="form-control" name="alamat" rows="3" placeholder="Alamat Anda..." required></textarea>
             </div>
           </div>
 
@@ -258,7 +302,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
           <div class="form-group">
             <label class="control-label col-xs-3">Email</label>
             <div class="col-xs-8">
-              <input name="email" class="form-control" type="email" value="<?= $userdata->email; ?>" placeholder="Isikan Email Anda..." required>
+              <input name="email" class="form-control" disabled type="email" value="<?= $userdata->email; ?>" placeholder="Isikan Email Anda..." required>
+              <input name="email" class="form-control" type="hidden" value="<?= $userdata->email; ?>" placeholder="Isikan Email Anda..." required>
             </div>
           </div>
 
@@ -283,6 +328,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
             </div>
           </div>
 
+          <div class="form-group">
+            <label class="control-label col-xs-3">Upload Foto KTP (.png atau .jpg)</label>
+            <div class="col-xs-8">
+              <input type="file" name="foto_ktp" />
+            </div>
+          </div>
+
         </div>
 
         <div class="modal-footer">
@@ -293,6 +345,118 @@ defined('BASEPATH') or exit('No direct script access allowed');
     </div>
   </div>
 </div>
+
+<?php
+if ($pendaftar_info) {
+?>
+  <div class="modal fade" id="myModalDataAnda" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+          <h3 class="modal-title" id="myModalLabel">Data Anda</h3>
+        </div>
+        <!-- <form class="form-horizontal" method="post"   action="<?php echo base_url() . 'member/home/proses_daftar' ?>"> -->
+        <form class="form-horizontal" method="post" enctype="multipart/form-data" action="<?php echo base_url() . 'member/home/proses_daftar' ?>">
+          <div class="modal-body">
+            <input type="hidden" name="id_pelatihan" id="id_pelatihan" ?>
+
+            <div class="form-group">
+              <label class="control-label col-xs-3">NIK</label>
+              <div class="col-xs-8">
+                <input name="nik" class="form-control" type="number" disabled value="<?= $pendaftar_info->nik; ?>" placeholder="Isikan NIK Anda..." required>
+              </div>
+
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-3">Nama</label>
+              <div class="col-xs-8">
+                <input name="nama" class="form-control" type="text" disabled value="<?= $pendaftar_info->nama; ?>" placeholder="Isikan Nama Anda..." required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-3">Alamat</label>
+              <div class="col-xs-8">
+                <!-- <input name="alamat" class="form-control" type="textarea" placeholder="Isikan Alamat Anda..." required> -->
+                <input class="form-control" name="alamat" rows="3" disabled value="<?= $pendaftar_info->alamat; ?>" placeholder="Alamat Anda..." required></input>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-3">Wilayah</label>
+              <div class="col-xs-8">
+                <select name="wilayah" class="form-control" disabled value="<?= $pendaftar_info->wilayah; ?>" required>
+                  <option value="kota">Kota</option>
+                  <option value="luar kota">Luar Kota</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-3">Jenis Kelamin</label>
+              <div class="col-xs-8">
+                <select name="jenis_kelamin" class="form-control" disabled value="<?= $pendaftar_info->jenis_kelamin; ?>" required>
+                  <option value="laki-laki">Laki-Laki</option>
+                  <option value="perempuan">Perempuan</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-3">Email</label>
+              <div class="col-xs-8">
+                <input name="email" class="form-control" disabled type="email" value="<?= $pendaftar_info->email; ?>" placeholder="Isikan Email Anda..." required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-3">No. Hp</label>
+              <div class="col-xs-8">
+                <input name="no_hp" class="form-control" type="number" disabled value="<?= $pendaftar_info->no_hp; ?>" placeholder="No. Hp..." required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-3">Pendidikan Terakhir</label>
+              <div class="col-xs-8">
+                <input name="pendidikan_terakhir" class="form-control" type="text" disabled value="<?= $pendaftar_info->pendidikan_terakhir; ?>" placeholder="Pendidikan Terakhir Anda..." required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-3">Alasan Mengikuti</label>
+              <div class="col-xs-8">
+                <input class="form-control" name="alasan_mengikuti" rows="3" disabled value="<?= $pendaftar_info->alasan_mengikuti; ?>" placeholder="Alasan Mengikuti Anda..." required></input>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-3">Upload Foto KTP</label>
+              <div class="col-xs-8">
+                <!-- <img src="<?= base_url('gambar/' . $pendaftar_info->foto_ktp); ?>" style="width:125px; height:125px"> -->
+
+                <img width='100' height='100' src="<?php echo base_url('gambar/' . $pendaftar_info->foto_ktp); ?>" />
+                <!-- <img width='100' height='100'  src='<?= base_url() ?>gambar/<?= $pendaftar_info->foto_ktp; ?>'> -->
+              </div>
+              <!-- <input class="form-control" name="alasan_mengikuti" rows="3" disabled value="<?= $pendaftar_info->foto_ktp; ?>" placeholder="Alasan Mengikuti Anda..." required></input> -->
+
+            </div>
+
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Tutup</button>
+            <button class="btn btn-info">Simpan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+<?php
+}
+?>
 </section>
 <script>
   $(document).ready(function() {
