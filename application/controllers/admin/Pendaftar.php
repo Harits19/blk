@@ -42,10 +42,9 @@ class Pendaftar extends MY_Controller
         $tgl_verifikasi_cadangan = $this->Pelatihan_model->get_by_id($id)->tgl_verifikasi_cadangan;
 
         date_default_timezone_set('Asia/Jakarta');
+        // $tgl_verifikasi = date($tgl_verifikasi);
         $current_date = date('Y-m-d');
-        // echo $current_date;
-        // echo $tgl_verifikasi;
-        // echo $tgl_verifikasi_cadangan;
+     
         if ($current_date > $tgl_verifikasi) {
             $data = array('status' => 2);
             $where = array('status' => 0);
@@ -55,6 +54,7 @@ class Pendaftar extends MY_Controller
             $data = array('status' => 6);
             $where = array('status' => 4);
             $this->Pendaftar_model->update_status($where, $data);
+            
         }
 
 

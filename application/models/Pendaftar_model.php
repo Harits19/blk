@@ -30,50 +30,50 @@ class Pendaftar_model extends CI_Model
         $message .= '<strong>Hai, anda menerima email ini karena ada permintaan melakukan konfirmasi kehadiran.</strong><br>';
         $message .= '<strong>Silakan klik link ini:</strong> ' . $link;
 
-        echo $message;
+        // echo $message;
 
         
-        // $from = "bentzie19@gmail.com";    //senders email address
-        // $subject = 'Ngetes cuk, iki harits';  //email subject
+        $from = "bentzie19@gmail.com";    //senders email address
+        $subject = 'Konfirmasi Kehadiran Balai Latihan Kerja';  //email subject
 
 
 
-        // $config['protocol'] = 'smtp';
-        // $config['smtp_host'] = 'ssl://smtp.gmail.com';
-        // $config['smtp_port'] = '465';
-        // $config['smtp_user'] = $from;
-        // $config['smtp_pass'] = 'harits963741852';  //sender's password
-        // $config['mailtype'] = 'html';
-        // $config['charset'] = 'iso-8859-1';
-        // $config['wordwrap'] = 'TRUE';
-        // $config['newline'] = "\r\n";
+        $config['protocol'] = 'smtp';
+        $config['smtp_host'] = 'ssl://smtp.gmail.com';
+        $config['smtp_port'] = '465';
+        $config['smtp_user'] = $from;
+        $config['smtp_pass'] = 'harits963741852';  //sender's password
+        $config['mailtype'] = 'html';
+        $config['charset'] = 'iso-8859-1';
+        $config['wordwrap'] = 'TRUE';
+        $config['newline'] = "\r\n";
 
-        // $this->load->library('email', $config);
-        // $this->email->initialize($config);
-        // //send email
-        // $this->email->from($from);
-        // $this->email->to($email);
-        // $this->email->subject($subject);
-        // $this->email->message($message);
+        $this->load->library('email', $config);
+        $this->email->initialize($config);
+        //send email
+        $this->email->from($from);
+        $this->email->to($email);
+        $this->email->subject($subject);
+        $this->email->message($message);
 
-        // echo "sent to: " . $email . "<br>";
-        // echo "from: " . $from . "<br>";
-        // echo "protocol: " . $config['protocol'] . "<br>";
-        // echo "message: " . $message;
+        echo "sent to: " . $email . "<br>";
+        echo "from: " . $from . "<br>";
+        echo "protocol: " . $config['protocol'] . "<br>";
+        echo "message: " . $message;
 
-        // if ($this->email->send()) {
-        //     // for testing
-        //     echo "sent to: " . $receiver . "<br>";
-        //     echo "from: " . $from . "<br>";
-        //     echo "protocol: " . $config['protocol'] . "<br>";
-        //     echo "message: " . $message;
-        //     return true;
-        // } else {
-        //     echo "email send failed";
-        //     return false;
-        // }
-        // //send this through mail  
-        // exit;
+        if ($this->email->send()) {
+            // for testing
+            // echo "sent to: " . $receiver . "<br>";
+            // echo "from: " . $from . "<br>";
+            // echo "protocol: " . $config['protocol'] . "<br>";
+            // echo "message: " . $message;
+            return true;
+        } else {
+            // echo "email send failed";
+            return false;
+        }
+        //send this through mail  
+        exit;
     }
 
     
@@ -227,8 +227,7 @@ class Pendaftar_model extends CI_Model
     public function get_all_by_id($id)
     {
 
-        $sql = "SELECT tbl_pendaftar.id, tbl_pelatihan.tgl_verifikasi_cadangan, tbl_pendaftar.email, tbl_pendaftar.wilayah, tbl_pendaftar.status, tbl_pelatihan.nama, tbl_pelatihan.tgl_verifikasi, tbl_pendaftar.id_pelatihan FROM tbl_pendaftar INNER JOIN tbl_pelatihan on tbl_pendaftar.id_pelatihan =" . $id . " GROUP BY tbl_pendaftar.id ORDER BY tbl_pendaftar.wilayah ASC
-        ";
+        $sql = "SELECT tbl_pendaftar.id, tbl_pelatihan.tgl_verifikasi_cadangan, tbl_pendaftar.wilayah, tbl_pendaftar.email, tbl_pendaftar.wilayah, tbl_pendaftar.status, tbl_pelatihan.nama, tbl_pelatihan.tgl_verifikasi, tbl_pendaftar.id_pelatihan FROM tbl_pendaftar INNER JOIN tbl_pelatihan on tbl_pendaftar.id_pelatihan =" . $id . " GROUP BY tbl_pendaftar.id ORDER BY tbl_pendaftar.wilayah DESC, tbl_pendaftar.id ASC";
         return $this->db->query($sql)->result();
     }
 

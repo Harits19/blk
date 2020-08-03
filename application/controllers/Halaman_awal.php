@@ -14,6 +14,7 @@ class Halaman_awal extends CI_Controller
 
     public function home()
     {
-        $this->load->view('halaman_awal');
+        $this->template->load('authentication/login2');
+
     }
 }

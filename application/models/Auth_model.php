@@ -41,6 +41,105 @@ class Auth_model extends CI_Model
         if ($this->db->affected_rows() > 0) {
             $row = $q->row();
             return $row;
+        } else {
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+        			<div class="info-box alert-danger">
+        			<div class="info-box-icon">
+        			<i class="fa fa-warning"></i>
+        			</div>
+        			<div class="info-box-content" style="font-size:14">
+        			<b style="font-size: 20px">GAGAL</b><br>Email yang Anda masukkan tidak terdaftar.</div>
+        			</div>
+        			</p>
+            ');
+        }
+    }
+
+    // public function create_message($qstring, $info)
+    // {
+
+    //     if ($info == 'forgot_password') {
+    //         $url = site_url() . 'auth/reset_password/token/' . $qstring;
+    //         $link = '<a href="' . $url . '">' . $url . '</a>';
+    //         $message = '';
+    //         $message .= '<strong>Hai, anda menerima email ini karena ada permintaan untuk memperbaharui  
+    //                  password anda.</strong><br>';
+    //         $message .= '<strong>Silakan klik link ini:</strong> ' . $link;
+
+    //         return $message;
+    //     } elseif ($info == 'register') {
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+    public function base64url_encode($data)
+    {
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    }
+
+    public function base64url_decode($data)
+    {
+        return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
+    }
+
+    public function sendEmail($receiver, $qstring, $info)
+    {
+        $from = "bentzie19@gmail.com";
+        $subject = '';
+        if ($info == 'forgot_password') {
+            $url = site_url() . 'auth/reset_password/token/' . $qstring;
+            $link = '<a href="' . $url . '">' . $url . '</a>';
+            $message = '';
+            $message .= '<strong>Hai, anda menerima email ini karena ada permintaan untuk memperbaharui  
+                     password anda.</strong><br>';
+            $message .= '<strong>Silakan klik link ini:</strong> ' . $link;
+            $subject = 'Lupa Password Akun Balai Latihan Kerja';  //email subject
+        } elseif ($info == 'register') {
+            $subject = 'Aktivasi Akun Balai Latihan Kerja';  //email subject
+            $message = 'Dear User,<br><br> Klik link dibawah untuk mengaktifkan akun anda<br><br>
+                        <a href=\'http://www.localhost/blk/Auth/confirmEmail/' . md5($receiver) . '\'>http://www.localhost/blk/Auth/confirmEmail/' . md5($receiver) . '</a><br><br>Thanks';
+        }
+
+        //config email settings
+        $config['protocol'] = 'smtp';
+        $config['smtp_host'] = 'ssl://smtp.gmail.com';
+        $config['smtp_port'] = '465';
+        $config['smtp_user'] = $from;
+        $config['smtp_pass'] = 'harits963741852';  //sender's password
+        $config['mailtype'] = 'html';
+        $config['charset'] = 'iso-8859-1';
+        $config['wordwrap'] = 'TRUE';
+        $config['newline'] = "\r\n";
+
+        $this->load->library('email', $config);
+        $this->email->initialize($config);
+        //send email
+        $this->email->from($from);
+        $this->email->to($receiver);
+        $this->email->subject($subject);
+        $this->email->message($message);
+
+        if ($this->email->send()) {
+            //for testing
+            // echo "sent to: ".$receiver."<br>";
+            // echo "from: ".$from. "<br>";
+            // echo "protocol: ". $config['protocol']."<br>";
+            // echo "message: ".$message;
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+                <div class="info-box alert-success">
+                <div class="info-box-icon">
+                <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="info-box-content" style="font-size:14">
+                <b style="font-size: 20px">SUKSES</b><br>Berhasil, silakan cek email anda untuk melakukan tahapan selanjutnya</div>
+                </div>
+                </p>
+                ');
+            return true;
+        } else {
+            // echo "email send failed";
+            return false;
         }
     }
 
@@ -49,13 +148,13 @@ class Auth_model extends CI_Model
         $tkn = substr($token, 0, 30);
         $uid = substr($token, 30);
 
-        
+
 
         $q = $this->db->get_where('tokens', array(
             'tokens.token' => $tkn,
             'tokens.user_id' => $uid
         ), 1);
-        
+
         if ($this->db->affected_rows() > 0) {
             $row = $q->row();
 
@@ -65,12 +164,32 @@ class Auth_model extends CI_Model
             $todayTS = strtotime($today);
 
             if ($createdTS != $todayTS) {
+                $this->session->set_flashdata('alert', '<p class="box-msg">
+        			<div class="info-box alert-danger">
+        			<div class="info-box-icon">
+        			<i class="fa fa-warning"></i>
+        			</div>
+        			<div class="info-box-content" style="font-size:14">
+        			<b style="font-size: 20px">GAGAL</b><br>Token tidak valid atau kadaluwarsa, ulangi proses lupa kata sandi</div>
+        			</div>
+        			</p>
+            ');
                 return false;
             }
 
             $user_info = $this->getUserInfo($row->user_id);
             return $user_info;
         } else {
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+        			<div class="info-box alert-danger">
+        			<div class="info-box-icon">
+        			<i class="fa fa-warning"></i>
+        			</div>
+        			<div class="info-box-content" style="font-size:14">
+        			<b style="font-size: 20px">GAGAL</b><br>Token tidak valid atau kadaluwarsa, ulangi proses lupa kata sandi</div>
+        			</div>
+        			</p>
+            ');
             return false;
         }
     }
@@ -131,6 +250,7 @@ class Auth_model extends CI_Model
             'username' => $this->input->post('username'),
             'email' => $this->input->post('email'),
             'id_role' => '2',
+            'photo' => '1583991814826.png',
             'created_at' => date('Y-m-d H:i:s'),
             'password' => get_hash($this->input->post('password'))
         );
@@ -151,15 +271,46 @@ class Auth_model extends CI_Model
 
         //jika bernilai 1 maka user tidak ditemukan
         if (!$query) {
-            return 1;
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+        			<div class="info-box alert-danger">
+        			<div class="info-box-icon">
+        			<i class="fa fa-warning"></i>
+        			</div>
+        			<div class="info-box-content" style="font-size:14">
+        			<b style="font-size: 20px">GAGAL</b><br>Email yang Anda masukkan tidak terdaftar.</div>
+        			</div>
+        			</p>
+            ');
+            // return 1;
+            return false;
         }
         //jika bernilai 2 maka user tidak aktif
         if ($query->activated == 0) {
-            return 2;
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+              <div class="info-box alert-info">
+              <div class="info-box-icon">
+              <i class="fa fa-info-circle"></i>
+              </div>
+              <div class="info-box-content" style="font-size:14">
+              <b style="font-size: 20px">GAGAL</b><br>Akun yang Anda masukkan tidak aktif, silakan lakukan konfirmasi email atau hubungi Administrator.</div>
+              </div>
+              </p>');
+            // return 2;
+            return false;
         }
         //jika bernilai 3 maka password salah
         if (!hash_verified($this->input->post('password'), $query->password)) {
-            return 3;
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+            <div class="info-box alert-danger">
+            <div class="info-box-icon">
+            <i class="fa fa-warning"></i>
+            </div>
+            <div class="info-box-content" style="font-size:14">
+            <b style="font-size: 20px">GAGAL</b><br>Password yang Anda masukkan salah.</div>
+            </div>
+            </p>');
+            // return 3;
+            return false;
         }
 
         return $query;
@@ -191,7 +342,7 @@ class Auth_model extends CI_Model
         $subject = 'Test Email Verifikasi Akun';  //email subject
 
         //sending confirmEmail($receiver) function calling link to the user, inside message body
-        $message = 'Dear User,<br><br> Please click on the below activation link to verify your email address<br><br>
+        $message = 'Dear User,<br><br> Klik link dibawah untuk mengaktifkan akun anda<br><br>
         <a href=\'http://www.localhost/blk/Auth/confirmEmail/' . md5($receiver) . '\'>http://www.localhost/blk/Auth/confirmEmail/' . md5($receiver) . '</a><br><br>Thanks';
 
 
@@ -221,9 +372,19 @@ class Auth_model extends CI_Model
             // echo "from: ".$from. "<br>";
             // echo "protocol: ". $config['protocol']."<br>";
             // echo "message: ".$message;
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+                <div class="info-box alert-success">
+                <div class="info-box-icon">
+                <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="info-box-content" style="font-size:14">
+                <b style="font-size: 20px">SUKSES</b><br>Pendaftaran berhasil, silakan cek email anda untuk melakukan aktivasi akun.</div>
+                </div>
+                </p>
+                ');
             return true;
         } else {
-            echo "email send failed";
+            // echo "email send failed";
             return false;
         }
     }
@@ -275,7 +436,32 @@ class Auth_model extends CI_Model
     function verifyEmail($key)
     {
         $data = array('activated' => 1);
-        $this->db->where('md5(email)', $key);
+        if ($this->db->where('md5(email)', $key)) {
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+                <div class="info-box alert-success">
+                <div class="info-box-icon">
+                <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="info-box-content" style="font-size:14">
+                <b style="font-size: 20px">SUKSES</b><br>Aktivasi berhasil, silakan lakukan login dihalaman yang tersedia.</div>
+                </div>
+                </p>
+                ');
+            return $this->db->update('tbl_user', $data);
+        } else {
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+        			<div class="info-box alert-danger">
+        			<div class="info-box-icon">
+        			<i class="fa fa-warning"></i>
+        			</div>
+        			<div class="info-box-content" style="font-size:14">
+        			<b style="font-size: 20px">GAGAL</b><br>Aktivasi gagal</div>
+        			</div>
+        			</p>
+              ');
+              return false;
+        }
+
         return $this->db->update('tbl_user', $data);    //update status as 1 to make active user
     }
 

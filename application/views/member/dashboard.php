@@ -39,56 +39,82 @@ defined('BASEPATH') or exit('No direct script access allowed');
             </div>
 
           </div>
-          <input class="form-control" id="myInput" type="text" placeholder="Search..">
-          <table class="table table-striped table-hover table-condensed">
-            <thead>
-              <tr>
-                <th>Nama Pelatihan</th>
-                <th>Tanggal Buka</th>
-                <th>Tanggal Tutup</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="myTable">
-              <?php
-              $no = 0;
-              foreach ($get_all as $pelatihan) {
-
-                $tanggal = strtotime($pelatihan->tgl_buka);
-                $tgl_buka = date('d-m-Y', $tanggal);
-                $tanggal = strtotime($pelatihan->tgl_tutup);
-                $tgl_tutup = date('d-m-Y', $tanggal);
-
-                $no++;
-                // echo "<tbody id='myTable'>";
-                echo "<tr>";
-                echo "<td>$pelatihan->nama</td>";
-                echo "<td>$tgl_buka</td>";
-                echo "<td>$tgl_tutup</td>";
-                echo "<td>$pelatihan->status</td>";
-                echo "<td class='text-center'>";
-              ?>
-                <a class="btn btn-primary" id="button_detail" data-toggle="modal" href="#myModalDetail" data-nama="<?php echo $pelatihan->nama ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-tgl_tutup="<?php echo $pelatihan->tgl_tutup ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-detail_pelatihan="<?php echo $pelatihan->detail_pelatihan ?>" data-nama_pelatih="<?php echo $pelatihan->nama_pelatih ?>" data-kontak_pelatih="<?php echo $pelatihan->kontak_pelatih ?>">Detail</a>
-
-                <a class="btn btn-primary" id="button_daftar" data-toggle="modal" href="#myModalDaftar" data-id_pelatihan="<?php echo $pelatihan->id ?>">Daftar</a>
-
-              <?php
-                echo "</td>";
-                echo "</tr>";
-              }
-              ?>
-            </tbody>
-          </table>
-
           <?php
-          if (!$get_all) {
-
+          if (!$get_all && $terdaftar) {
             echo "<br>";
-
+            echo "Anda Sudah Terdaftar, Tidak bisa mendaftar 2 pelatihan sekaligus.";
+          } elseif (!$get_all) {
             echo "<strong> Data Belum Tersedia </strong>";
-          }
+          } else {
+
           ?>
+
+            <input class="form-control" id="myInput" type="text" placeholder="Search..">
+
+            <table class="table table-striped table-hover table-condensed">
+              <thead>
+                <tr>
+                  <th>Nama Pelatihan</th>
+                  <th>Tanggal Buka</th>
+                  <th>Tanggal Tutup</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="myTable">
+                <?php
+                date_default_timezone_set('Asia/Jakarta');
+                $current_date = date('Y-m-d');
+                $no = 0;
+                foreach ($get_all as $pelatihan) {
+
+                  if ($pelatihan->status == 'tutup') {
+                    continue;
+                  }
+
+
+
+                  $tanggal = strtotime($pelatihan->tgl_buka);
+                  $tgl_buka = date('d-m-Y', $tanggal);
+                  $tanggal = strtotime($pelatihan->tgl_tutup);
+                  $tgl_tutup = date('d-m-Y', $tanggal);
+
+                  $no++;
+                  // echo "<tbody id='myTable'>";
+                  echo "<tr>";
+                  echo "<td>$pelatihan->nama</td>";
+                  echo "<td>$tgl_buka</td>";
+                  echo "<td>$tgl_tutup</td>";
+                  echo "<td>$pelatihan->status</td>";
+                  echo "<td class='text-center'>";
+
+                ?>
+                  <a class="btn btn-primary" id="button_detail" data-toggle="modal" href="#myModalDetail" data-nama="<?php echo $pelatihan->nama ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-tgl_tutup="<?php echo $pelatihan->tgl_tutup ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-detail_pelatihan="<?php echo $pelatihan->detail_pelatihan ?>" data-nama_pelatih="<?php echo $pelatihan->nama_pelatih ?>" data-kontak_pelatih="<?php echo $pelatihan->kontak_pelatih ?>">Detail</a>
+
+
+                  <?php
+                  if ($current_date < $pelatihan->tgl_buka) {
+                  ?>
+
+              <?php
+                  }else{
+                    ?>
+                    <a class="btn btn-primary" id="button_daftar" data-toggle="modal" href="#myModalDaftar" data-id_pelatihan="<?php echo $pelatihan->id ?>">Daftar</a>
+
+              <?php
+                  }
+
+                  echo "</td>";
+                  echo "</tr>";
+                }
+              }
+
+              ?>
+              </tbody>
+            </table>
+
+            <?php
+            ?>
 
         </div>
       </div>
@@ -186,11 +212,19 @@ defined('BASEPATH') or exit('No direct script access allowed');
       </div>
       <form class="form-horizontal" method="post" action="<?php echo base_url() . 'member/home/proses_daftar' ?>">
         <div class="modal-body">
-          <input type="hidden" name="id_pelatihan" value="<?php echo $pelatihan->id ?>">
+          <input type="hidden" name="id_pelatihan" id="id_pelatihan"?>
+
+          <div class="form-group">
+            <label class="control-label col-xs-3">NIK</label>
+            <div class="col-xs-8">
+              <input name="nama" class="form-control" type="text" placeholder="Isikan Nama Anda..." required>
+            </div>
+          </div>
+
           <div class="form-group">
             <label class="control-label col-xs-3">Nama</label>
             <div class="col-xs-8">
-              <input name="nama" class="form-control" type="text" placeholder="Isikan Nama Anda..." required>
+              <input name="nama" class="form-control" type="text" value="<?= $userdata->username; ?>" placeholder="Isikan Nama Anda..." required>
             </div>
           </div>
 
@@ -202,10 +236,19 @@ defined('BASEPATH') or exit('No direct script access allowed');
           </div>
 
           <div class="form-group">
+            <label class="control-label col-xs-3">Wilayah</label>
+            <div class="col-xs-8">
+              <select name="wilayah" class="form-control" required>
+                <option value="kota">Kota</option>
+                <option value="luar kota">Luar Kota</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
             <label class="control-label col-xs-3">Jenis Kelamin</label>
             <div class="col-xs-8">
               <select name="jenis_kelamin" class="form-control" required>
-                <option value="">-PILIH-</option>
                 <option value="laki-laki">Laki-Laki</option>
                 <option value="perempuan">Perempuan</option>
               </select>

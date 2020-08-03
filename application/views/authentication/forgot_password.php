@@ -19,7 +19,7 @@
 				<?php echo form_close(); ?>
 			</div>
 		</div>
-		<a href="<?php echo base_url('auth/login'); ?>" class="text-center">I already have a membership</a>
+		<a href="<?php echo base_url('auth/login'); ?>" class="text-center">Sudah Punya Akun? Klik disini</a>
 	</div>
 
 	<div id="myalert">

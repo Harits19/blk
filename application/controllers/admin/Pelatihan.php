@@ -138,10 +138,21 @@ class Pelatihan extends MY_Controller
         $this->form_validation->set_rules('kuota_kota', 'Kuota Kota', 'required');
         $this->form_validation->set_rules('kuota_luar_kota', 'Kuota Luar Kota', 'required');
 
+        $tgl_buka = date($this->input->post('tgl_buka'));
+        $tgl_tutup = date($this->input->post('tgl_tutup'));
+        $tgl_verifikasi = date($this->input->post('tgl_verifikasi'));
+        $tgl_verifikasi_cadangan = date($this->input->post('tgl_verifikasi_cadangan'));
 
+        $status_tgl = false;
+        if ($tgl_buka < $tgl_tutup && $tgl_tutup < $tgl_verifikasi && $tgl_verifikasi < $tgl_verifikasi_cadangan) {
+            $status_tgl = true;
+        }
 
         if ($this->form_validation->run() == false) {
             $this->session->set_flashdata('msg', show_err_msg('Input yang anda masukkan salah'));
+            redirect('admin/pelatihan');
+        } elseif ($status_tgl == false) {
+            $this->session->set_flashdata('msg', show_err_msg('Tanggal tidak boleh lebih kecil dari tanggal'));
             redirect('admin/pelatihan');
         } else {
 
@@ -182,24 +193,24 @@ class Pelatihan extends MY_Controller
         $this->form_validation->set_rules('kuota_kota', 'Kuota Kota', 'required');
         $this->form_validation->set_rules('kuota_luar_kota', 'Kuota Luar Kota', 'required');
 
-        $tgl_buka = strtotime($this->input->post('tgl_buka'));
-        $tgl_tutup = strtotime($this->input->post('tgl_tutup'));
-        $tgl_verifikasi = strtotime($this->input->post('tgl_verifikasi'));
-        $tgl_verifikasi_cadangan= strtotime($this->input->post('tgl_verifikasi_cadangan'));
+        $tgl_buka = date($this->input->post('tgl_buka'));
+        $tgl_tutup = date($this->input->post('tgl_tutup'));
+        $tgl_verifikasi = date($this->input->post('tgl_verifikasi'));
+        $tgl_verifikasi_cadangan = date($this->input->post('tgl_verifikasi_cadangan'));
 
-        // echo "$tgl_buka";
 
-        // Cek tanggal yang dimasukkan 
-        // $status_tgl = false;
-        // if($tgl_buka<$tgl_tutup && $tgl_tutup<$tgl_verifikasi && $tgl_verifikasi<$tgl_verifikasi_cadangan){
-        //     $status_tgl = true; 
-        //     echo "Tanggal Benar";
-        // }
+        $status_tgl = false;
+        if ($tgl_buka < $tgl_tutup && $tgl_tutup < $tgl_verifikasi && $tgl_verifikasi < $tgl_verifikasi_cadangan) {
+            $status_tgl = true;
+        }
 
 
 
-        if ($this->form_validation->run() == false && !$status_tgl ) {
+        if ($this->form_validation->run() == false) {
             $this->session->set_flashdata('msg', show_err_msg('Input yang anda masukkan salah'));
+            redirect('admin/pelatihan');
+        } elseif ($status_tgl == false) {
+            $this->session->set_flashdata('msg', show_err_msg('Tanggal yang anda masukkan salah'));
             redirect('admin/pelatihan');
         } else {
 

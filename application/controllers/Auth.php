@@ -68,7 +68,7 @@ class Auth extends MY_Controller
 
         // ========================================================
         $data = konfigurasi('Konfirmasi Kehadiran');
-        $token = $this->base64url_decode($this->uri->segment(4));
+        $token = $this->Auth_model->base64url_decode($this->uri->segment(4));
         $cleanToken = $this->security->xss_clean($token);
 
         $user_info = $this->Pendaftar_model->isTokenValid($cleanToken);
@@ -82,7 +82,7 @@ class Auth extends MY_Controller
         // echo $current_date;
         // echo $tgl_verifikasi;
 
-            // TANDA BESAR MENYESUAIKAN
+        // TANDA BESAR MENYESUAIKAN
         if (!$user_info || $current_date > $tgl_verifikasi) {
             $this->session->set_flashdata('alert', '<p class="box-msg">
         			<div class="info-box alert-danger">
@@ -145,12 +145,12 @@ class Auth extends MY_Controller
 
         // ========================================================
         $data = konfigurasi('Konfirmasi Kehadiran Cadangan');
-        $token = $this->base64url_decode($this->uri->segment(4));
+        $token = $this->Auth_model->base64url_decode($this->uri->segment(4));
         $cleanToken = $this->security->xss_clean($token);
 
         $user_info = $this->Pendaftar_model->isTokenValid($cleanToken);
 
-        
+
         $tgl_verifikasi_cadangan = $this->Pelatihan_model->get_by_id($user_info->id_pelatihan)->tgl_verifikasi_cadangan;
 
 
@@ -193,30 +193,23 @@ class Auth extends MY_Controller
     {
 
         $data = konfigurasi('Reset Password');
-        $token = $this->base64url_decode($this->uri->segment(4));
+        $token = $this->Auth_model->base64url_decode($this->uri->segment(4));
         $cleanToken = $this->security->xss_clean($token);
 
         $user_info = $this->Auth_model->isTokenValid($cleanToken); //either false or array();          
 
         if (!$user_info) {
-            $this->session->set_flashdata('alert', '<p class="box-msg">
-        			<div class="info-box alert-danger">
-        			<div class="info-box-icon">
-        			<i class="fa fa-warning"></i>
-        			</div>
-        			<div class="info-box-content" style="font-size:14">
-        			<b style="font-size: 20px">GAGAL</b><br>Token tidak valid atau kadaluwarsa, isi email anda kembali</div>
-        			</div>
-        			</p>
-            ');
-            // redirect(site_url('auth/forget'), 'refresh');
             $this->template->load('authentication/layouts/template', 'authentication/login', $data);
         }
 
+        // $data = array(
+        //     'nama' => $user_info->username,
+        //     'email' => $user_info->email,
+        //     'token' => $this->Auth_model->base64url_encode($token)
+        // );
+
         $data = array(
-            'nama' => $user_info->username,
-            'email' => $user_info->email,
-            'token' => $this->base64url_encode($token)
+            'token' => $this->Auth_model->base64url_encode($token)
         );
 
         $this->form_validation->set_rules('password', 'Password', 'required|min_length[5]');
@@ -375,35 +368,17 @@ class Auth extends MY_Controller
             $userInfo = $this->Auth_model->getUserInfoByEmail($clean);
 
             if (!$userInfo) {
-                $this->session->set_flashdata('alert', '<p class="box-msg">
-        			<div class="info-box alert-danger">
-        			<div class="info-box-icon">
-        			<i class="fa fa-warning"></i>
-        			</div>
-        			<div class="info-box-content" style="font-size:14">
-        			<b style="font-size: 20px">GAGAL</b><br>Email yang Anda masukkan tidak terdaftar.</div>
-        			</div>
-        			</p>
-            ');
-
                 redirect('auth/forgot', 'refresh', $data);
             }
 
-            //build token   
-
             $token = $this->Auth_model->insertToken($userInfo->id);
+            $qstring = $this->Auth_model->base64url_encode($token);
 
-            $qstring = $this->base64url_encode($token);
-            $url = site_url() . 'auth/reset_password/token/' . $qstring;
-            $link = '<a href="' . $url . '">' . $url . '</a>';
-
-            $message = '';
-            $message .= '<strong>Hai, anda menerima email ini karena ada permintaan untuk memperbaharui  
-                 password anda.</strong><br>';
-            $message .= '<strong>Silakan klik link ini:</strong> ' . $link;
-
-            echo $message; //send this through mail  
-            exit;
+            if ($this->Auth_model->sendEmail($userInfo->email, $qstring, 'forgot_password')) {
+                redirect('auth/login');
+            } else {
+                redirect('auth/login');
+            }
         }
     }
 
@@ -411,7 +386,7 @@ class Auth extends MY_Controller
 
     public function check_register()
     {
-        $data = konfigurasi('Register');
+        $data = konfigurasi('Pendaftaran');
         $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[50]');
         $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[5]|max_length[50]|valid_email|is_unique[tbl_user.email]');
         $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[20]');
@@ -422,19 +397,11 @@ class Auth extends MY_Controller
         } else {
             $this->Auth_model->reg();
 
-            if ($this->Auth_model->sendEmailVerification($this->input->post('email'))) {
-                //redirect('Login_Controller/index');
-                //$msg = "Successfully registered with the sysytem.Conformation link has been sent to: ".$this->input->post('txt_email');
-                $this->session->set_flashdata('alert', '<p class="box-msg">
-                <div class="info-box alert-success">
-                <div class="info-box-icon">
-                <i class="fa fa-check-circle"></i>
-                </div>
-                <div class="info-box-content" style="font-size:14">
-                <b style="font-size: 20px">SUKSES</b><br>Pendaftaran berhasil, silakan cek email anda untuk melakukan konfirmasi.</div>
-                </div>
-                </p>
-                ');
+            // if ($this->Auth_model->sendEmailVerification($this->input->post('email'))) {
+            //     redirect('auth/login');
+
+            $email = $this->input->post('email');
+            if ($this->Auth_model->sendEmail($email, '', 'register')) {
                 redirect('auth/login');
             } else {
 
@@ -457,38 +424,7 @@ class Auth extends MY_Controller
         //ambil data dari database untuk validasi login
         $query = $this->Auth_model->check_account($email, $password);
 
-        if ($query === 1) {
-            $this->session->set_flashdata('alert', '<p class="box-msg">
-        			<div class="info-box alert-danger">
-        			<div class="info-box-icon">
-        			<i class="fa fa-warning"></i>
-        			</div>
-        			<div class="info-box-content" style="font-size:14">
-        			<b style="font-size: 20px">GAGAL</b><br>Email yang Anda masukkan tidak terdaftar.</div>
-        			</div>
-        			</p>
-            ');
-        } elseif ($query === 2) {
-            $this->session->set_flashdata('alert', '<p class="box-msg">
-              <div class="info-box alert-info">
-              <div class="info-box-icon">
-              <i class="fa fa-info-circle"></i>
-              </div>
-              <div class="info-box-content" style="font-size:14">
-              <b style="font-size: 20px">GAGAL</b><br>Akun yang Anda masukkan tidak aktif, silakan hubungi Administrator.</div>
-              </div>
-              </p>');
-        } elseif ($query === 3) {
-            $this->session->set_flashdata('alert', '<p class="box-msg">
-        			<div class="info-box alert-danger">
-        			<div class="info-box-icon">
-        			<i class="fa fa-warning"></i>
-        			</div>
-        			<div class="info-box-content" style="font-size:14">
-        			<b style="font-size: 20px">GAGAL</b><br>Password yang Anda masukkan salah.</div>
-        			</div>
-        			</p>
-              ');
+        if ($query == false) {
         } else {
             //membuat session dengan nama userData yang artinya nanti data ini bisa di ambil sesuai dengan data yang login
             $userdata = array(
@@ -571,28 +507,10 @@ class Auth extends MY_Controller
     function confirmEmail($hashcode)
     {
         if ($this->Auth_model->verifyEmail($hashcode)) {
-            $this->session->set_flashdata('alert', '<p class="box-msg">
-                <div class="info-box alert-success">
-                <div class="info-box-icon">
-                <i class="fa fa-check-circle"></i>
-                </div>
-                <div class="info-box-content" style="font-size:14">
-                <b style="font-size: 20px">SUKSES</b><br>Konfirmasi berhasil, silakan lakukan login dihalaman yang tersedia.</div>
-                </div>
-                </p>
-                ');
+            
             redirect('Auth/login');
         } else {
-            $this->session->set_flashdata('alert', '<p class="box-msg">
-        			<div class="info-box alert-danger">
-        			<div class="info-box-icon">
-        			<i class="fa fa-warning"></i>
-        			</div>
-        			<div class="info-box-content" style="font-size:14">
-        			<b style="font-size: 20px">GAGAL</b><br>Konfirmasi email gagal</div>
-        			</div>
-        			</p>
-              ');
+            
             redirect('Auth/login');
         }
     }

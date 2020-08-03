@@ -1,6 +1,6 @@
 <!-- <head>
     TITTLE ICON BELUM DIGANTI
-    <link rel="icon" href="<?=base_url()?>assets/uploads/images/admin.png" type="image/x-icon">
+    <link rel="icon" href="<?= base_url() ?>assets/uploads/images/admin.png" type="image/x-icon">
 </head> -->
 
 <body>
@@ -10,7 +10,6 @@
         </div>
 
         <script>
-            
             document.title = "Forgot Password | Balai Latihan Kerja";
         </script>
 
@@ -20,12 +19,13 @@
             <?php echo form_open('auth/reset_password/token/' . $token); ?>
 
             <div class="form-group has-feedback">
-                <input type="password" name="password" class="form-control" required placeholder="Password">
+                <input id="password" type="password" name="password" class="form-control" required placeholder="Password">
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 <?php echo form_error('password', '<div class="text-danger"><small>', '</small></div>') ?>
             </div>
             <div class="form-group has-feedback">
-                <input type="password" name="passconf" class="form-control" required placeholder="Confirm Password">
+                <input id="passconf" type="password" name="passconf" class="form-control" required placeholder="Confirm Password">
+                <!-- <input type="checkbox" onclick="myFunction()"> Tampilkan Password -->
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 <?php echo form_error('passconf', '<div class="text-danger"><small>', '</small></div>') ?>
             </div>
@@ -36,7 +36,7 @@
                     <?php echo form_close(); ?>
                 </div>
             </div>
-            <a href="<?php echo base_url('auth/login'); ?>" class="text-center">I already have a membership</a>
+            <a href="<?php echo base_url('auth/login'); ?>" class="text-center">Sudah Punya Akun? Klik disini</a>
         </div>
 
         <div id="myalert">
@@ -48,6 +48,22 @@
 
 
     <script>
+        // function myFunction() {
+        //     var x = document.getElementById("password");
+        //     //   var x = document.getElementById("confirm_password");
+        //     if (x.type === "password") {
+        //         x.type = "text";
+        //     } else {
+        //         x.type = "password";
+        //     }
+
+        //     var x = document.getElementById("passconf");
+        //     if (x.type === "password") {
+        //         x.type = "text";
+        //     } else {
+        //         x.type = "password";
+        //     }
+        // }
         $(function() {
             $('input').iCheck({
                 checkboxClass: 'icheckbox_square-blue',

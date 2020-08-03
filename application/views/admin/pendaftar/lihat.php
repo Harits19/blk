@@ -44,6 +44,7 @@
                             <tr>
                                 <th>&nbsp;</th>
                                 <th>Email</th>
+                                <th>Wilayah</th>
                                 <th></th>
                                 <th>Status</th>
                                 <!-- <th>$current_date < $pelatihan_pendaftar->tgl_verifikasi</th> -->
@@ -72,11 +73,7 @@
                             foreach ($get_all_by_id as $pelatihan_pendaftar) {
 
                                 $status = "";
-                                // if($current_date < $pelatihan_pendaftar->tgl_verifikasi){
-                                //     $date = true;
-                                // }else{
-                                //     $date = true;
-                                // }
+                              
 
 
 
@@ -123,6 +120,7 @@
                                 echo "<tr>";
                                 echo "<td class='text-center'>$no</td>";
                                 echo "<td>$pelatihan_pendaftar->email</td>";
+                                echo "<td>$pelatihan_pendaftar->wilayah</td>";
 
                                 // echo "<td>$date</td>";
                                 // echo "<td>$hadir</td>";

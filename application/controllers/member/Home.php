@@ -34,9 +34,24 @@ class Home extends MY_Controller
     public function index()
     {
         $this->data = konfigurasi('Pelatihan');
-        $this->data["get_all"] = $this->Pelatihan_model->get_all();
         // $this->data["get_userdata"] = $this->Pelatihan_model->get_all();
-        $this->template->load('layouts/template', 'member/dashboard', $this->data);
+
+
+        $email = $this->session->userdata('email');
+        $data = array(
+            'email' => $email,
+        );
+
+        if(!$this->Pendaftar_model->get_by_($data)->row()){
+            $this->data["get_all"] = $this->Pelatihan_model->get_all();
+            $this->template->load('layouts/template', 'member/dashboard', $this->data);
+        }else{
+            $this->data["get_all"] = null;
+            $this->data["terdaftar"] = true;
+            $this->template->load('layouts/template', 'member/dashboard', $this->data);
+        }
+
+        
     }
 
     public function proses_daftar()
@@ -48,9 +63,15 @@ class Home extends MY_Controller
         // $this->form_validation->set_rules('jenis_kelamin', 'Jenis Kelamin', 'required');
         // $this->form_validation->set_rules('alamat', 'Alamat', 'required');
         $this->form_validation->set_rules('email', 'Email', 'required');
+        $this->form_validation->set_rules('wilayah', 'Wilayah', 'required');
         // $this->form_validation->set_rules('no_hp', 'No. Hp', 'required');
         // $this->form_validation->set_rules('pendidikan_terakhir', 'Pendidikan Terakhir', 'required');
         // $this->form_validation->set_rules('alasan_mengikuti', 'Alasan Mengikuti', 'required');
+
+        // $this->Pendaftar_model->cek_calon_pendaftar($userdata);
+
+        
+
 
 
 
@@ -62,16 +83,17 @@ class Home extends MY_Controller
             $data = array(
                 'email' => $this->input->post('email'),
                 'id_pelatihan' => $this->input->post('id_pelatihan'),
+                'wilayah' => $this->input->post('wilayah'),
             );
 
 
             if ($this->Pendaftar_model->insert($data)) {
                 $this->session->set_flashdata('msg', show_succ_msg('Berhasil Melakukan Pendaftaran'));
-                redirect('member/home');
+                redirect('member/home', $data);
             } else {
 
                 $this->session->set_flashdata('msg', show_err_msg('Gagal Melakukan Pendaftaran'));
-                redirect('member/home');
+                redirect('member/home', $data);
             }
 
             redirect('member/home', 'refresh', $data);
