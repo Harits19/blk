@@ -32,68 +32,147 @@ class Pelatihan extends MY_Controller
     }
 
 
+    //KIRIM OTOMATIS
+    // public function tutup($id_pelatihan)
+    // {
+    //     $this->data = konfigurasi('Pelatihan');
 
+
+    //     //UPDATE STATUS PELATIHAN MENJADI TUTUP
+    //     $update_status = array(
+    //         'status' => 'tutup'
+    //     );
+    //     $this->Pelatihan_model->update($id_pelatihan, $update_status);
+
+    //     // $this->Pendaftar_model->update_status_cadangan($id_pelatihan);
+    //     $kuota_luar_kota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota_luar_kota;
+    //     $kuota_kota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota_kota;
+    //     $kuota_utama = $kuota_luar_kota + $kuota_kota;
+
+
+
+    //     $data = array(
+    //         'id_pelatihan' => $id_pelatihan
+    //     );
+    //     $data_pendaftar = $this->Pendaftar_model->get_by_($data);
+    //     $total_pendaftar = $data_pendaftar->num_rows();
+
+    //     $data = array(
+    //         'wilayah' => 'kota'
+    //     );
+    //     $data_pendaftar_kota = $this->Pendaftar_model->get_by_($data);
+    //     $total_pendaftar_kota = $data_pendaftar_kota->num_rows();
+
+    //     $data = array(
+    //         'wilayah' => 'luar kota'
+    //     );
+    //     $data_pendaftar_luar_kota = $this->Pendaftar_model->get_by_($data);
+    //     // $total_pendaftar_luar_kota = $data_pendaftar_luar_kota->num_rows();
+
+    //     $counter = 0;
+
+
+    //     // BELUM ADA ERROR HANDLING
+    //     if ($total_pendaftar <= ($kuota_luar_kota + $kuota_kota)) {
+    //         // Mengirim email verifikasi dan update peserta menjadi pending
+    //         foreach ($data_pendaftar->result() as $data_row) {
+    //             $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
+    //         };
+    //     } else {
+    //         foreach ($data_pendaftar_kota->result() as $data_row) {
+    //             $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
+    //             $counter++;
+    //             if ($counter == $kuota_kota) {
+    //                 break;
+    //             }
+    //         };
+
+    //         $kuota_luar_kota = $kuota_utama - $counter;
+    //         foreach ($data_pendaftar_luar_kota->result() as $data_row) {
+    //             $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
+    //             $kuota_luar_kota--;
+    //             if ($kuota_luar_kota == 0) {
+    //                 break;
+    //             }
+    //         };
+    //     }
+    //     // redirect('admin/pelatihan', 'refresh', $this->data);
+    // }
+
+    //KIRIM MANUAL UNTUK MEMVERIFIKASI TIAP PESERTA
     public function tutup($id_pelatihan)
     {
         $this->data = konfigurasi('Pelatihan');
 
 
         //UPDATE STATUS PELATIHAN MENJADI TUTUP
-        $this->Pelatihan_model->update_status_pelatihan($id_pelatihan);
-
-        $this->Pendaftar_model->update_status_cadangan($id_pelatihan);
-        $kuota_luar_kota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota_luar_kota;
-        $kuota_kota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota_kota;
-        $kuota_utama = $kuota_luar_kota + $kuota_kota;
-
-
-
-        $data = array(
-            'id_pelatihan' => $id_pelatihan
+        $data_pelatihan = array(
+            'status' => 'tutup'
         );
-        $data_pendaftar = $this->Pendaftar_model->get_by_($data);
-        $total_pendaftar = $data_pendaftar->num_rows();
-
-        $data = array(
-            'wilayah' => 'kota'
+        // $this->Pelatihan_model->update($id_pelatihan, $data_pelatihan);
+        $id = array('id_pelatihan' => $id_pelatihan);
+        $data_pendaftar = array(
+            'status' => 3
         );
-        $data_pendaftar_kota = $this->Pendaftar_model->get_by_($data);
-        $total_pendaftar_kota = $data_pendaftar_kota->num_rows();
 
-        $data = array(
-            'wilayah' => 'luar kota'
-        );
-        $data_pendaftar_luar_kota = $this->Pendaftar_model->get_by_($data);
-        // $total_pendaftar_luar_kota = $data_pendaftar_luar_kota->num_rows();
-
-        $counter = 0;
-
-
-        // BELUM ADA ERROR HANDLING
-        if ($total_pendaftar <= ($kuota_luar_kota + $kuota_kota)) {
-            // Mengirim email verifikasi dan update peserta menjadi pending
-            foreach ($data_pendaftar->result() as $data_row) {
-                $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
-            };
-        } else {
-            foreach ($data_pendaftar_kota->result() as $data_row) {
-                $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
-                $counter++;
-                if ($counter == $kuota_kota) {
-                    break;
-                }
-            };
-
-            $kuota_luar_kota = $kuota_utama - $counter;
-            foreach ($data_pendaftar_luar_kota->result() as $data_row) {
-                $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
-                $kuota_luar_kota--;
-                if ($kuota_luar_kota == 0) {
-                    break;
-                }
-            };
+        if ($this->Pendaftar_model->update_status($id, $data_pendaftar) || $this->Pelatihan_model->update($id_pelatihan, $data_pelatihan)) {
+            $this->session->set_flashdata('msg', show_succ_msg('Pelatihan Berhasil Diperbaruii'));
+            redirect('admin/pelatihan', 'refresh', $this->data);
         }
-        // redirect('admin/pelatihan', 'refresh', $this->data);
+
+        // $this->Pendaftar_model->update_status_cadangan($id_pelatihan);
+        // $kuota_luar_kota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota_luar_kota;
+        // $kuota_kota = $this->Pelatihan_model->get_by_id($id_pelatihan)->kuota_kota;
+        // $kuota_utama = $kuota_luar_kota + $kuota_kota;
+
+
+
+        // $data = array(
+        //     'id_pelatihan' => $id_pelatihan
+        // );
+        // $data_pendaftar = $this->Pendaftar_model->get_by_($data);
+        // $total_pendaftar = $data_pendaftar->num_rows();
+
+        // $data = array(
+        //     'wilayah' => 'kota'
+        // );
+        // $data_pendaftar_kota = $this->Pendaftar_model->get_by_($data);
+        // $total_pendaftar_kota = $data_pendaftar_kota->num_rows();
+
+        // $data = array(
+        //     'wilayah' => 'luar kota'
+        // );
+        // $data_pendaftar_luar_kota = $this->Pendaftar_model->get_by_($data);
+        // // $total_pendaftar_luar_kota = $data_pendaftar_luar_kota->num_rows();
+
+        // $counter = 0;
+
+
+        // // BELUM ADA ERROR HANDLING
+        // if ($total_pendaftar <= ($kuota_luar_kota + $kuota_kota)) {
+        //     // Mengirim email verifikasi dan update peserta menjadi pending
+        //     foreach ($data_pendaftar->result() as $data_row) {
+        //         $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
+        //     };
+        // } else {
+        //     foreach ($data_pendaftar_kota->result() as $data_row) {
+        //         $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
+        //         $counter++;
+        //         if ($counter == $kuota_kota) {
+        //             break;
+        //         }
+        //     };
+
+        //     $kuota_luar_kota = $kuota_utama - $counter;
+        //     foreach ($data_pendaftar_luar_kota->result() as $data_row) {
+        //         $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 0);
+        //         $kuota_luar_kota--;
+        //         if ($kuota_luar_kota == 0) {
+        //             break;
+        //         }
+        //     };
+        // }
+        redirect('admin/pelatihan', 'refresh', $this->data);
     }
 
     public function index()

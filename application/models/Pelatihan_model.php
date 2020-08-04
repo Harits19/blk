@@ -9,6 +9,15 @@ class Pelatihan_model extends CI_Model
     return $this->db->get($this->table)->row();
   }
 
+  public function get_by_($data)
+    {
+        if ($this->db->where($data)) {
+            return $this->db->get($this->table);
+        } else {
+            return false;
+        }
+    }
+
   //update pelatihan
   public function update($id, $data)
   {
@@ -16,11 +25,11 @@ class Pelatihan_model extends CI_Model
     return $this->db->update($this->table, $data);
   }
 
-  public function update_status_pelatihan($id)
-  {
-    $sql = "UPDATE `tbl_pelatihan` SET `status` = 'tutup' WHERE `tbl_pelatihan`.`id` = $id";
-    $this->db->query($sql);
-  }
+  // public function update_status_pelatihan($id)
+  // {
+  //   $sql = "UPDATE `tbl_pelatihan` SET `status` = 'tutup' WHERE `tbl_pelatihan`.`id` = $id";
+  //   $this->db->query($sql);
+  // }
 
   //delete pelatihan
   public function delete($id)

@@ -54,7 +54,7 @@ class Pendaftar_model extends CI_Model
         if ($this->upload->do_upload('foto_ktp')) { // Lakukan upload dan Cek jika proses upload berhasil
             // Jika berhasil :
             $return = array('result' => 'success', 'file' => $this->upload->data(), 'error' => '');
-            
+
             return $this->upload->data('file_name');
         } else {
             // Jika gagal :
@@ -62,6 +62,70 @@ class Pendaftar_model extends CI_Model
             return $return;
         }
     }
+
+    public function kirim_email($receiver, $qstring, $info)
+    {
+        $from = "bentzie19@gmail.com";
+        $subject = '';
+        // $qstring = $this->base64url_encode($token);
+        $url = "";
+
+        if($info == "konfirmasi kehadiran"){
+            $url = site_url() . 'auth/kehadiran/token/' . $qstring;
+            $link = '<a href="' . $url . '">' . $url . '</a>';
+            $message = '';
+            $message .= '<strong>Hai, anda menerima email ini karena ada permintaan untuk mengonfirmasi kehadiran. Klik link dibawah ini maksimal 3 hari setelah dikirim</strong><br>';
+            $message .= '<strong>Silakan klik link ini:</strong> ' . $link;
+            $subject = 'Konfirmasi Kehadiran Balai Latihan Kerja';
+
+        }elseif($info == "konfirmasi kehadiran cadangan"){
+            $url = site_url() . 'auth/kehadiran_cadangan/token/' . $qstring;
+
+        }
+
+        //config email settings
+        $config['protocol'] = 'smtp';
+        $config['smtp_host'] = 'ssl://smtp.gmail.com';
+        $config['smtp_port'] = '465';
+        $config['smtp_user'] = $from;
+        $config['smtp_pass'] = 'harits963741852';  //sender's password
+        $config['mailtype'] = 'html';
+        $config['charset'] = 'iso-8859-1';
+        $config['wordwrap'] = 'TRUE';
+        $config['newline'] = "\r\n";
+
+        $this->load->library('email', $config);
+        $this->email->initialize($config);
+        //send email
+        $this->email->from($from);
+        $this->email->to($receiver);
+        $this->email->subject($subject);
+        $this->email->message($message);
+
+        if ($this->email->send()) {
+            //for testing
+            // echo "sent to: ".$receiver."<br>";
+            // echo "from: ".$from. "<br>";
+            // echo "protocol: ". $config['protocol']."<br>";
+            // echo "message: ".$message;
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+                <div class="info-box alert-success">
+                <div class="info-box-icon">
+                <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="info-box-content" style="font-size:14">
+                <b style="font-size: 20px">SUKSES</b><br>Berhasil, silakan cek email anda untuk melakukan tahapan selanjutnya</div>
+                </div>
+                </p>
+                ');
+            return true;
+        } else {
+            // echo "email send failed";
+            return false;
+        }
+    }
+
+
 
 
     public function kirim_konfirmasi_kehadiran($data_pendaftar, $kode_status)
@@ -215,7 +279,7 @@ class Pendaftar_model extends CI_Model
 
     function update_status_pending($id, $status)
     {
-        $data = array('status' => $status);
+            $data = array('status' => $status);
         $this->db->where('id', $id);
         $this->db->update('tbl_pendaftar', $data);
     }
@@ -293,17 +357,17 @@ class Pendaftar_model extends CI_Model
     public function get_all_by_id($id)
     {
 
-        $sql = "SELECT tbl_pendaftar.id, tbl_pelatihan.tgl_verifikasi_cadangan, tbl_pendaftar.wilayah, tbl_pendaftar.email, tbl_pendaftar.wilayah, tbl_pendaftar.status, tbl_pelatihan.nama, tbl_pelatihan.tgl_verifikasi, tbl_pendaftar.id_pelatihan FROM tbl_pendaftar INNER JOIN tbl_pelatihan on tbl_pendaftar.id_pelatihan =" . $id . " GROUP BY tbl_pendaftar.id ORDER BY tbl_pendaftar.wilayah DESC, tbl_pendaftar.id ASC";
+        $sql = "SELECT *, tbl_pendaftar.id AS id_pendaftar, tbl_pendaftar.status AS status_pendaftar, tbl_pelatihan.status AS status_pelatihan FROM tbl_pendaftar INNER JOIN tbl_pelatihan on tbl_pendaftar.id_pelatihan =" . $id . " GROUP BY tbl_pendaftar.id ORDER BY tbl_pendaftar.wilayah DESC, tbl_pendaftar.id ASC";
         return $this->db->query($sql)->result();
     }
 
-    public function get_nama_pelatihan($id)
-    {
+    // public function get_nama_pelatihan($id)
+    // {
 
-        $sql = "SELECT tbl_pelatihan.nama FROM tbl_pelatihan WHERE tbl_pelatihan.id =" . $id . "
-        ";
-        return $this->db->query($sql)->row();
-    }
+    //     $sql = "SELECT tbl_pelatihan.nama FROM tbl_pelatihan WHERE tbl_pelatihan.id =" . $id . "
+    //     ";
+    //     return $this->db->query($sql)->row();
+    // }
 
     public function get_pendaftar_by_id($id)
     {

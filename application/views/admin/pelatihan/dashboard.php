@@ -64,8 +64,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <th>Nama Pelatihan</th>
                                 <th>Tanggal Buka</th>
                                 <th>Tanggal Tutup</th>
-                                <th>Tanggal Verifikasi</th>
-                                <th>Tanggal Verifikasi Cadangan</th>
+                                <th>Konf. Pendaftar</th>
+                                <th>Konf. Pendaftar Cadangan</th>
                                 <th>Status</th>
                                 <th>Kuota (Kota + Luar Kota) </th>
                             </tr>
@@ -81,11 +81,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 $tanggal = strtotime($pelatihan->tgl_tutup);
                                 $tgl_tutup = date('d/m/Y', $tanggal);
 
-                                $tanggal = strtotime($pelatihan->tgl_verifikasi);
-                                $tgl_verifikasi = date('d/m/Y', $tanggal);
+                                // $tanggal = strtotime($pelatihan->tgl_verifikasi);
+                                // $tgl_verifikasi = date('d/m/Y', $tanggal);
 
-                                $tanggal = strtotime($pelatihan->tgl_verifikasi_cadangan);
-                                $tgl_verifikasi_cadangan = date('d/m/Y', $tanggal);
+                                // $tanggal = strtotime($pelatihan->tgl_verifikasi_cadangan);
+                                // $tgl_verifikasi_cadangan = date('d/m/Y', $tanggal);
 
 
 
@@ -110,8 +110,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 echo "<td>$pelatihan->nama</td>";
                                 echo "<td>$tgl_buka</td>";
                                 echo "<td>$tgl_tutup</td>";
-                                echo "<td>$tgl_verifikasi</td>";
-                                echo "<td>$tgl_verifikasi_cadangan</td>";
+                                echo "<td>$pelatihan->konfirmasi_pendaftar</td>";
+                                echo "<td>$pelatihan->konfirmasi_pendaftar_cadangan</td>";
                                 echo "<td>$pelatihan->status</td>";
                                 echo "<td><strong>$kuota_utama</strong> ( $pelatihan->kuota_kota  + $pelatihan->kuota_luar_kota )</td>";
                                 echo "<td class='text-center'>";
@@ -122,7 +122,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                     <i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Hapus</i>
                                 </a>
                                 <a class="hapus btn" href="<?php echo base_url('admin/pelatihan/tutup/'), $pelatihan->id ?>" onclick="return confirm('Apakah anda yakin?')">
-                                    <i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Tutup dan Kirim Email Verifikasi</i>
+                                    <i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Tutup Pelatihan</i>
                                 </a>
                             <?php
                                 echo "</td>";
