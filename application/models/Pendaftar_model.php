@@ -357,7 +357,7 @@ class Pendaftar_model extends CI_Model
     public function get_all_by_id($id)
     {
 
-        $sql = "SELECT *, tbl_pendaftar.id AS id_pendaftar, tbl_pendaftar.status AS status_pendaftar, tbl_pelatihan.status AS status_pelatihan FROM tbl_pendaftar INNER JOIN tbl_pelatihan on tbl_pendaftar.id_pelatihan =" . $id . " GROUP BY tbl_pendaftar.id ORDER BY tbl_pendaftar.wilayah DESC, tbl_pendaftar.id ASC";
+        $sql = "SELECT *, tbl_pendaftar.nama AS nama_pendaftar, tbl_pendaftar.id AS id_pendaftar, tbl_pendaftar.status AS status_pendaftar, tbl_pelatihan.status AS status_pelatihan FROM tbl_pendaftar INNER JOIN tbl_pelatihan on tbl_pendaftar.id_pelatihan =" . $id . " GROUP BY tbl_pendaftar.id ORDER BY tbl_pendaftar.wilayah DESC, tbl_pendaftar.id ASC";
         return $this->db->query($sql)->result();
     }
 

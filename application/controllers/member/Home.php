@@ -78,6 +78,7 @@ class Home extends MY_Controller
             'wilayah' => $this->input->post('wilayah'),
             'nama' => $this->input->post('nama'),
             'nik' => $this->input->post('nik'),
+            'status' => 3,
             'jenis_kelamin' => $this->input->post('jenis_kelamin'),
             'alamat' => $this->input->post('alamat'),
             'no_hp' => $this->input->post('no_hp'),

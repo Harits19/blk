@@ -139,43 +139,9 @@
                                     $status = "Hadir(cadangan)";
                                     $check_box = false;
                                 } elseif ($pelatihan_pendaftar->status_pendaftar == "6") {
-                                    $status = "Tidak Hadir";
+                                    $status = "Tidak Hadir(cadangan)";
                                     $check_box = false;
-                                } 
-                                // elseif ($pelatihan_pendaftar->status_pendaftar == "1") {
-                                //     $status = "Hadir";
-                                //     // $hadir++;
-                                //     // $kuota--;
-                                // } elseif ($pelatihan_pendaftar->status_pendaftar == "2") {
-                                //     $status = "Tidak Hadir";
-                                //     $kuota_tambahan++;
-                                //     // $tidak_hadir++;
-                                //     // $kuota++;
-                                // } elseif ($pelatihan_pendaftar->status_pendaftar == "3") {
-                                //     $status = "Cadangan";
-                                //     // $cadangan++;
-                                // } elseif ($pelatihan_pendaftar->status_pendaftar == "4") {
-                                //     $status = "Cadangan Proses Konfirmasi(new)";
-                                //     $kuota_tambahan--;
-                                //     // $cadangan++;
-                                // } elseif ($pelatihan_pendaftar->status_pendaftar == "5") {
-                                //     $status = "Cadangan Hadir(new)";
-                                //     $kuota_tambahan--;
-                                //     // $cadangan++;
-                                // } elseif ($pelatihan_pendaftar->status_pendaftar == "6") {
-                                //     $status = "Cadangan Tidak Hadir(new)";
-
-                                //     // $cadangan++;
-                                // } else {
-                                //     $status = "null";
-                                // };
-
-
-
-
-
-
-
+                                }
 
                                 $no++;
                                 echo "<tr>";
@@ -200,9 +166,22 @@
                                 echo "<td class='text-center'>";
                             ?>
 
-                                <a class="edit btn" href="<?php echo base_url('admin/pendaftar/detail/'), $pelatihan_pendaftar->id_pendaftar ?>">
-                                    <i class="fa fa-wrench" aria-hidden="true"></i>&nbsp;Lihat Detail
-                                </a>
+                                <a class="btn btn-primary" id="button_detail" data-toggle="modal" href="#myModalDetail" 
+                                data-nik="<?php echo $pelatihan_pendaftar->nik ?>"
+                                data-nama="<?php echo $pelatihan_pendaftar->nama_pendaftar ?>"
+                                data-alamat="<?php echo $pelatihan_pendaftar->alamat ?>"
+                                data-email="<?php echo $pelatihan_pendaftar->email ?>"
+                                data-wilayah="<?php echo $pelatihan_pendaftar->wilayah ?>"
+                                data-jenis_kelamin="<?php echo $pelatihan_pendaftar->jenis_kelamin ?>"
+                                data-no_hp="<?php echo $pelatihan_pendaftar->no_hp ?>"
+                                data-pendidikan_terakhir="<?php echo $pelatihan_pendaftar->pendidikan_terakhir ?>"
+                                data-alasan_mengikuti="<?php echo $pelatihan_pendaftar->alasan_mengikuti ?>"
+                                data-foto_ktp="<?php echo $pelatihan_pendaftar->foto_ktp ?>"
+                                
+                                
+                                
+                                >Detail</a>
+
 
                             <?php
 
@@ -236,22 +215,22 @@
                     <?php
                     if ($data_pelatihan->konfirmasi_pendaftar == "belum") {
                     ?>
-                    <br>
-                    <input id='ignore_kuota' name='ignore_kuota' type='checkbox' class='check-item ignore_kuota'>
-                    <label for="ignore_kuota">&nbsp&nbspAbaikan Kuota</label>
-                    <p>Sisa Kuota ( <?php echo $kuota_kota . " kota + " . $kuota_luar_kota . " luar kota)" ?> </p>
+                        <br>
+                        <input id='ignore_kuota' name='ignore_kuota' type='checkbox' class='check-item ignore_kuota'>
+                        <label for="ignore_kuota">&nbsp&nbspAbaikan Kuota</label>
+                        <p>Sisa Kuota ( <?php echo $kuota_kota . " kota + " . $kuota_luar_kota . " luar kota)" ?> </p>
                         <button type="button" name="btn_kirim" id="btn_kirim" class="btn btn-danger mb-4 mt-4">Kirim Konfirmasi Kehadiran</button>
                     <?php
                     } elseif ($data_pelatihan->konfirmasi_pendaftar == "sudah" && $data_pelatihan->konfirmasi_pendaftar_cadangan == "belum") {
                     ?>
-                    <br>
-                    <input id='ignore_kuota' name='ignore_kuota' type='checkbox' class='check-item ignore_kuota'>
-                    <label for="ignore_kuota">&nbsp&nbspAbaikan Kuota</label>
-                    <p>Sisa Kuota ( <?php echo $kuota_kota . " kota + " . $kuota_luar_kota . " luar kota)" ?> </p>
+                        <br>
+                        <input id='ignore_kuota' name='ignore_kuota' type='checkbox' class='check-item ignore_kuota'>
+                        <label for="ignore_kuota">&nbsp&nbspAbaikan Kuota</label>
+                        <p>Sisa Kuota ( <?php echo $kuota_kota . " kota + " . $kuota_luar_kota . " luar kota)" ?> </p>
 
                         <button type="button" name="btn_kirim_cadangan" id="btn_kirim_cadangan" class="btn btn-danger mb-4 mt-4">Kirim Konfirmasi Kehadiran (cadangan) </button>
                     <?php
-                    }else{
+                    } else {
                         echo "<p>Pelatihan Ditutup</p>";
                     }
                     ?>
@@ -406,5 +385,135 @@
             //     }
             // });
         });
+
+        $(document).on('click', '#button_detail', function(e) {
+            email = $(this).attr('data-email');
+            $(".modal-body #email").val(email);
+            nik = $(this).attr('data-nik');
+            $(".modal-body #nik").val(nik);
+            alasan_mengikuti = $(this).attr('alasan_mengikuti-email');
+            $(".modal-body #alasan_mengikuti").val(alasan_mengikuti);
+            alamat = $(this).attr('data-alamat');
+            $(".modal-body #alamat").val(alamat);
+            nama = $(this).attr('data-nama');
+            $(".modal-body #nama").val(nama);
+            wilayah = $(this).attr('data-wilayah');
+            $(".modal-body #wilayah").val(wilayah);
+            no_hp = $(this).attr('data-no_hp');
+            $(".modal-body #no_hp").val(no_hp);
+            pendidikan_terakhir = $(this).attr('data-pendidikan_terakhir');
+            $(".modal-body #pendidikan_terakhir").val(pendidikan_terakhir);
+            foto_ktp = $(this).attr('data-foto_ktp');
+            $(".modal-body #foto_ktp").val(foto_ktp);
+            console.log(email);
+        });
     </script>
+
+    <div class="modal fade" id="myModalDetail" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit Pelatihan</h4>
+                </div>
+                <form class="form-horizontal" method="post" action="<?php echo base_url() . 'admin/pelatihan/edit_pelatihan_proses' ?>">
+
+                    <div class="modal-body">
+
+
+
+                        <input type="hidden" id="id" name="id">
+
+                        <!-- <div class="form-group">
+                            <label class="control-label col-xs-3">Email</label>
+                            <div class="col-xs-8">
+                                <input disabled name="email" id="email" class="form-control" type="text" placeholder="email" required>
+                            </div>
+                        </div> -->
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-3">NIK</label>
+                            <div class="col-xs-8">
+                                <input id="nik" name="nik" class="form-control" type="number" disabled placeholder="Isikan NIK Anda..." required>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-3">Nama</label>
+                            <div class="col-xs-8">
+                                <input id="nama" name="nama" class="form-control" type="text" disabled placeholder="Isikan Nama Anda..." required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-3">Alamat</label>
+                            <div class="col-xs-8">
+                                <!-- <input id="" name="alamat" class="form-control" type="textarea" placeholder="Isikan Alamat Anda..." required> -->
+                                <input class="form-control" id="alamat" name="alamat" rows="3" disabled placeholder="Alamat Anda..." required></input>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-3">Wilayah</label>
+                            <div class="col-xs-8">
+                                <select id="wilayah" name="wilayah" class="form-control" disabled required>
+                                    <option value="kota">Kota</option>
+                                    <option value="luar kota">Luar Kota</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-3">Jenis Kelamin</label>
+                            <div class="col-xs-8">
+                                <select id="jenis_kelamin" name="jenis_kelamin" class="form-control" disabled required>
+                                    <option value="laki-laki">Laki-Laki</option>
+                                    <option value="perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-3">Email</label>
+                            <div class="col-xs-8">
+                                <input id="email" name="email" class="form-control" disabled type="email"  placeholder="Isikan Email Anda..." required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-3">No. Hp</label>
+                            <div class="col-xs-8">
+                                <input id="no_hp" name="no_hp" class="form-control" type="number" disabled  placeholder="No. Hp..." required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-3">Pendidikan Terakhir</label>
+                            <div class="col-xs-8">
+                                <input id="pendidikan_terakhir" name="pendidikan_terakhir" class="form-control" type="text" disabled placeholder="Pendidikan Terakhir Anda..." required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-xs-3">Alasan Mengikuti</label>
+                            <div class="col-xs-8">
+                                <input class="form-control" id="alasan_mengikuti" name="alasan_mengikuti" rows="3" disabled placeholder="Alasan Mengikuti Anda..." required></input>
+                            </div>
+                        </div>
+
+                        
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn" data-dismiss="modal" aria-hidden="true">Tutup</button>
+                        <button class="btn btn-info">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </section>
