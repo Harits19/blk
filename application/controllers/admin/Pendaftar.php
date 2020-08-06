@@ -18,45 +18,27 @@ class Pendaftar extends MY_Controller
     {
         $this->data = konfigurasi('Pendaftar');
         $this->data["get_all"] = $this->Pendaftar_model->get_all();
-        // $this->data["get_all"] = $this->Pelatihan_model->get_all();
         $this->template->load('layouts/template', 'admin/pendaftar/index', $this->data);
-    }
-
-    public function kirim($id_pendaftar)
-    {
-
-        $this->data = konfigurasi('Konfirmasi Kehadiran');
-        // $this->data['kuota_tambahan'] = $kuota_tambahan;
-        $data_row = $this->Pendaftar_model->get_by_id($id_pendaftar);
-        // Kode 4 = Cadangan Proses Konfirmasi
-        $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 4);
-        // redirect('refresh');
-
     }
 
     public function kirim_manual()
     {
-        $data_id = $this->input->post('id');
-        $cadangan = $this->input->post('cadangan');
+        $data_id = $this->input->post('id_list');
+        $cadangan = $this->input->post('keterangan');
+
+        $keterangan = "";
 
         if($cadangan){
             $data_pendaftar = array(
                 'status' => 4
             );
+            $keterangan = "konfirmasi kehadiran cadangan";
         }else{
             $data_pendaftar = array(
                 'status' => 0
             );
+            $keterangan = "konfirmasi kehadiran";
         }
-        // $data_id = 'test';
-
-        // $gagal_terkirim;
-
-        $verifikasi_peserta = "sudah";
-
-        // if($verifikasi_peserta == "sudah"){
-        //     $this
-        // }
 
         if ($data_id) {
             foreach ($data_id as $data) {
@@ -64,66 +46,23 @@ class Pendaftar extends MY_Controller
                 $pendaftar = $this->Pendaftar_model->get_by_($id)->row();
                 $token = $this->Pendaftar_model->insertToken($pendaftar->id);
                 $qstring = $this->Pendaftar_model->base64url_encode($token);
-                // $this->Pendaftar_model->kirim_email($pendaftar->email, $qstring, "konfirmasi kehadiran");
-                // $id = array('id' => $pendaftar->id);
-                // $data_pendaftar = array(
-                //     'status' => 0
-                // );
-                $this->Pendaftar_model->update_status($id, $data_pendaftar);
+                $this->Pendaftar_model->kirim_email($pendaftar->email, $qstring, $keterangan);
+                $where = array('id' => $pendaftar->id);
+              
+                $this->Pendaftar_model->update_status($where, $data_pendaftar);
                 $this->session->set_flashdata('msg', show_succ_msg('Berhasil mengirim email konfirmasi'));
-            };
+            }
             $this->session->set_flashdata('msg', show_succ_msg('Berhasil mengirim email konfirmasi'));
-            redirect('admin/pendaftar', 'refresh');
+            
         } else {
             $this->session->set_flashdata('msg', show_err_msg('Tidak ada email yang dikirim'));
-            redirect('admin/pendaftar', 'refresh');
         }
 
+        $id_pelatihan = $this->input->post('id_pelatihan');
 
-
-        // $this->data = konfigurasi('Konfirmasi Kehadiran');
-        // // $this->data['kuota_tambahan'] = $kuota_tambahan;
-        // $data_row = $this->Pendaftar_model->get_by_id($id_pendaftar);
-        // // Kode 4 = Cadangan Proses Konfirmasi
-        // $this->Pendaftar_model->kirim_konfirmasi_kehadiran($data_row, 4);
-        // // redirect('refresh');
+        redirect("admin/pendaftar/", 'refresh');
 
     }
-
-    // LIHAT UNTUK KIRIM VERIFIKASI OTOMATIS
-    // public function lihat($id)
-    // {
-    //     $this->data = konfigurasi('Pendaftar');
-
-    //     $data_pelatihan = $this->Pelatihan_model->get_by_id($id);
-    //     $tgl_verifikasi = $data_pelatihan->tgl_verifikasi;
-    //     $tgl_verifikasi_cadangan = $data_pelatihan->tgl_verifikasi_cadangan;
-    //     $this->data["data_pelatihan"] = $data_pelatihan;
-
-    //     date_default_timezone_set('Asia/Jakarta');
-    //     $current_date = date('Y-m-d');
-
-    //     if ($current_date > $tgl_verifikasi) {
-    //         $data = array('status' => 2);
-    //         $where = array('status' => 0);
-    //         $this->Pendaftar_model->update_status($where, $data);
-    //     }
-    //     if ($current_date > $tgl_verifikasi_cadangan) {
-    //         $data = array('status' => 6);
-    //         $where = array('status' => 4);
-    //         $this->Pendaftar_model->update_status($where, $data);
-
-    //     }
-
-
-    //     $this->data["get_all_by_id"] = $this->Pendaftar_model->get_all_by_id($id);
-    //     $data_id = array('id' => $id);
-    //     $this->data["get_nama_pelatihan"] = $this->Pendaftar_model->get_by_($data_id);
-    //     date_default_timezone_set('Asia/Jakarta');
-
-    //     // $this->data["get_all"] = $this->Pelatihan_model->get_all();
-    //     $this->template->load('layouts/template', 'admin/pendaftar/lihat', $this->data);
-    // }
 
     //KIRIM VERIFIKASI MANUAL DISETIAP PENDAFTAR
     public function lihat($id)
@@ -147,15 +86,7 @@ class Pendaftar extends MY_Controller
 
         $this->data["data_pelatihan"] = $data_pelatihan;
         $this->data["get_all_by_id"] = $this->Pendaftar_model->get_all_by_id($id);
-        $this->template->load('layouts/template', 'admin/pendaftar/lihat_manual', $this->data);
+        $this->template->load('layouts/template', 'admin/pendaftar/lihat', $this->data);
     }
-    public function detail($id)
-    {
-        $this->data = konfigurasi('Detail Pendaftar');
-
-
-        $this->data["get_pendaftar_by_id"] = $this->Pendaftar_model->get_pendaftar_by_id($id);
-        // $this->data["get_all"] = $this->Pelatihan_model->get_all();
-        $this->template->load('layouts/template', 'admin/pendaftar/detail', $this->data);
-    }
+    
 }

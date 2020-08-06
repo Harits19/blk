@@ -3,6 +3,29 @@ class Pendaftar_model extends CI_Model
 {
     var $table = 'tbl_pendaftar';
 
+
+    public function validation($mode)
+    {
+        $this->load->library('form_validation');
+
+        if ($mode == "daftar") {
+            $this->form_validation->set_rules('nama', 'Nama', 'required');
+            $this->form_validation->set_rules('nik', 'NIK', 'required');
+            $this->form_validation->set_rules('jenis_kelamin', 'Jenis Kelamin', 'required');
+            $this->form_validation->set_rules('alamat', 'Alamat', 'required');
+            $this->form_validation->set_rules('email', 'Email', 'required');
+            $this->form_validation->set_rules('wilayah', 'Wilayah', 'required');
+            $this->form_validation->set_rules('no_hp', 'No. Hp', 'required');
+            $this->form_validation->set_rules('pendidikan_terakhir', 'Pendidikan Terakhir', 'required');
+            $this->form_validation->set_rules('alasan_mengikuti', 'Alasan Mengikuti', 'required');
+
+            if ($this->form_validation->run()) // Jika validasi benar
+                return TRUE; // Maka kembalikan hasilnya dengan TRUE
+            else // Jika ada data yang tidak sesuai validasi
+                return FALSE; // Maka kembalikan hasilnya dengan FALSE
+        }
+    }
+
     // private function _uploadImage()
     // {
     //     $config['upload_path']          = './upload/product/';
@@ -53,7 +76,7 @@ class Pendaftar_model extends CI_Model
         $this->load->library('upload', $config); // Load konfigurasi uploadnya
         if ($this->upload->do_upload('foto_ktp')) { // Lakukan upload dan Cek jika proses upload berhasil
             // Jika berhasil :
-            $return = array('result' => 'success', 'file' => $this->upload->data(), 'error' => '');
+            // $return = array('result' => 'success', 'file' => $this->upload->data(), 'error' => '');
 
             return $this->upload->data('file_name');
         } else {
@@ -70,18 +93,18 @@ class Pendaftar_model extends CI_Model
         // $qstring = $this->base64url_encode($token);
         $url = "";
 
-        if($info == "konfirmasi kehadiran"){
+        if ($info == "konfirmasi kehadiran") {
             $url = site_url() . 'auth/kehadiran/token/' . $qstring;
             $link = '<a href="' . $url . '">' . $url . '</a>';
-            $message = '';
-            $message .= '<strong>Hai, anda menerima email ini karena ada permintaan untuk mengonfirmasi kehadiran. Klik link dibawah ini maksimal 3 hari setelah dikirim</strong><br>';
-            $message .= '<strong>Silakan klik link ini:</strong> ' . $link;
-            $subject = 'Konfirmasi Kehadiran Balai Latihan Kerja';
-
-        }elseif($info == "konfirmasi kehadiran cadangan"){
+        } elseif ($info == "konfirmasi kehadiran cadangan") {
             $url = site_url() . 'auth/kehadiran_cadangan/token/' . $qstring;
-
+            $link = '<a href="' . $url . '">' . $url . '</a>';
         }
+
+        $message = '';
+        $message .= '<strong>Hai, anda menerima email ini karena ada permintaan untuk mengonfirmasi kehadiran. Klik link dibawah ini maksimal 3 hari setelah dikirim</strong><br>';
+        $message .= '<strong>Silakan klik link ini:</strong> ' . $link;
+        $subject = 'Konfirmasi Kehadiran Balai Latihan Kerja';
 
         //config email settings
         $config['protocol'] = 'smtp';
@@ -108,16 +131,16 @@ class Pendaftar_model extends CI_Model
             // echo "from: ".$from. "<br>";
             // echo "protocol: ". $config['protocol']."<br>";
             // echo "message: ".$message;
-            $this->session->set_flashdata('alert', '<p class="box-msg">
-                <div class="info-box alert-success">
-                <div class="info-box-icon">
-                <i class="fa fa-check-circle"></i>
-                </div>
-                <div class="info-box-content" style="font-size:14">
-                <b style="font-size: 20px">SUKSES</b><br>Berhasil, silakan cek email anda untuk melakukan tahapan selanjutnya</div>
-                </div>
-                </p>
-                ');
+            // $this->session->set_flashdata('alert', '<p class="box-msg">
+            // <div class="info-box alert-success">
+            // <div class="info-box-icon">
+            // <i class="fa fa-check-circle"></i>
+            // </div>
+            // <div class="info-box-content" style="font-size:14">
+            // <b style="font-size: 20px">SUKSES</b><br>Berhasil, silakan cek email anda untuk melakukan tahapan selanjutnya</div>
+            // </div>
+            // </p>
+            // ');
             return true;
         } else {
             // echo "email send failed";
@@ -279,7 +302,7 @@ class Pendaftar_model extends CI_Model
 
     function update_status_pending($id, $status)
     {
-            $data = array('status' => $status);
+        $data = array('status' => $status);
         $this->db->where('id', $id);
         $this->db->update('tbl_pendaftar', $data);
     }
@@ -340,8 +363,21 @@ class Pendaftar_model extends CI_Model
     }
 
     //input data pelatihan baru
-    public function insert($data)
+    public function insert()
     {
+        $data = array(
+            'email' => $this->input->post('email'),
+            'id_pelatihan' => $this->input->post('id_pelatihan'),
+            'wilayah' => $this->input->post('wilayah'),
+            'nama' => $this->input->post('nama'),
+            'nik' => $this->input->post('nik'),
+            'status' => 3,
+            'jenis_kelamin' => $this->input->post('jenis_kelamin'),
+            'alamat' => $this->input->post('alamat'),
+            'no_hp' => $this->input->post('no_hp'),
+            'pendidikan_terakhir' => $this->input->post('pendidikan_terakhir'),
+            'alasan_mengikuti' => $this->input->post('alasan_mengikuti'),
+        );
         return $this->db->insert($this->table, $data);
     }
     //ambil semua data

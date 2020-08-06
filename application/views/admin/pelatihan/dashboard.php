@@ -64,7 +64,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <th>Nama Pelatihan</th>
                                 <th>Tanggal Buka</th>
                                 <th>Tanggal Tutup</th>
-                                <th>Konf. Pendaftar</th>
+                                <th>Konf. Pendaftar Utama</th>
                                 <th>Konf. Pendaftar Cadangan</th>
                                 <th>Status</th>
                                 <th>Kuota (Kota + Luar Kota) </th>
@@ -121,9 +121,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <a class="btn btn-primary" href="<?php echo base_url('admin/pelatihan/hapus/'), $pelatihan->id ?>" onclick="return confirm('Apakah anda yakin?')">
                                     <i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Hapus</i>
                                 </a>
-                                <!-- <a class="hapus btn" href="<?php echo base_url('admin/pelatihan/tutup/'), $pelatihan->id ?>" onclick="return confirm('Apakah anda yakin?')">
-                                    <i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Tutup Pelatihan</i>
-                                </a> -->
                                 <?php
                                 if ($pelatihan->konfirmasi_pendaftar == "belum") {
 

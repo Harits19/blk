@@ -110,15 +110,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 ?>
 
                 <?php
-                if ($sudah_daftar == false) {
+                if ($sudah_daftar == false && $pelatihan->status == "tersedia") {
                 ?>
                   <a class="btn btn-primary" id="button_daftar" data-toggle="modal" href="#myModalDaftar" data-id_pelatihan="<?php echo $pelatihan->id ?>">Daftar</a>
 
                 <?php
                 } elseif ($pendaftar_info && $pelatihan->id == $pendaftar_info->id_pelatihan) {
                 ?>
+                  
                   <a class="btn btn-primary" id="button_daftar" data-toggle="modal" href="#myModalDataAnda" data-id_pelatihan="<?php echo $pelatihan->id ?>">Lihat Data Anda</a>
-
 
               <?php
                 }
@@ -156,7 +156,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Detail Pelatihan</h4>
+          <h4 class="modal-title">Pelatihan</h4>
         </div>
         <div class="modal-body">
           <form class="form-horizontal">
@@ -183,7 +183,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
             <div class="form-group">
               <label class="control-label col-xs-3">Detail Pelatihan</label>
               <div class="col-xs-8">
-                <input id="detail_pelatihan" class="form-control" type="text" disabled>
+                <textarea row ="3" id="detail_pelatihan" class="form-control" type="text" disabled></textarea>
               </div>
             </div>
             <div class="form-group">
@@ -329,7 +329,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-3">Upload Foto KTP (.png atau .jpg)</label>
+            <label class="control-label col-xs-3">Upload Foto KTP (.png atau .jpg max : 1mb)</label>
             <div class="col-xs-8">
               <input type="file" name="foto_ktp" />
             </div>

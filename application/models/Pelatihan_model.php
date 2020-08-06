@@ -3,6 +3,28 @@ class Pelatihan_model extends CI_Model
 {
   var $table = 'tbl_pelatihan';
 
+
+  public function validation($mode)
+  {
+    $this->load->library('form_validation');
+    if ($mode == "tambah" || $mode == "edit") {
+      $this->form_validation->set_rules('nama', 'Nama Pelatihan', 'required');
+      $this->form_validation->set_rules('tgl_buka', 'Tanggal Buka', 'required');
+      $this->form_validation->set_rules('tgl_tutup', 'Tanggal Tutup', 'required');
+      $this->form_validation->set_rules('status', 'Status', 'required');
+      $this->form_validation->set_rules('kuota_kota', 'Kuota Kota', 'required');
+      $this->form_validation->set_rules('kuota_luar_kota', 'Kuota Luar Kota', 'required');
+      $this->form_validation->set_rules('detail_pelatihan', 'Detail Pelatihan', 'required');
+      $this->form_validation->set_rules('nama_pelatih', 'Nama Pelatih', 'required');
+      $this->form_validation->set_rules('kontak_pelatih', 'Kontak Pelatih', 'required');
+
+      if ($this->form_validation->run()) // Jika validasi benar
+        return TRUE; // Maka kembalikan hasilnya dengan TRUE
+      else // Jika ada data yang tidak sesuai validasi
+        return FALSE; // Maka kembalikan hasilnya dengan FALSE
+    } 
+  }
+
   public function get_by_id($id)
   {
     $this->db->where('id', $id);
@@ -10,18 +32,29 @@ class Pelatihan_model extends CI_Model
   }
 
   public function get_by_($data)
-    {
-        if ($this->db->where($data)) {
-            return $this->db->get($this->table);
-        } else {
-            return false;
-        }
+  {
+    if ($this->db->where($data)) {
+      return $this->db->get($this->table);
+    } else {
+      return false;
     }
+  }
 
   //update pelatihan
-  public function update($id, $data)
+  public function update()
   {
-    $this->db->where('id', $id);
+    $data = array(
+      'nama' => $this->input->post('nama'),
+      'tgl_buka' => $this->input->post('tgl_buka'),
+      'tgl_tutup' => $this->input->post('tgl_tutup'),
+      'status' => $this->input->post('status'),
+      'kuota_kota' => $this->input->post('kuota_kota'),
+      'kuota_luar_kota' => $this->input->post('kuota_luar_kota'),
+      'detail_pelatihan' => $this->input->post('detail_pelatihan'),
+      'nama_pelatih' => $this->input->post('nama_pelatih'),
+      'kontak_pelatih' => $this->input->post('kontak_pelatih'),
+  );
+    $this->db->where('id', $this->input->post('id'));
     return $this->db->update($this->table, $data);
   }
 
@@ -39,8 +72,19 @@ class Pelatihan_model extends CI_Model
   }
 
   //input data pelatihan baru
-  public function insert($data)
+  public function insert()
   {
+    $data = array(
+      'nama' => $this->input->post('nama'),
+      'tgl_buka' => $this->input->post('tgl_buka'),
+      'tgl_tutup' => $this->input->post('tgl_tutup'),
+      'status' => $this->input->post('status'),
+      'kuota_kota' => $this->input->post('kuota_kota'),
+      'kuota_luar_kota' => $this->input->post('kuota_luar_kota'),
+      'detail_pelatihan' => $this->input->post('detail_pelatihan'),
+      'nama_pelatih' => $this->input->post('nama_pelatih'),
+      'kontak_pelatih' => $this->input->post('kontak_pelatih'),
+    );
     return $this->db->insert($this->table, $data);
   }
 

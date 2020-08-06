@@ -40,62 +40,27 @@ class Auth extends MY_Controller
     public function kehadiran()
     {
 
-        // if ($this->Pendaftar_model->verifikasi_kehadiran($hashcode)) {
-        //     $this->session->set_flashdata('alert', '<p class="box-msg">
-        //         <div class="info-box alert-success">
-        //         <div class="info-box-icon">
-        //         <i class="fa fa-check-circle"></i>
-        //         </div>
-        //         <div class="info-box-content" style="font-size:14">
-        //         <b style="font-size: 20px">SUKSES</b><br>Konfirmasi berhasil, silakan lakukan login dihalaman yang tersedia.</div>
-        //         </div>
-        //         </p>
-        //         ');
-        //     redirect('Auth/login');
-        // } else {
-        //     $this->session->set_flashdata('alert', '<p class="box-msg">
-        // 			<div class="info-box alert-danger">
-        // 			<div class="info-box-icon">
-        // 			<i class="fa fa-warning"></i>
-        // 			</div>
-        // 			<div class="info-box-content" style="font-size:14">
-        // 			<b style="font-size: 20px">GAGAL</b><br>Konfirmasi email gagal</div>
-        // 			</div>
-        // 			</p>
-        //       ');
-        //     redirect('Auth/login');
-        // }
-
-        // ========================================================
-        $data = konfigurasi('Konfirmasi Kehadiran');
+        $this->data = konfigurasi('Konfirmasi Kehadiran');
         $token = $this->Auth_model->base64url_decode($this->uri->segment(4));
         $cleanToken = $this->security->xss_clean($token);
-
         $user_info = $this->Pendaftar_model->isTokenValid($cleanToken);
+        $id_pelatihan = $user_info->id_pelatihan;
+        $where = array('id' => $id_pelatihan);
+        $pelatihan = $this->Pelatihan_model->get_by_($where)->row();
 
-        $tgl_verifikasi = $this->Pelatihan_model->get_by_id($user_info->id_pelatihan)->tgl_verifikasi;
 
-
-        // $tgl_verifikasi = $this->Pendaftar_model->get_by_($user_info->id_pelatihan)->tgl_verifikasi;
-        date_default_timezone_set('Asia/Jakarta');
-        $current_date = date('Y-m-d');
-        // echo $current_date;
-        // echo $tgl_verifikasi;
-
-        // TANDA BESAR MENYESUAIKAN
-        if (!$user_info || $current_date > $tgl_verifikasi) {
+        if ($pelatihan->konfirmasi_pendaftar == "sudah") {
             $this->session->set_flashdata('alert', '<p class="box-msg">
         			<div class="info-box alert-danger">
         			<div class="info-box-icon">
         			<i class="fa fa-warning"></i>
         			</div>
         			<div class="info-box-content" style="font-size:14">
-        			<b style="font-size: 20px">GAGAL</b><br>Konfirmasi Kehadiran tidak valid atau kadaluwarsa</div>
+        			<b style="font-size: 20px">GAGAL</b><br>Konfirmasi Kehadiran sudah kadaluwarsa </div>
         			</div>
         			</p>
             ');
-            // redirect(site_url('auth/forget'), 'refresh');
-            $this->template->load('authentication/layouts/template', 'authentication/login', $data);
+            $this->template->load('authentication/layouts/template', 'authentication/login', $this->data);
         } else {
             $this->session->set_flashdata('alert', '<p class="box-msg">
                 <div class="info-box alert-success">
@@ -108,69 +73,42 @@ class Auth extends MY_Controller
                 </p>
                 ');
 
-            $this->Pendaftar_model->update_status_pending($user_info->id, 1);
-
-            $this->template->load('authentication/layouts/template', 'authentication/login', $data);
+            $where = array("id" => $user_info->id);
+            $data = array("status" => 1);
+            $this->Pendaftar_model->update_status($where, $data);
+            $this->template->load('authentication/layouts/template', 'authentication/login', $this->data);
         }
     }
 
     public function kehadiran_cadangan()
     {
 
-        // if ($this->Pendaftar_model->verifikasi_kehadiran($hashcode)) {
-        //     $this->session->set_flashdata('alert', '<p class="box-msg">
-        //         <div class="info-box alert-success">
-        //         <div class="info-box-icon">
-        //         <i class="fa fa-check-circle"></i>
-        //         </div>
-        //         <div class="info-box-content" style="font-size:14">
-        //         <b style="font-size: 20px">SUKSES</b><br>Konfirmasi berhasil, silakan lakukan login dihalaman yang tersedia.</div>
-        //         </div>
-        //         </p>
-        //         ');
-        //     redirect('Auth/login');
-        // } else {
-        //     $this->session->set_flashdata('alert', '<p class="box-msg">
-        // 			<div class="info-box alert-danger">
-        // 			<div class="info-box-icon">
-        // 			<i class="fa fa-warning"></i>
-        // 			</div>
-        // 			<div class="info-box-content" style="font-size:14">
-        // 			<b style="font-size: 20px">GAGAL</b><br>Konfirmasi email gagal</div>
-        // 			</div>
-        // 			</p>
-        //       ');
-        //     redirect('Auth/login');
-        // }
 
-        // ========================================================
-        $data = konfigurasi('Konfirmasi Kehadiran Cadangan');
+        $this->data = konfigurasi('Konfirmasi Kehadiran Cadangan');
         $token = $this->Auth_model->base64url_decode($this->uri->segment(4));
         $cleanToken = $this->security->xss_clean($token);
 
         $user_info = $this->Pendaftar_model->isTokenValid($cleanToken);
 
+        $id_pelatihan = $user_info->id_pelatihan;
+        $where = array('id' => $id_pelatihan);
+        $pelatihan = $this->Pelatihan_model->get_by_($where)->row();
 
-        $tgl_verifikasi_cadangan = $this->Pelatihan_model->get_by_id($user_info->id_pelatihan)->tgl_verifikasi_cadangan;
 
 
-        // $tgl_verifikasi = $this->Pendaftar_model->get_by_($user_info->id_pelatihan)->tgl_verifikasi;
-        date_default_timezone_set('Asia/Jakarta');
-        $current_date = date('Y-m-d');
-
-        if (!$user_info || $current_date > $tgl_verifikasi_cadangan) {
+        if ($pelatihan->konfirmasi_pendaftar_cadangan == "sudah") {
             $this->session->set_flashdata('alert', '<p class="box-msg">
         			<div class="info-box alert-danger">
         			<div class="info-box-icon">
         			<i class="fa fa-warning"></i>
         			</div>
         			<div class="info-box-content" style="font-size:14">
-        			<b style="font-size: 20px">GAGAL</b><br>Konfirmasi Kehadiran tidak valid atau kadaluwarsa</div>
+        			<b style="font-size: 20px">GAGAL</b><br>Konfirmasi Kehadiran tidak sudah kadaluwarsa </div>
         			</div>
         			</p>
             ');
             // redirect(site_url('auth/forget'), 'refresh');
-            $this->template->load('authentication/layouts/template', 'authentication/login', $data);
+            $this->template->load('authentication/layouts/template', 'authentication/login', $this->data);
         } else {
             $this->session->set_flashdata('alert', '<p class="box-msg">
                 <div class="info-box alert-success">
@@ -182,10 +120,10 @@ class Auth extends MY_Controller
                 </div>
                 </p>
                 ');
-
-            $this->Pendaftar_model->update_status_pending($user_info->id, 5);
-
-            $this->template->load('authentication/layouts/template', 'authentication/login', $data);
+            $where = array("id" => $user_info->id);
+            $data = array("status" => 5);
+            $this->Pendaftar_model->update_status($where, $data);
+            $this->template->load('authentication/layouts/template', 'authentication/login', $this->data);
         }
     }
 
@@ -201,12 +139,6 @@ class Auth extends MY_Controller
         if (!$user_info) {
             $this->template->load('authentication/layouts/template', 'authentication/login', $data);
         }
-
-        // $data = array(
-        //     'nama' => $user_info->username,
-        //     'email' => $user_info->email,
-        //     'token' => $this->Auth_model->base64url_encode($token)
-        // );
 
         $data = array(
             'token' => $this->Auth_model->base64url_encode($token)
@@ -507,10 +439,10 @@ class Auth extends MY_Controller
     function confirmEmail($hashcode)
     {
         if ($this->Auth_model->verifyEmail($hashcode)) {
-            
+
             redirect('Auth/login');
         } else {
-            
+
             redirect('Auth/login');
         }
     }
