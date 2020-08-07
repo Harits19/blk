@@ -151,80 +151,6 @@ class Pendaftar_model extends CI_Model
 
 
 
-    public function kirim_konfirmasi_kehadiran($data_pendaftar, $kode_status)
-    {
-
-        $email = $data_pendaftar->email;
-        // $clean = $this->security->xss_clean($email);
-        $userInfo = $data_pendaftar;
-
-        $this->update_status_pending($data_pendaftar->id, $kode_status);
-
-
-        $token = $this->insertToken($userInfo->id);
-
-        $qstring = $this->base64url_encode($token);
-        $url = "";
-        if ($kode_status == 0) {
-            $url = site_url() . 'auth/kehadiran/token/' . $qstring;
-        } elseif ($kode_status == 4) {
-            $url = site_url() . 'auth/kehadiran_cadangan/token/' . $qstring;
-        }
-
-        $link = '<a href="' . $url . '">' . $url . '</a>';
-
-        $message = '';
-        $message .= '<strong>Hai, anda menerima email ini karena ada permintaan melakukan konfirmasi kehadiran.</strong><br>';
-        $message .= '<strong>Silakan klik link ini:</strong> ' . $link;
-
-        // echo $message;
-
-
-        $from = "bentzie19@gmail.com";    //senders email address
-        $subject = 'Konfirmasi Kehadiran Balai Latihan Kerja';  //email subject
-
-
-
-        $config['protocol'] = 'smtp';
-        $config['smtp_host'] = 'ssl://smtp.gmail.com';
-        $config['smtp_port'] = '465';
-        $config['smtp_user'] = $from;
-        $config['smtp_pass'] = 'harits963741852';  //sender's password
-        $config['mailtype'] = 'html';
-        $config['charset'] = 'iso-8859-1';
-        $config['wordwrap'] = 'TRUE';
-        $config['newline'] = "\r\n";
-
-        $this->load->library('email', $config);
-        $this->email->initialize($config);
-        //send email
-        $this->email->from($from);
-        $this->email->to($email);
-        $this->email->subject($subject);
-        $this->email->message($message);
-
-        echo "sent to: " . $email . "<br>";
-        echo "from: " . $from . "<br>";
-        echo "protocol: " . $config['protocol'] . "<br>";
-        echo "message: " . $message;
-
-        if ($this->email->send()) {
-            // for testing
-            // echo "sent to: " . $receiver . "<br>";
-            // echo "from: " . $from . "<br>";
-            // echo "protocol: " . $config['protocol'] . "<br>";
-            // echo "message: " . $message;
-            return true;
-        } else {
-            // echo "email send failed";
-            return false;
-        }
-        //send this through mail  
-        exit;
-    }
-
-
-
     public function insertToken($pendaftar_id)
     {
         $token = substr(sha1(rand()), 0, 30);
@@ -283,36 +209,8 @@ class Pendaftar_model extends CI_Model
         }
     }
 
-    function update_status_kehadiran($id)
-    {
 
-        $data = array('status' => 1);
-        $this->db->where('id', $id);
-        $this->db->update('tbl_pendaftar', $data);    //update status as 1 to make active user
-    }
-
-
-
-    function update_status_cadangan($id_pelatihan)
-    {
-        $data = array('status' => 3);
-        $this->db->where('id_pelatihan', $id_pelatihan);
-        $this->db->update('tbl_pendaftar', $data);
-    }
-
-    function update_status_pending($id, $status)
-    {
-        $data = array('status' => $status);
-        $this->db->where('id', $id);
-        $this->db->update('tbl_pendaftar', $data);
-    }
-
-    function update_status($where, $data)
-    {
-
-        $this->db->where($where);
-        $this->db->update('tbl_pendaftar', $data);
-    }
+    
 
 
 
@@ -325,11 +223,11 @@ class Pendaftar_model extends CI_Model
     //     }
     // }
 
-    public function get_by_id($id)
-    {
-        $this->db->where('id', $id);
-        return $this->db->get($this->table)->row();
-    }
+    // public function get_by_id($id)
+    // {
+    //     $this->db->where('id', $id);
+    //     return $this->db->get($this->table)->row();
+    // }
     public function get_by_($data)
     {
         if ($this->db->where($data)) {
@@ -340,17 +238,24 @@ class Pendaftar_model extends CI_Model
     }
 
 
-    public function get_data_per_wilayah($wilayah)
-    {
-        $this->db->where('wilayah', $wilayah);
-        return $this->db->get($this->table);
-    }
+    // public function get_data_per_wilayah($wilayah)
+    // {
+    //     $this->db->where('wilayah', $wilayah);
+    //     return $this->db->get($this->table);
+    // }
 
     //update pelatihan
-    public function update($id, $data)
+    // public function update($id, $data)
+    // {
+    //     $this->db->where('id', $id);
+    //     $this->db->update($this->table, $data);
+    // }
+
+    function update($where, $data)
     {
-        $this->db->where('id', $id);
-        $this->db->update($this->table, $data);
+
+        $this->db->where($where);
+        $this->db->update('tbl_pendaftar', $data);
     }
 
 
@@ -405,12 +310,12 @@ class Pendaftar_model extends CI_Model
     //     return $this->db->query($sql)->row();
     // }
 
-    public function get_pendaftar_by_id($id)
-    {
-        $sql = "SELECT tbl_pelatihan.id, tbl_pelatihan.nama, tbl_pendaftar.email FROM tbl_pendaftar INNER JOIN tbl_pelatihan on tbl_pelatihan.id = tbl_pendaftar.id_pelatihan && tbl_pendaftar.id =" . $id;
+    // public function get_pendaftar_by_id($id)
+    // {
+    //     $sql = "SELECT tbl_pelatihan.id, tbl_pelatihan.nama, tbl_pendaftar.email FROM tbl_pendaftar INNER JOIN tbl_pelatihan on tbl_pelatihan.id = tbl_pendaftar.id_pelatihan && tbl_pendaftar.id =" . $id;
 
-        return $this->db->query($sql)->row();
-    }
+    //     return $this->db->query($sql)->row();
+    // }
 
     public function get_pendaftar_kuota($kuota, $id, $jenis_kota)
     {

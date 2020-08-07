@@ -35,10 +35,11 @@ class Pelatihan extends MY_Controller
     public function konfirmasi_pendaftar($id_pelatihan)
     {
         $this->data = konfigurasi('Pelatihan');
+        $where = array('id' => $id_pelatihan);
         $data_pelatihan = array(
             'konfirmasi_pendaftar' => 'sudah'
         );
-        if ($this->Pelatihan_model->update($id_pelatihan, $data_pelatihan)) {
+        if ($this->Pelatihan_model->update("update status", $where, $data_pelatihan)) {
             $this->session->set_flashdata('msg', show_succ_msg('Pelatihan Berhasil Diperbaruii'));
             redirect('admin/pelatihan', 'refresh', $this->data);
         }
@@ -47,10 +48,11 @@ class Pelatihan extends MY_Controller
     public function konfirmasi_pendaftar_cadangan($id_pelatihan)
     {
         $this->data = konfigurasi('Pelatihan');
+        $where = array('id' => $id_pelatihan);
         $data_pelatihan = array(
             'konfirmasi_pendaftar_cadangan' => 'sudah'
         );
-        if ($this->Pelatihan_model->update($id_pelatihan, $data_pelatihan)) {
+        if ($this->Pelatihan_model->update("update status", $where, $data_pelatihan)) {
             $this->session->set_flashdata('msg', show_succ_msg('Pelatihan Berhasil Diperbaruii'));
             redirect('admin/pelatihan', 'refresh', $this->data);
         }
@@ -108,7 +110,7 @@ class Pelatihan extends MY_Controller
         if ($tgl_buka > $tgl_tutup) {
             $this->session->set_flashdata('msg', show_err_msg('Tanggal yang anda masukkan tidak sesuai Tanggal Tutup'));
         } elseif ($this->Pelatihan_model->validation("edit")) {
-            if ($this->Pelatihan_model->update()) {
+            if ($this->Pelatihan_model->update("edit pelatihan")) {
                 $this->session->set_flashdata('msg', show_succ_msg('Pelatihan Berhasil Diperbaharui'));
             } else {
                 $this->session->set_flashdata('msg', show_err_msg('Pelatihan Gagal Diperbaharui'));

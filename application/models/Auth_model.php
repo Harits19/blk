@@ -35,6 +35,36 @@ class Auth_model extends CI_Model
         return $this->db->affected_rows();
     }
 
+    public function validation($mode)
+    {
+        if ($mode == "reset password") {
+            $this->form_validation->set_rules('password', 'Password', 'required|min_length[5]');
+            $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required|matches[password]');
+        } elseif ($mode == "update profile") {
+            $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[4]|max_length[15]');
+            $this->form_validation->set_rules('first_name', 'Nama Depan', 'trim|required|min_length[2]|max_length[15]');
+            $this->form_validation->set_rules('last_name', 'Nama Belakang', 'trim|required|min_length[2]|max_length[15]');
+            $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[8]|max_length[50]');
+            $this->form_validation->set_rules('phone', 'Telp', 'trim|required|min_length[11]|max_length[12]');
+        } elseif ($mode == "update password") {
+            $this->form_validation->set_rules('passLama', 'Password Lama', 'trim|required|min_length[5]|max_length[25]');
+            $this->form_validation->set_rules('passBaru', 'Password Baru', 'trim|required|min_length[5]|max_length[25]');
+            $this->form_validation->set_rules('passKonf', 'Password Konfirmasi', 'trim|required|min_length[5]|max_length[25]');
+        } elseif ($mode == "check register") {
+            $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[50]');
+            $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[5]|max_length[50]|valid_email|is_unique[tbl_user.email]');
+            $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[20]');
+            $this->form_validation->set_rules('confirm_password', 'Password Confirmation', 'trim|required|matches[password]');
+        } elseif ($mode == "login") {
+            $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[5]|max_length[50]');
+            $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[22]');
+        }
+        if ($this->form_validation->run()) // Jika validasi benar
+            return TRUE; // Maka kembalikan hasilnya dengan TRUE
+        else // Jika ada data yang tidak sesuai validasi
+            return FALSE; // Maka kembalikan hasilnya dengan FALSE
+    }
+
     public function getUserInfoByEmail($email)
     {
         $q = $this->db->get_where('tbl_user', array('email' => $email), 1);
@@ -194,17 +224,17 @@ class Auth_model extends CI_Model
         }
     }
 
-    public function getUserInfo($id)
-    {
-        $q = $this->db->get_where('tbl_user', array('id' => $id), 1);
-        if ($this->db->affected_rows() > 0) {
-            $row = $q->row();
-            return $row;
-        } else {
-            error_log('no user found getUserInfo(' . $id . ')');
-            return false;
-        }
-    }
+    // public function getUserInfo($id)
+    // {
+    //     $q = $this->db->get_where('tbl_user', array('id' => $id), 1);
+    //     if ($this->db->affected_rows() > 0) {
+    //         $row = $q->row();
+    //         return $row;
+    //     } else {
+    //         error_log('no user found getUserInfo(' . $id . ')');
+    //         return false;
+    //     }
+    // }
 
     public function insertToken($user_id)
     {
@@ -316,19 +346,19 @@ class Auth_model extends CI_Model
         return $query;
     }
 
-    public function check_email($email)
-    {
-        //cari email lalu lakukan validasi
-        $this->db->where('email', $email);
-        $query = $this->db->get($this->table)->row();
+    // public function check_email($email)
+    // {
+    //     //cari email lalu lakukan validasi
+    //     $this->db->where('email', $email);
+    //     $query = $this->db->get($this->table)->row();
 
-        //jika bernilai 1 maka user tidak ditemukan
-        if (!$query) {
-            return 1;
-        }
+    //     //jika bernilai 1 maka user tidak ditemukan
+    //     if (!$query) {
+    //         return 1;
+    //     }
 
-        return $query;
-    }
+    //     return $query;
+    // }
 
     public function logout($date, $id)
     {
@@ -336,58 +366,58 @@ class Auth_model extends CI_Model
         $this->db->update($this->table, $date);
     }
 
-    public function sendEmailVerification($receiver)
-    {
-        $from = "bentzie19@gmail.com";    //senders email address
-        $subject = 'Test Email Verifikasi Akun';  //email subject
+    // public function sendEmailVerification($receiver)
+    // {
+    //     $from = "bentzie19@gmail.com";    //senders email address
+    //     $subject = 'Test Email Verifikasi Akun';  //email subject
 
-        //sending confirmEmail($receiver) function calling link to the user, inside message body
-        $message = 'Dear User,<br><br> Klik link dibawah untuk mengaktifkan akun anda<br><br>
-        <a href=\'http://www.localhost/blk/Auth/confirmEmail/' . md5($receiver) . '\'>http://www.localhost/blk/Auth/confirmEmail/' . md5($receiver) . '</a><br><br>Thanks';
+    //     //sending confirmEmail($receiver) function calling link to the user, inside message body
+    //     $message = 'Dear User,<br><br> Klik link dibawah untuk mengaktifkan akun anda<br><br>
+    //     <a href=\'http://www.localhost/blk/Auth/confirmEmail/' . md5($receiver) . '\'>http://www.localhost/blk/Auth/confirmEmail/' . md5($receiver) . '</a><br><br>Thanks';
 
 
 
-        //config email settings
-        $config['protocol'] = 'smtp';
-        $config['smtp_host'] = 'ssl://smtp.gmail.com';
-        $config['smtp_port'] = '465';
-        $config['smtp_user'] = $from;
-        $config['smtp_pass'] = 'harits963741852';  //sender's password
-        $config['mailtype'] = 'html';
-        $config['charset'] = 'iso-8859-1';
-        $config['wordwrap'] = 'TRUE';
-        $config['newline'] = "\r\n";
+    //     //config email settings
+    //     $config['protocol'] = 'smtp';
+    //     $config['smtp_host'] = 'ssl://smtp.gmail.com';
+    //     $config['smtp_port'] = '465';
+    //     $config['smtp_user'] = $from;
+    //     $config['smtp_pass'] = 'harits963741852';  //sender's password
+    //     $config['mailtype'] = 'html';
+    //     $config['charset'] = 'iso-8859-1';
+    //     $config['wordwrap'] = 'TRUE';
+    //     $config['newline'] = "\r\n";
 
-        $this->load->library('email', $config);
-        $this->email->initialize($config);
-        //send email
-        $this->email->from($from);
-        $this->email->to($receiver);
-        $this->email->subject($subject);
-        $this->email->message($message);
+    //     $this->load->library('email', $config);
+    //     $this->email->initialize($config);
+    //     //send email
+    //     $this->email->from($from);
+    //     $this->email->to($receiver);
+    //     $this->email->subject($subject);
+    //     $this->email->message($message);
 
-        if ($this->email->send()) {
-            //for testing
-            // echo "sent to: ".$receiver."<br>";
-            // echo "from: ".$from. "<br>";
-            // echo "protocol: ". $config['protocol']."<br>";
-            // echo "message: ".$message;
-            $this->session->set_flashdata('alert', '<p class="box-msg">
-                <div class="info-box alert-success">
-                <div class="info-box-icon">
-                <i class="fa fa-check-circle"></i>
-                </div>
-                <div class="info-box-content" style="font-size:14">
-                <b style="font-size: 20px">SUKSES</b><br>Pendaftaran berhasil, silakan cek email anda untuk melakukan aktivasi akun.</div>
-                </div>
-                </p>
-                ');
-            return true;
-        } else {
-            // echo "email send failed";
-            return false;
-        }
-    }
+    //     if ($this->email->send()) {
+    //         //for testing
+    //         // echo "sent to: ".$receiver."<br>";
+    //         // echo "from: ".$from. "<br>";
+    //         // echo "protocol: ". $config['protocol']."<br>";
+    //         // echo "message: ".$message;
+    //         $this->session->set_flashdata('alert', '<p class="box-msg">
+    //             <div class="info-box alert-success">
+    //             <div class="info-box-icon">
+    //             <i class="fa fa-check-circle"></i>
+    //             </div>
+    //             <div class="info-box-content" style="font-size:14">
+    //             <b style="font-size: 20px">SUKSES</b><br>Pendaftaran berhasil, silakan cek email anda untuk melakukan aktivasi akun.</div>
+    //             </div>
+    //             </p>
+    //             ');
+    //         return true;
+    //     } else {
+    //         // echo "email send failed";
+    //         return false;
+    //     }
+    // }
 
     // public function sendEmailForgot($receiver)
     // {
@@ -459,17 +489,17 @@ class Auth_model extends CI_Model
         			</div>
         			</p>
               ');
-              return false;
+            return false;
         }
 
         return $this->db->update('tbl_user', $data);    //update status as 1 to make active user
     }
 
-    function verifyPassword($key)
-    {
-        // $data = array('activated' => 1);
-        $this->db->where('md5(email)', $key);
-        return true;
-        // return $this->db->update('tbl_user', $data);    //update status as 1 to make active user
-    }
+    // function verifyPassword($key)
+    // {
+    //     // $data = array('activated' => 1);
+    //     $this->db->where('md5(email)', $key);
+    //     return true;
+    //     // return $this->db->update('tbl_user', $data);    //update status as 1 to make active user
+    // }
 }

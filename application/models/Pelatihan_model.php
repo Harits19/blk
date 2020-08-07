@@ -22,14 +22,14 @@ class Pelatihan_model extends CI_Model
         return TRUE; // Maka kembalikan hasilnya dengan TRUE
       else // Jika ada data yang tidak sesuai validasi
         return FALSE; // Maka kembalikan hasilnya dengan FALSE
-    } 
+    }
   }
 
-  public function get_by_id($id)
-  {
-    $this->db->where('id', $id);
-    return $this->db->get($this->table)->row();
-  }
+  // public function get_by_id($id)
+  // {
+  //   $this->db->where('id', $id);
+  //   return $this->db->get($this->table)->row();
+  // }
 
   public function get_by_($data)
   {
@@ -41,21 +41,27 @@ class Pelatihan_model extends CI_Model
   }
 
   //update pelatihan
-  public function update()
+  public function update($mode, $where, $data)
   {
-    $data = array(
-      'nama' => $this->input->post('nama'),
-      'tgl_buka' => $this->input->post('tgl_buka'),
-      'tgl_tutup' => $this->input->post('tgl_tutup'),
-      'status' => $this->input->post('status'),
-      'kuota_kota' => $this->input->post('kuota_kota'),
-      'kuota_luar_kota' => $this->input->post('kuota_luar_kota'),
-      'detail_pelatihan' => $this->input->post('detail_pelatihan'),
-      'nama_pelatih' => $this->input->post('nama_pelatih'),
-      'kontak_pelatih' => $this->input->post('kontak_pelatih'),
-  );
-    $this->db->where('id', $this->input->post('id'));
-    return $this->db->update($this->table, $data);
+
+    if ($mode == "edit pelatihan") {
+      $data = array(
+        'nama' => $this->input->post('nama'),
+        'tgl_buka' => $this->input->post('tgl_buka'),
+        'tgl_tutup' => $this->input->post('tgl_tutup'),
+        'status' => $this->input->post('status'),
+        'kuota_kota' => $this->input->post('kuota_kota'),
+        'kuota_luar_kota' => $this->input->post('kuota_luar_kota'),
+        'detail_pelatihan' => $this->input->post('detail_pelatihan'),
+        'nama_pelatih' => $this->input->post('nama_pelatih'),
+        'kontak_pelatih' => $this->input->post('kontak_pelatih'),
+      );
+      $this->db->where('id', $this->input->post('id'));
+      return $this->db->update($this->table, $data);
+    }elseif($mode=="update status"){
+      $this->db->where($where);
+      return $this->db->update($this->table, $data);
+    }
   }
 
   // public function update_status_pelatihan($id)

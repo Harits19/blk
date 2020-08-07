@@ -25,7 +25,6 @@ class Auth extends MY_Controller
         parent::__construct();
         $this->load->database();
         $this->load->model('Auth_model');
-
         $this->load->model('User_model');
         $this->load->model('Pendaftar_model');
         $this->load->model('Pelatihan_model');
@@ -75,15 +74,13 @@ class Auth extends MY_Controller
 
             $where = array("id" => $user_info->id);
             $data = array("status" => 1);
-            $this->Pendaftar_model->update_status($where, $data);
+            $this->Pendaftar_model->update($where, $data);
             $this->template->load('authentication/layouts/template', 'authentication/login', $this->data);
         }
     }
 
     public function kehadiran_cadangan()
     {
-
-
         $this->data = konfigurasi('Konfirmasi Kehadiran Cadangan');
         $token = $this->Auth_model->base64url_decode($this->uri->segment(4));
         $cleanToken = $this->security->xss_clean($token);
@@ -107,7 +104,6 @@ class Auth extends MY_Controller
         			</div>
         			</p>
             ');
-            // redirect(site_url('auth/forget'), 'refresh');
             $this->template->load('authentication/layouts/template', 'authentication/login', $this->data);
         } else {
             $this->session->set_flashdata('alert', '<p class="box-msg">
@@ -144,22 +140,32 @@ class Auth extends MY_Controller
             'token' => $this->Auth_model->base64url_encode($token)
         );
 
-        $this->form_validation->set_rules('password', 'Password', 'required|min_length[5]');
-        $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required|matches[password]');
+        // $this->form_validation->set_rules('password', 'Password', 'required|min_length[5]');
+        // $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required|matches[password]');
 
-        if ($this->form_validation->run() == FALSE) {
+        // if ($this->form_validation->run() == FALSE) {
+        //     $this->template->load('authentication/layouts/template', 'authentication/new_password', $data);
+
+        //     // red
+        // } 
+
+        if ($this->Auth_model->validation("reset password") == FALSE) {
+            
             $this->template->load('authentication/layouts/template', 'authentication/new_password', $data);
-
-            // red
         } else {
-
-
             $cleanPost['password'] = get_hash($this->input->post('password'));
             $cleanPost['id'] = $user_info->id;
-
-
             if (!$this->User_model->updatePassword($cleanPost)) {
-                $this->session->set_flashdata('sukses', 'Update password gagal.');
+                $this->session->set_flashdata('alert', '<p class="box-msg">
+        			<div class="info-box alert-danger">
+        			<div class="info-box-icon">
+        			<i class="fa fa-warning"></i>
+        			</div>
+        			<div class="info-box-content" style="font-size:14">
+        			<b style="font-size: 20px">GAGAL</b><br>Update password gagal</div>
+        			</div>
+        			</p>
+            ');
             } else {
                 $this->session->set_flashdata('alert', '<p class="box-msg">
                 <div class="info-box alert-success">
@@ -178,11 +184,11 @@ class Auth extends MY_Controller
 
     public function updateProfile()
     {
-        $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[4]|max_length[15]');
-        $this->form_validation->set_rules('first_name', 'Nama Depan', 'trim|required|min_length[2]|max_length[15]');
-        $this->form_validation->set_rules('last_name', 'Nama Belakang', 'trim|required|min_length[2]|max_length[15]');
-        $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[8]|max_length[50]');
-        $this->form_validation->set_rules('phone', 'Telp', 'trim|required|min_length[11]|max_length[12]');
+        // $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[4]|max_length[15]');
+        // $this->form_validation->set_rules('first_name', 'Nama Depan', 'trim|required|min_length[2]|max_length[15]');
+        // $this->form_validation->set_rules('last_name', 'Nama Belakang', 'trim|required|min_length[2]|max_length[15]');
+        // $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[8]|max_length[50]');
+        // $this->form_validation->set_rules('phone', 'Telp', 'trim|required|min_length[11]|max_length[12]');
 
         $id = $this->session->userdata('id');
         $data = array(
@@ -192,7 +198,30 @@ class Auth extends MY_Controller
             'email' => $this->input->post('email'),
             'phone' => $this->input->post('phone'),
         );
-        if ($this->form_validation->run() == true) {
+
+        // if ($this->form_validation->run() == true) {
+        //     if (!empty($_FILES['photo']['name'])) {
+        //         $upload = $this->_do_upload();
+
+        //         //delete file
+        //         $user = $this->Auth_model->get_by_id($this->session->userdata('id'));
+        //         if (file_exists('assets/uploads/images/foto_profil/' . $user->photo) && $user->photo) {
+        //             unlink('assets/uploads/images/foto_profil/' . $user->photo);
+        //         }
+
+        //         $data['photo'] = $upload;
+        //     }
+        //     $result = $this->Auth_model->update($data, $id);
+        //     if ($result > 0) {
+        //         $this->updateProfil();
+        //         $this->session->set_flashdata('msg', show_succ_msg('Data Profil Berhasil diubah'));
+        //         redirect('auth/profile');
+        //     } else {
+        //         $this->session->set_flashdata('msg', show_err_msg('Data Profile Gagal diubah'));
+        //         redirect('auth/profile');
+        //     }
+        // } 
+        if ($this->Auth_model->validation("update profile") == true) {
             if (!empty($_FILES['photo']['name'])) {
                 $upload = $this->_do_upload();
 
@@ -221,12 +250,12 @@ class Auth extends MY_Controller
 
     public function updatePassword()
     {
-        $this->form_validation->set_rules('passLama', 'Password Lama', 'trim|required|min_length[5]|max_length[25]');
-        $this->form_validation->set_rules('passBaru', 'Password Baru', 'trim|required|min_length[5]|max_length[25]');
-        $this->form_validation->set_rules('passKonf', 'Password Konfirmasi', 'trim|required|min_length[5]|max_length[25]');
+        // $this->form_validation->set_rules('passLama', 'Password Lama', 'trim|required|min_length[5]|max_length[25]');
+        // $this->form_validation->set_rules('passBaru', 'Password Baru', 'trim|required|min_length[5]|max_length[25]');
+        // $this->form_validation->set_rules('passKonf', 'Password Konfirmasi', 'trim|required|min_length[5]|max_length[25]');
 
         $id = $this->session->userdata('id');
-        if ($this->form_validation->run() == true) {
+        if ($this->Auth_model->validation() == true) {
             if (password_verify($this->input->post('passLama'), $this->session->userdata('password'))) {
                 if ($this->input->post('passBaru') != $this->input->post('passKonf')) {
                     $this->session->set_flashdata('msg', show_err_msg('Password Baru dan Konfirmasi Password harus sama'));
@@ -319,12 +348,12 @@ class Auth extends MY_Controller
     public function check_register()
     {
         $data = konfigurasi('Pendaftaran');
-        $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[50]');
-        $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[5]|max_length[50]|valid_email|is_unique[tbl_user.email]');
-        $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[20]');
-        $this->form_validation->set_rules('confirm_password', 'Password Confirmation', 'trim|required|matches[password]');
+        // $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[50]');
+        // $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[5]|max_length[50]|valid_email|is_unique[tbl_user.email]');
+        // $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[20]');
+        // $this->form_validation->set_rules('confirm_password', 'Password Confirmation', 'trim|required|matches[password]');
 
-        if ($this->form_validation->run() == false) {
+        if ($this->Auth_model->validation("check register") == false) {
             $this->register();
         } else {
             $this->Auth_model->reg();
@@ -392,11 +421,11 @@ class Auth extends MY_Controller
 
         //proses login dan validasi nya
         if ($this->input->post('submit')) {
-            $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[5]|max_length[50]');
-            $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[22]');
+            // $this->form_validation->set_rules('email', 'Email', 'trim|required|min_length[5]|max_length[50]');
+            // $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[22]');
             $error = $this->check_account();
 
-            if ($this->form_validation->run() && $error === true) {
+            if ($this->Auth_model->validation("login") && $error === true) {
                 $data = $this->Auth_model->check_account($this->input->post('email'), $this->input->post('password'));
 
                 //jika bernilai TRUE maka alihkan halaman sesuai dengan level nya

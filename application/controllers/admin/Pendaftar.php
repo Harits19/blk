@@ -49,7 +49,7 @@ class Pendaftar extends MY_Controller
                 $this->Pendaftar_model->kirim_email($pendaftar->email, $qstring, $keterangan);
                 $where = array('id' => $pendaftar->id);
               
-                $this->Pendaftar_model->update_status($where, $data_pendaftar);
+                $this->Pendaftar_model->update($where, $data_pendaftar);
                 $this->session->set_flashdata('msg', show_succ_msg('Berhasil mengirim email konfirmasi'));
             }
             $this->session->set_flashdata('msg', show_succ_msg('Berhasil mengirim email konfirmasi'));
@@ -75,13 +75,13 @@ class Pendaftar extends MY_Controller
         if ($data_pelatihan->konfirmasi_pendaftar == "sudah") {
             $where = array('id_pelatihan' => $id, 'status' => 0);
             $status = array('status' => 2);
-            $this->Pendaftar_model->update_status($where, $status);
+            $this->Pendaftar_model->update($where, $status);
         } 
         
         if ($data_pelatihan->konfirmasi_pendaftar_cadangan == 'sudah') {
             $where = array('id_pelatihan' => $id, 'status' => 4);
             $status = array('status' => 2);
-            $this->Pendaftar_model->update_status($where, $status);
+            $this->Pendaftar_model->update($where, $status);
         }
 
         $this->data["data_pelatihan"] = $data_pelatihan;
