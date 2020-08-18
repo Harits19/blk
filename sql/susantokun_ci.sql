@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 03, 2020 at 05:43 PM
+-- Generation Time: Aug 18, 2020 at 06:36 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.2
 
@@ -60,6 +60,8 @@ CREATE TABLE `tbl_pelatihan` (
   `nama` varchar(255) NOT NULL,
   `tgl_buka` date NOT NULL,
   `tgl_tutup` date NOT NULL,
+  `konfirmasi_pendaftar` enum('belum','sudah') NOT NULL,
+  `konfirmasi_pendaftar_cadangan` enum('belum','sudah') NOT NULL,
   `tgl_verifikasi` date NOT NULL,
   `tgl_verifikasi_cadangan` date NOT NULL,
   `status` enum('tutup','tersedia') NOT NULL,
@@ -74,9 +76,12 @@ CREATE TABLE `tbl_pelatihan` (
 -- Dumping data for table `tbl_pelatihan`
 --
 
-INSERT INTO `tbl_pelatihan` (`id`, `nama`, `tgl_buka`, `tgl_tutup`, `tgl_verifikasi`, `tgl_verifikasi_cadangan`, `status`, `detail_pelatihan`, `nama_pelatih`, `kontak_pelatih`, `kuota_luar_kota`, `kuota_kota`) VALUES
-(56, 'Pelatihan Menjahit', '2020-07-26', '2020-07-27', '2020-07-28', '2020-07-29', 'tersedia', '', '', '', 1, 1),
-(57, 'Pelatihan Otomotif', '2020-07-31', '2020-08-02', '2020-08-05', '2020-08-06', 'tersedia', '', '', '', 2, 12);
+INSERT INTO `tbl_pelatihan` (`id`, `nama`, `tgl_buka`, `tgl_tutup`, `konfirmasi_pendaftar`, `konfirmasi_pendaftar_cadangan`, `tgl_verifikasi`, `tgl_verifikasi_cadangan`, `status`, `detail_pelatihan`, `nama_pelatih`, `kontak_pelatih`, `kuota_luar_kota`, `kuota_kota`) VALUES
+(56, 'Pelatihan Menjahit', '2020-07-22', '2020-08-05', 'sudah', 'sudah', '2020-08-13', '2020-08-17', 'tutup', 'Pelatihan atau Magang adalah proses melatih; kegiatan atau pekerjaan Pelatihan mempersiapkan peserta latihan untuk mengambil jalur tindakan tertentu yang dilukiskan oleh teknologi dan organisasi tempat bekerja, dan membantu peserta memperbaiki prestasi dalam kegiatannya terutama mengenai pengertian dan keterampilan.', 'Joko Anwar', '081231231231', 2, 10),
+(57, 'Pelatihan Otomotif', '2020-07-31', '2020-08-02', 'sudah', 'sudah', '2020-08-05', '2020-08-06', 'tutup', 'Pelatihan ini mengenai', 'Suwardi', '0812345678', 2, 12),
+(59, 'Pelatihan Memasak', '2020-08-04', '2020-08-05', 'sudah', 'sudah', '0000-00-00', '0000-00-00', 'tersedia', 'Pelatihan ini mengenai', 'Suwardi', '0812345678', 5, 12),
+(60, 'qwasdasd', '2020-08-06', '2020-08-08', 'sudah', 'sudah', '0000-00-00', '0000-00-00', 'tersedia', '12', '12', '12', 112, 12),
+(61, '1231', '2020-08-06', '2020-08-08', 'sudah', 'sudah', '0000-00-00', '0000-00-00', 'tutup', '123', '12', '12', 123, 123);
 
 -- --------------------------------------------------------
 
@@ -99,6 +104,27 @@ CREATE TABLE `tbl_pendaftar` (
   `alasan_mengikuti` text DEFAULT NULL,
   `foto_ktp` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tbl_pendaftar`
+--
+
+INSERT INTO `tbl_pendaftar` (`id`, `nik`, `email`, `id_pelatihan`, `status`, `wilayah`, `nama`, `alamat`, `jenis_kelamin`, `no_hp`, `pendidikan_terakhir`, `alasan_mengikuti`, `foto_ktp`) VALUES
+(211, '123', 'harits.abdullah19@gmail.com', 56, 2, 'kota', 'Abdullah Harits', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'laki-laki', '08123444499', 'SMA', 'Ingin Belajar...', '123.jpg'),
+(212, '123', 'Jonathan@maildummy.com', 56, 2, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'perempuan', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
+(213, '123', 'Jonathan@maildummy.com', 56, 4, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'perempuan', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
+(214, '123', 'Jonathan@maildummy.com', 56, 3, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'laki-laki', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
+(215, '123', 'Steven@maildummy.com', 56, 4, 'luar kota', 'Steven Al Kabupatenwi', 'JL. Raya Dringu, No. 901, Kabupaten Probolinggo, Jawa Timur', 'laki-laki', '08123444499', 'SMA', 'Ingin Belajar...', '123.jpg'),
+(216, '123', 'Jonathan@maildummy.com', 56, 4, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'perempuan', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
+(217, '123', 'Jonathan@maildummy.com', 56, 3, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'laki-laki', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
+(218, '123', 'Jonathan@maildummy.com', 56, 4, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'laki-laki', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
+(219, '123', 'Steven@maildummy.com', 56, 4, 'luar kota', 'Steven Al Kabupatenwi', 'JL. Raya Dringu, No. 901, Kabupaten Probolinggo, Jawa Timur', 'perempuan', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
+(220, '123', 'Jonathan@maildummy.com', 56, 3, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'perempuan', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
+(221, '123', 'Jonathan@maildummy.com', 56, 4, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'perempuan', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
+(222, '123', 'Jonathan@maildummy.com', 56, 4, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'laki-laki', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
+(223, '123', 'Steven@maildummy.com', 56, 3, 'luar kota', 'Steven Al Kabupatenwi', 'JL. Raya Dringu, No. 901, Kabupaten Probolinggo, Jawa Timur', 'laki-laki', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
+(225, '123', 'member@mail.com', 56, 4, 'kota', 'Jonathan Al Kotawi', 'Malang Kota', 'perempuan', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
+(229, '123', 'ruwucucak@gmail.com', 59, 3, 'kota', 'harits', '123', 'laki-laki', '123', '123', '123', '');
 
 -- --------------------------------------------------------
 
@@ -148,10 +174,11 @@ CREATE TABLE `tbl_user` (
 --
 
 INSERT INTO `tbl_user` (`id`, `id_role`, `username`, `password`, `password_reset_key`, `first_name`, `last_name`, `email`, `phone`, `photo`, `activated`, `last_login`, `created_at`, `updated_at`) VALUES
-(1, 1, 'admin', '$2y$05$OA.OoeNHoEkbGGKazYqPU.UOaI5jmgro8x2pRSV56ClTWlDf0EEn2', '', 'ADMIN', '', 'admin@mail.com', '081906515912', '1526456245974.png', 1, '2020-08-03 17:11:02', '2020-03-14 21:58:17', NULL),
-(2, 2, 'member', '$2y$05$C53Jmt2hAeqr0EnQPjsm6.XBlNkDE8l7aFllR72PY9zHSkAMLiixW', '', 'MEMBER', 'asd', 'member@mail.com', '081906515912', '1596468728042.png', 1, '2020-08-03 17:26:29', '2020-03-14 22:00:32', NULL),
+(1, 1, 'admin', '$2y$05$OA.OoeNHoEkbGGKazYqPU.UOaI5jmgro8x2pRSV56ClTWlDf0EEn2', '', 'ADMIN', '', 'admin@mail.com', '081906515912', '1526456245974.png', 1, '2020-08-06 21:57:51', '2020-03-14 21:58:17', NULL),
+(2, 2, 'member', '$2y$05$C53Jmt2hAeqr0EnQPjsm6.XBlNkDE8l7aFllR72PY9zHSkAMLiixW', '', 'MEMBER', 'asd', 'member@mail.com', '081906515912', '1596468728042.png', 1, '2020-08-07 16:26:23', '2020-03-14 22:00:32', NULL),
 (23, 2, 'harits', '$2y$05$d64LQD00aY9aifl.K5qVJOZ7qpKA3kvDpY1kn2Lzn.BAGERln65TW', NULL, '', '', 'harits.abdullah19@gmail.com', '', 'member.png', 1, '2020-08-03 15:03:39', '2020-08-03 14:59:42', NULL),
-(24, 2, 'harits', '$2y$05$1YsJQDPH0ytpMcYTbg75oeK...3Dx4iyIvWHlQ.0m1HsTw5Ya1aN2', NULL, '', '', '_harits19@student.ub.ac.id', '', '1583991814826.png', 1, '2020-08-03 17:09:48', '2020-08-03 16:52:04', NULL);
+(24, 2, 'harits', '$2y$05$1YsJQDPH0ytpMcYTbg75oeK...3Dx4iyIvWHlQ.0m1HsTw5Ya1aN2', NULL, '', '', '_harits19@student.ub.ac.id', '', '1583991814826.png', 1, '2020-08-03 17:09:48', '2020-08-03 16:52:04', NULL),
+(25, 2, 'harits', '$2y$05$civG7Tm0h9XF0F.zMVXb4.2eldwKEAI376anbJiWkQeykS/Ki0YrS', NULL, '', '', 'ruwucucak@gmail.com', '', '1583991814826.png', 1, '2020-08-07 16:50:19', '2020-08-05 17:10:11', NULL);
 
 -- --------------------------------------------------------
 
@@ -844,7 +871,145 @@ INSERT INTO `tokens` (`id`, `token`, `user_id`, `created`) VALUES
 (675, '5d48a014f90a1bb9d26fbdb6257855', 23, '2020-08-03'),
 (676, '7ad36040513b1a2ac4b39d17776479', 23, '2020-08-03'),
 (677, '52cee4d0d251f03d3652e0f8588e5f', 23, '2020-08-03'),
-(678, '11f92e7919093d8704b3b603919b14', 24, '2020-08-03');
+(678, '11f92e7919093d8704b3b603919b14', 24, '2020-08-03'),
+(679, '481786bec282a20c6edff486d2c187', 210, '2020-08-04'),
+(680, 'a71a2efb966138bd46ba5c14d81338', 210, '2020-08-04'),
+(681, '043b75c6cbaa2556d08e2cf54bd2b7', 210, '2020-08-04'),
+(682, '9f98900a29c9e686ed13b39f24fc95', 211, '2020-08-04'),
+(683, '9f98f9476dd059f65b2172bb9d93f1', 210, '2020-08-04'),
+(684, '36a95562eb06182be806c115b3a1f3', 211, '2020-08-04'),
+(685, '4d3a8a911ad566e595ac57b5d737ce', 210, '2020-08-04'),
+(686, '4b9b1f7e05ddd601cad07f48e8488c', 210, '2020-08-04'),
+(687, 'c6cd8c40fb92dd625ad67742873abc', 211, '2020-08-04'),
+(688, '65745a8ddabbb47f93c75b84bcddf1', 210, '2020-08-04'),
+(689, '36fc28aca9af93534b83cb3338ac18', 211, '2020-08-04'),
+(690, 'd66b7a891a5b2d63b6e90d7a919990', 210, '2020-08-04'),
+(691, 'd587daa8f28b1304f7e73855590553', 211, '2020-08-04'),
+(692, '0bc30cd61cc5546c65c52e59a02ca6', 210, '2020-08-04'),
+(693, '90175556f310259842bb42f7e5e778', 211, '2020-08-04'),
+(694, 'ed53a23699ca951715db40a4e349bd', 210, '2020-08-04'),
+(695, '970beac053afd55d94e04cfb354fd0', 211, '2020-08-04'),
+(696, '0164531ec60ec6b6bb68f51765fd61', 212, '2020-08-04'),
+(697, '8ef17a63c9fc15b011a02bbcfdecbf', 213, '2020-08-04'),
+(698, '02fa4996e8568590022c4d9b74d0e3', 214, '2020-08-04'),
+(699, '7b90dcc0e42bf2a0b236dc5c189ab4', 216, '2020-08-04'),
+(700, '525c9d866067c67c6e324a862e9ab4', 217, '2020-08-04'),
+(701, '7fc7bc9f1c3410bc161d4572502fb8', 218, '2020-08-04'),
+(702, 'ea4812e55128384a09ae06cbe593dd', 220, '2020-08-04'),
+(703, '24a8b47e783fb74538becd8c38d2f8', 221, '2020-08-04'),
+(704, 'c9ebcea4b8d1e2676418c89c0c3eaa', 215, '2020-08-04'),
+(705, '5ae768dfe76532b1597b61bc9f188b', 219, '2020-08-04'),
+(706, '08f65691b7bd8ebcc731847ea77478', 210, '2020-08-04'),
+(707, '19527dba2ffdad867e3ddfa4aa3e08', 211, '2020-08-04'),
+(708, '29ec947913cb9a31bafedbd14575a1', 210, '2020-08-04'),
+(709, '1c4edbfcc444034e8b20eb0bd1e019', 211, '2020-08-04'),
+(710, '92b4dda728b367636435c8bf68f833', 212, '2020-08-04'),
+(711, 'c7d4bedad5e5e6434f843d8a6ca842', 213, '2020-08-04'),
+(712, 'bb6e36f1846e4db726ba2734caf1cf', 214, '2020-08-04'),
+(713, 'e4be024b77fd586ac8ffdd0379574b', 216, '2020-08-04'),
+(714, 'b3d4c6cabd58a7bcd0bae175b6d282', 217, '2020-08-04'),
+(715, '9786d41d48f83ff99e544d02c30ff9', 218, '2020-08-04'),
+(716, 'ca23631eb75ac78cef7847b2e3d296', 220, '2020-08-04'),
+(717, '230cc64fe5ff23e783e1a58216d02d', 221, '2020-08-04'),
+(718, 'cdda29e9b240727a553b9c1a04c7d1', 215, '2020-08-04'),
+(719, 'ee660e836396dc9a4d962d5d0153ac', 219, '2020-08-04'),
+(720, '7a9888d2d02d66c0425bb25514bb28', 210, '2020-08-04'),
+(721, 'c544aa96011dd86e3afc88690c7db5', 211, '2020-08-04'),
+(722, '88a0ecfd3eb947976b6db672effb6e', 212, '2020-08-04'),
+(723, '310e07184e0449ca84125c27ccfeea', 213, '2020-08-04'),
+(724, 'cc00d5844bce6831d14aedc9031f3d', 214, '2020-08-04'),
+(725, 'a979f0ee5b3a2b38ac6419d613fc5c', 216, '2020-08-04'),
+(726, '6ad89db986dfe8314a4f9fa0686e14', 217, '2020-08-04'),
+(727, 'b9af71b0d85660fc1c36a844498aa8', 218, '2020-08-04'),
+(728, 'f139f96ed08b67396da4632bcb3bcf', 220, '2020-08-04'),
+(729, 'e6619343b09fb874abfc41208d3f6e', 221, '2020-08-04'),
+(730, 'c04f5eb6938815d0d564288e1b06cc', 219, '2020-08-04'),
+(731, '2acb2a36b6e0fed569c0e2c53f929e', 223, '2020-08-04'),
+(732, 'b0d0d67cc59988e280d26c01bc0de0', 222, '2020-08-04'),
+(733, '5afe20be21357f966d2cec62df9afc', 215, '2020-08-04'),
+(734, '8f50f4f5e3398eed179d88259269c5', 210, '2020-08-04'),
+(735, '031b75359bee620eb9c56fbc5d71de', 211, '2020-08-04'),
+(736, 'abe2119b5f58c141ab752b677837df', 212, '2020-08-04'),
+(737, '22631e4d1850ce45aea3c1afc3a68f', 213, '2020-08-04'),
+(738, '9777ab383c7b967d0c2d528bae9313', 214, '2020-08-04'),
+(739, '57cf50af493a77c3cb9466c621a3c3', 216, '2020-08-04'),
+(740, '02c8370ec71ce6282d1bc622ed68ed', 219, '2020-08-04'),
+(741, 'e1c687c1dba0e4170ccde7e649e502', 223, '2020-08-04'),
+(742, '7f8af281f4fdce00dfc585db02bcc6', 210, '2020-08-04'),
+(743, 'ac1b9ed572505a3e49f5ad5905ec9b', 211, '2020-08-04'),
+(744, '3c853440565e2275f91796d300ac3b', 215, '2020-08-04'),
+(745, 'b575cec0939a4e18f391964eb14b11', 210, '2020-08-04'),
+(746, '3887511f2ed520f37dd02b3ee93685', 215, '2020-08-04'),
+(747, 'b9f06d0d5f55cb2634ac735c5cb5aa', 210, '2020-08-04'),
+(748, 'cda70733cd8104b551d60f0692175b', 215, '2020-08-04'),
+(749, 'e86d52af3f8bda64642f2db55cc037', 210, '2020-08-04'),
+(750, 'aef0ad9bf76691ac545db26c5c289c', 215, '2020-08-04'),
+(751, 'f787aebf1a5d79913b4e82f792297b', 210, '2020-08-04'),
+(752, '2dc43b700635bfe9ce3964b5b19c6d', 215, '2020-08-04'),
+(753, 'e4a4478196c7f57f5159caf1a36ef8', 210, '2020-08-04'),
+(754, '8862e86f25eefe32c3ca9068de40f5', 215, '2020-08-04'),
+(755, '6e181cd5dfd5dfc780948f28b82e16', 210, '2020-08-04'),
+(756, '0b3457dd6f21a0b4b9e50b075d1a34', 211, '2020-08-04'),
+(757, 'bcf8e58a1a80c6520f711a657c10de', 215, '2020-08-04'),
+(758, 'e79c08c6d659a604aba5f675eca840', 212, '2020-08-04'),
+(759, '512bdbbf402ad246cc889fb373cc9c', 213, '2020-08-04'),
+(760, '3e54d6e99e04d8f712b2e977c66a44', 219, '2020-08-04'),
+(761, 'e7df5625ea7f75fc9f3ff2435bac2f', 210, '2020-08-04'),
+(762, '68312efc23a57545e5f2925fe844b8', 211, '2020-08-04'),
+(763, 'bb0ccee9ca20d001a647da121935f2', 215, '2020-08-04'),
+(764, 'ec50433be0ace6d048f34de8a257e6', 212, '2020-08-04'),
+(765, '29ef7c6ecf5dbb7c77d8af9b247007', 213, '2020-08-04'),
+(766, '0314ac88918caad703b18b6afe7dcd', 219, '2020-08-04'),
+(767, '77c04eea2c06d523682d01d21317c0', 210, '2020-08-05'),
+(768, '9ed75147fc99a7712a58e514430361', 210, '2020-08-05'),
+(769, 'a42fb476f47aac8e27e985c794f364', 210, '2020-08-05'),
+(770, 'b7ec026364241f0524d36eed589779', 210, '2020-08-05'),
+(771, 'da4d1031b801524fc1a5f0d0bccf30', 210, '2020-08-05'),
+(772, 'b873f06e703bb24b2a4a5b61340a82', 210, '2020-08-05'),
+(773, '3e4300eefe63e44165324db61cf3c3', 212, '2020-08-05'),
+(774, 'ab355b48bbf5aacafe2e9de53663d0', 213, '2020-08-05'),
+(775, 'ca0efbd772646afecaf9dd744e9942', 214, '2020-08-05'),
+(776, '4aa3b80a7ee71d5cd7a6f2ff6fce21', 216, '2020-08-05'),
+(777, 'cd2ca5bd41a873447b4826c3f98af1', 217, '2020-08-05'),
+(778, '73e78bc25338df7d7b7f80fc75a0b9', 218, '2020-08-05'),
+(779, '8a2a381066a3d8324e33b7a18ef089', 220, '2020-08-05'),
+(780, '42b5d8939106746f09f92f2d0fd474', 221, '2020-08-05'),
+(781, '9a75e1a06046add60a7da349b55a54', 219, '2020-08-05'),
+(782, '4272364ecb49c46b81f7088b6ec325', 212, '2020-08-05'),
+(783, 'd8a0384f4cc1d1365a13b2f5d9e3c6', 213, '2020-08-05'),
+(784, 'f2f019b1f7b3535c3c1f5674ab914d', 214, '2020-08-05'),
+(785, '84d36132974c4f2e18d0cdc32477a9', 216, '2020-08-05'),
+(786, 'ca302e80f2bbb632b07d7665182420', 217, '2020-08-05'),
+(787, '421e34646d66e7bc208d4178dabec3', 218, '2020-08-05'),
+(788, 'd1619307a60b02dc602ad61e6f1d9d', 220, '2020-08-05'),
+(789, 'f25800ca0a79c8f4bc723839bafaf8', 221, '2020-08-05'),
+(790, '9b9f2aa2a15094e8fa1aa4a4638e91', 219, '2020-08-05'),
+(791, '216c0e43a9591e2ce4406e92f6054b', 211, '2020-08-05'),
+(792, '611443002c0e10b77767d966004d9c', 212, '2020-08-05'),
+(793, '87f44cb13a34a51c4e4c93c7008bbc', 223, '2020-08-05'),
+(794, '3c0ab2ecc9c7189528851c4cbbdcd5', 212, '2020-08-05'),
+(795, 'a4234f2188f905650a79d7cbeba6f4', 228, '2020-08-05'),
+(796, 'b6b5728b80f863b9caa4f0801c162b', 219, '2020-08-05'),
+(797, '9bdc3898a855aa8b061992258790e3', 211, '2020-08-05'),
+(798, '4e7982991bc02174ee8cfe54c75e0d', 221, '2020-08-05'),
+(799, '38fdc5ac932c98bb090e27efcd26cc', 222, '2020-08-05'),
+(800, '849868a60523b42ba959cb9031db8c', 211, '2020-08-06'),
+(801, 'be6e83ed841c994f5ed591ebe2f8db', 213, '2020-08-06'),
+(802, 'f07bb609114da386b30753ea2103f1', 228, '2020-08-06'),
+(803, '674c9c6af16c3c8cdd76c57afa335b', 215, '2020-08-06'),
+(804, 'afe93c9e48eec07d88e98a5b193c29', 211, '2020-08-06'),
+(805, '20ab0441aa48954f12b176f90d00b1', 212, '2020-08-06'),
+(806, '36a603c44475ee6ea31e172fa77672', 228, '2020-08-06'),
+(807, '3c0130dc7202921641d3bad78e90e3', 215, '2020-08-06'),
+(808, '4433919b3af4ddab57713fee3b48a0', 219, '2020-08-06'),
+(809, '1d7f143fb268178642efaf76b29251', 213, '2020-08-06'),
+(810, '30f8c7773a28497c690b575e7048a5', 216, '2020-08-06'),
+(811, 'c8a73dafb1bcf070e7cf72668c1e34', 218, '2020-08-06'),
+(812, '9f7b2d2698216abe03894b73b78e22', 221, '2020-08-06'),
+(813, 'a377348f4fb6f770655895d17a59fa', 225, '2020-08-06'),
+(814, 'fce995fc56e87d423e7939742ede7c', 222, '2020-08-06'),
+(815, 'e663a85e363dfac113e01726f76c7e', 25, '2020-08-07'),
+(816, '767c6c34b600a44f495bb79a21be8b', 25, '2020-08-07');
 
 --
 -- Indexes for dumped tables
@@ -900,13 +1065,13 @@ ALTER TABLE `tbl_konfigurasi`
 -- AUTO_INCREMENT for table `tbl_pelatihan`
 --
 ALTER TABLE `tbl_pelatihan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `tbl_pendaftar`
 --
 ALTER TABLE `tbl_pendaftar`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=207;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=230;
 
 --
 -- AUTO_INCREMENT for table `tbl_role`
@@ -918,13 +1083,13 @@ ALTER TABLE `tbl_role`
 -- AUTO_INCREMENT for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `tokens`
 --
 ALTER TABLE `tokens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=679;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=817;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
