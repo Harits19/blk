@@ -53,8 +53,8 @@ class Home extends MY_Controller
             $this->session->set_flashdata('msg', show_err_msg('Data yang anda masukkan salah'));
         } else {
             $upload = $this->Pendaftar_model->upload();
-            $data['foto_ktp'] = $upload;
-            if ($this->Pendaftar_model->insert()) {
+            $foto_ktp = $upload;
+            if ($this->Pendaftar_model->insert($foto_ktp)) {
                 $this->session->set_flashdata('msg', show_succ_msg('Berhasil Melakukan Pendaftaran'));
             } else {
 

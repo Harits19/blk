@@ -211,7 +211,8 @@
         var kuota_utama = "<?php print($kuota_utama); ?>";
         var kuota_luar_kota = "<?php print($kuota_luar_kota); ?>";
         var kuota_kota = "<?php print($kuota_kota); ?>";
-        var ignore_kuota = "<?php print($ignore_kuota); ?>";
+        // var ignore_kuota = "<?php print($ignore_kuota); ?>";
+        var ignore_kuota = "false";
         // alert(ignore_kuota);
 
         var total_kota = 0;

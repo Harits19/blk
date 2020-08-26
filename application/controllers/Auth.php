@@ -123,7 +123,7 @@ class Auth extends MY_Controller
                 ');
             $where = array("id" => $user_info->id);
             $data = array("status" => 5);
-            $this->Pendaftar_model->update_status($where, $data);
+            $this->Pendaftar_model->update($where, $data);
             $this->template->load('authentication/layouts/template', 'authentication/login', $this->data);
         }
     }

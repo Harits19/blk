@@ -268,7 +268,7 @@ class Pendaftar_model extends CI_Model
     }
 
     //input data pelatihan baru
-    public function insert()
+    public function insert($foto_ktp)
     {
         $data = array(
             'email' => $this->input->post('email'),
@@ -282,6 +282,7 @@ class Pendaftar_model extends CI_Model
             'no_hp' => $this->input->post('no_hp'),
             'pendidikan_terakhir' => $this->input->post('pendidikan_terakhir'),
             'alasan_mengikuti' => $this->input->post('alasan_mengikuti'),
+            'foto_ktp' => $foto_ktp,
         );
         return $this->db->insert($this->table, $data);
     }
