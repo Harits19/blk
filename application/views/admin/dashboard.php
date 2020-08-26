@@ -37,7 +37,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                     <span class="info-box-number"><?php echo $jumlah_user; ?></span>
                 </div>
 
-                <a href="<?php echo base_url() ?>admin/user" class="btn"><i class="fa fa-database" aria-hidden="true"></i> Lihat Detail</a>
+                <!-- <a href="<?php echo base_url() ?>admin/user" class="btn"><i class="fa fa-database" aria-hidden="true"></i> Lihat Detail</a> -->
 
             </div>
         </div>
