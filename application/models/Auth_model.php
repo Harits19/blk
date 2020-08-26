@@ -224,17 +224,17 @@ class Auth_model extends CI_Model
         }
     }
 
-    // public function getUserInfo($id)
-    // {
-    //     $q = $this->db->get_where('tbl_user', array('id' => $id), 1);
-    //     if ($this->db->affected_rows() > 0) {
-    //         $row = $q->row();
-    //         return $row;
-    //     } else {
-    //         error_log('no user found getUserInfo(' . $id . ')');
-    //         return false;
-    //     }
-    // }
+    public function getUserInfo($id)
+    {
+        $q = $this->db->get_where('tbl_user', array('id' => $id), 1);
+        if ($this->db->affected_rows() > 0) {
+            $row = $q->row();
+            return $row;
+        } else {
+            error_log('no user found getUserInfo(' . $id . ')');
+            return false;
+        }
+    }
 
     public function insertToken($user_id)
     {
