@@ -81,8 +81,8 @@ class Pendaftar_model extends CI_Model
             return $this->upload->data('file_name');
         } else {
             // Jika gagal :
-            $return = array('result' => 'failed', 'file' => '', 'error' => $this->upload->display_errors());
-            return $return;
+            
+            return false;
         }
     }
 
