@@ -127,20 +127,30 @@ class Auth_model extends CI_Model
             $subject = 'Lupa Password Akun Balai Latihan Kerja';  //email subject
         } elseif ($info == 'register') {
             $subject = 'Aktivasi Akun Balai Latihan Kerja';  //email subject
-            $message = 'Dear User,<br><br> Klik link dibawah untuk mengaktifkan akun anda<br><br>
+            $message = 'Hai '.$receiver.',<br><br> Klik link dibawah untuk mengaktifkan akun anda<br><br>
                         <a href=\'http://www.localhost/blk/Auth/confirmEmail/' . md5($receiver) . '\'>http://www.localhost/blk/Auth/confirmEmail/' . md5($receiver) . '</a><br><br>Thanks';
         }
 
         //config email settings
-        $config['protocol'] = 'smtp';
-        $config['smtp_host'] = 'ssl://smtp.gmail.com';
-        $config['smtp_port'] = '465';
-        $config['smtp_user'] = $from;
-        $config['smtp_pass'] = 'harits963741852';  //sender's password
-        $config['mailtype'] = 'html';
-        $config['charset'] = 'iso-8859-1';
-        $config['wordwrap'] = 'TRUE';
-        $config['newline'] = "\r\n";
+        // $config['protocol'] = 'smtp';
+        // $config['smtp_host'] = 'ssl://smtp.gmail.com';
+        // $config['smtp_port'] = '465';
+        // $config['smtp_user'] = $from;
+        // $config['smtp_pass'] = 'prambanan';  //sender's password
+        // $config['mailtype'] = 'html';
+        // $config['charset'] = 'iso-8859-1';
+        // $config['wordwrap'] = 'TRUE';
+        // $config['newline'] = "\r\n";
+
+        $config = Array(
+            'protocol' => 'smtp',
+            'smtp_host' => 'smtp.mailtrap.io',
+            'smtp_port' => 2525,
+            'smtp_user' => 'bce519896f2dc3',
+            'smtp_pass' => '4ce8fb40a2abc6',
+            'crlf' => "\r\n",
+            'newline' => "\r\n"
+          );
 
         $this->load->library('email', $config);
         $this->email->initialize($config);

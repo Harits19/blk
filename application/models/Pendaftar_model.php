@@ -102,20 +102,32 @@ class Pendaftar_model extends CI_Model
         }
 
         $message = '';
-        $message .= '<strong>Hai, anda menerima email ini karena ada permintaan untuk mengonfirmasi kehadiran. Klik link dibawah ini maksimal 3 hari setelah dikirim</strong><br>';
+        $message .= '<strong>Hai '.$receiver.', anda menerima email ini karena ada permintaan untuk mengonfirmasi kehadiran. Klik link dibawah ini maksimal 3 hari setelah dikirim</strong><br>';
         $message .= '<strong>Silakan klik link ini:</strong> ' . $link;
         $subject = 'Konfirmasi Kehadiran Balai Latihan Kerja';
 
         //config email settings
-        $config['protocol'] = 'smtp';
-        $config['smtp_host'] = 'ssl://smtp.gmail.com';
-        $config['smtp_port'] = '465';
-        $config['smtp_user'] = $from;
-        $config['smtp_pass'] = 'harits963741852';  //sender's password
-        $config['mailtype'] = 'html';
-        $config['charset'] = 'iso-8859-1';
-        $config['wordwrap'] = 'TRUE';
-        $config['newline'] = "\r\n";
+        // $config['protocol'] = 'smtp';
+        // $config['smtp_host'] = 'ssl://smtp.gmail.com';
+        // $config['smtp_port'] = '465';
+        // $config['smtp_user'] = $from;
+        // $config['smtp_pass'] = 'prambanan';  //sender's password
+        // $config['mailtype'] = 'html';
+        // $config['charset'] = 'iso-8859-1';
+        // $config['wordwrap'] = 'TRUE';
+        // $config['newline'] = "\r\n";
+
+        $config = Array(
+            'protocol' => 'smtp',
+            'smtp_host' => 'smtp.mailtrap.io',
+            'smtp_port' => 2525,
+            'smtp_user' => 'bce519896f2dc3',
+            'smtp_pass' => '4ce8fb40a2abc6',
+            'crlf' => "\r\n",
+            'newline' => "\r\n"
+          );
+
+        
 
         $this->load->library('email', $config);
         $this->email->initialize($config);
@@ -126,21 +138,7 @@ class Pendaftar_model extends CI_Model
         $this->email->message($message);
 
         if ($this->email->send()) {
-            //for testing
-            // echo "sent to: ".$receiver."<br>";
-            // echo "from: ".$from. "<br>";
-            // echo "protocol: ". $config['protocol']."<br>";
-            // echo "message: ".$message;
-            // $this->session->set_flashdata('alert', '<p class="box-msg">
-            // <div class="info-box alert-success">
-            // <div class="info-box-icon">
-            // <i class="fa fa-check-circle"></i>
-            // </div>
-            // <div class="info-box-content" style="font-size:14">
-            // <b style="font-size: 20px">SUKSES</b><br>Berhasil, silakan cek email anda untuk melakukan tahapan selanjutnya</div>
-            // </div>
-            // </p>
-            // ');
+           
             return true;
         } else {
             // echo "email send failed";

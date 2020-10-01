@@ -116,7 +116,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 echo "<td><strong>$kuota_utama</strong> ( $pelatihan->kuota_kota  + $pelatihan->kuota_luar_kota )</td>";
                                 echo "<td class='text-center'>";
                             ?>
-                                <a class="btn btn-primary" id="button_edit" data-toggle="modal" href="#myModalEdit" data-detail_pelatihan="<?php echo $pelatihan->detail_pelatihan ?>" data-nama_pelatih="<?php echo $pelatihan->nama_pelatih ?>" data-kontak_pelatih="<?php echo $pelatihan->kontak_pelatih ?>" data-nama="<?php echo $pelatihan->nama ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-tgl_tutup="<?php echo $pelatihan->tgl_tutup ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-detail_pelatihan="<?php echo $pelatihan->detail_pelatihan ?>" data-nama_pelatih="<?php echo $pelatihan->nama_pelatih ?>" data-kontak_pelatih="<?php echo $pelatihan->kontak_pelatih ?>" data-tgl_verifikasi="<?php echo $pelatihan->tgl_verifikasi ?>" data-tgl_verifikasi_cadangan="<?php echo $pelatihan->tgl_verifikasi_cadangan ?>" data-status="<?php echo $pelatihan->status ?>" data-kuota_kota="<?php echo $pelatihan->kuota_kota ?>" data-kuota_luar_kota="<?php echo $pelatihan->kuota_luar_kota ?>" data-id="<?php echo $pelatihan->id ?>">Edit</a>
+                                <a class="btn btn-primary" id="button_edit" data-toggle="modal" href="#myModalEdit" data-detail_pelatihan="<?php echo $pelatihan->detail_pelatihan ?>" data-nama_pelatih="<?php echo $pelatihan->nama_pelatih ?>" data-kontak_pelatih="<?php echo $pelatihan->kontak_pelatih ?>" data-nama="<?php echo $pelatihan->nama ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-tgl_tutup="<?php echo $pelatihan->tgl_tutup ?>" data-tgl_buka="<?php echo $pelatihan->tgl_buka ?>" data-detail_pelatihan="<?php echo $pelatihan->detail_pelatihan ?>" data-nama_pelatih="<?php echo $pelatihan->nama_pelatih ?>" data-kontak_pelatih="<?php echo $pelatihan->kontak_pelatih ?>"  data-status="<?php echo $pelatihan->status ?>" data-kuota_kota="<?php echo $pelatihan->kuota_kota ?>" data-kuota_luar_kota="<?php echo $pelatihan->kuota_luar_kota ?>" data-id="<?php echo $pelatihan->id ?>">Edit</a>
 
                                 <a class="btn btn-primary" href="<?php echo base_url('admin/pelatihan/hapus/'), $pelatihan->id ?>" onclick="return confirm('Apakah anda yakin?')">
                                     <i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Hapus</i>
@@ -384,10 +384,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
         $(".modal-body #nama_pelatih").val(nama_pelatih);
         kontak_pelatih = $(this).attr('data-kontak_pelatih');
         $(".modal-body #kontak_pelatih").val(kontak_pelatih);
-        tgl_verifikasi = $(this).attr('data-tgl_verifikasi');
-        $(".modal-body #tgl_verifikasi").val(tgl_verifikasi);
-        tgl_verifikasi_cadangan = $(this).attr('data-tgl_verifikasi_cadangan');
-        $(".modal-body #tgl_verifikasi_cadangan").val(tgl_verifikasi_cadangan);
+        // tgl_verifikasi = $(this).attr('data-tgl_verifikasi');
+        // $(".modal-body #tgl_verifikasi").val(tgl_verifikasi);
+        // tgl_verifikasi_cadangan = $(this).attr('data-tgl_verifikasi_cadangan');
+        // $(".modal-body #tgl_verifikasi_cadangan").val(tgl_verifikasi_cadangan);
         status = $(this).attr('data-status');
         $(".modal-body #status").val(status);
         kuota_kota = $(this).attr('data-kuota_kota');

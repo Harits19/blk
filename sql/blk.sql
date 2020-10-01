@@ -2,10 +2,10 @@
 -- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Aug 18, 2020 at 06:36 AM
--- Server version: 10.4.11-MariaDB
--- PHP Version: 7.4.2
+-- Host: 127.0.0.1
+-- Waktu pembuatan: 02 Okt 2020 pada 00.45
+-- Versi server: 10.4.14-MariaDB
+-- Versi PHP: 7.4.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `susantokun_ci`
+-- Database: `blk`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_konfigurasi`
+-- Struktur dari tabel `tbl_konfigurasi`
 --
 
 CREATE TABLE `tbl_konfigurasi` (
@@ -43,7 +43,7 @@ CREATE TABLE `tbl_konfigurasi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `tbl_konfigurasi`
+-- Dumping data untuk tabel `tbl_konfigurasi`
 --
 
 INSERT INTO `tbl_konfigurasi` (`id_konfigurasi`, `nama_website`, `logo`, `favicon`, `email`, `no_telp`, `alamat`, `facebook`, `instagram`, `keywords`, `metatext`, `about`) VALUES
@@ -52,7 +52,7 @@ INSERT INTO `tbl_konfigurasi` (`id_konfigurasi`, `nama_website`, `logo`, `favico
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_pelatihan`
+-- Struktur dari tabel `tbl_pelatihan`
 --
 
 CREATE TABLE `tbl_pelatihan` (
@@ -62,8 +62,6 @@ CREATE TABLE `tbl_pelatihan` (
   `tgl_tutup` date NOT NULL,
   `konfirmasi_pendaftar` enum('belum','sudah') NOT NULL,
   `konfirmasi_pendaftar_cadangan` enum('belum','sudah') NOT NULL,
-  `tgl_verifikasi` date NOT NULL,
-  `tgl_verifikasi_cadangan` date NOT NULL,
   `status` enum('tutup','tersedia') NOT NULL,
   `detail_pelatihan` text NOT NULL,
   `nama_pelatih` varchar(255) NOT NULL,
@@ -73,20 +71,16 @@ CREATE TABLE `tbl_pelatihan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `tbl_pelatihan`
+-- Dumping data untuk tabel `tbl_pelatihan`
 --
 
-INSERT INTO `tbl_pelatihan` (`id`, `nama`, `tgl_buka`, `tgl_tutup`, `konfirmasi_pendaftar`, `konfirmasi_pendaftar_cadangan`, `tgl_verifikasi`, `tgl_verifikasi_cadangan`, `status`, `detail_pelatihan`, `nama_pelatih`, `kontak_pelatih`, `kuota_luar_kota`, `kuota_kota`) VALUES
-(56, 'Pelatihan Menjahit', '2020-07-22', '2020-08-05', 'sudah', 'sudah', '2020-08-13', '2020-08-17', 'tutup', 'Pelatihan atau Magang adalah proses melatih; kegiatan atau pekerjaan Pelatihan mempersiapkan peserta latihan untuk mengambil jalur tindakan tertentu yang dilukiskan oleh teknologi dan organisasi tempat bekerja, dan membantu peserta memperbaiki prestasi dalam kegiatannya terutama mengenai pengertian dan keterampilan.', 'Joko Anwar', '081231231231', 2, 10),
-(57, 'Pelatihan Otomotif', '2020-07-31', '2020-08-02', 'sudah', 'sudah', '2020-08-05', '2020-08-06', 'tutup', 'Pelatihan ini mengenai', 'Suwardi', '0812345678', 2, 12),
-(59, 'Pelatihan Memasak', '2020-08-04', '2020-08-05', 'sudah', 'sudah', '0000-00-00', '0000-00-00', 'tersedia', 'Pelatihan ini mengenai', 'Suwardi', '0812345678', 5, 12),
-(60, 'qwasdasd', '2020-08-06', '2020-08-08', 'sudah', 'sudah', '0000-00-00', '0000-00-00', 'tersedia', '12', '12', '12', 112, 12),
-(61, '1231', '2020-08-06', '2020-08-08', 'sudah', 'sudah', '0000-00-00', '0000-00-00', 'tutup', '123', '12', '12', 123, 123);
+INSERT INTO `tbl_pelatihan` (`id`, `nama`, `tgl_buka`, `tgl_tutup`, `konfirmasi_pendaftar`, `konfirmasi_pendaftar_cadangan`, `status`, `detail_pelatihan`, `nama_pelatih`, `kontak_pelatih`, `kuota_luar_kota`, `kuota_kota`) VALUES
+(56, 'Pelatihan Menjahit', '2020-07-22', '2020-08-05', 'belum', 'belum', 'tersedia', 'Pelatihan atau Magang adalah proses melatih; kegiatan atau pekerjaan Pelatihan mempersiapkan peserta latihan untuk mengambil jalur tindakan tertentu yang dilukiskan oleh teknologi dan organisasi tempat bekerja, dan membantu peserta memperbaiki prestasi dalam kegiatannya terutama mengenai pengertian dan keterampilan.', 'Joko Anwar', '081231231231', 2, 10);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_pendaftar`
+-- Struktur dari tabel `tbl_pendaftar`
 --
 
 CREATE TABLE `tbl_pendaftar` (
@@ -105,31 +99,10 @@ CREATE TABLE `tbl_pendaftar` (
   `foto_ktp` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `tbl_pendaftar`
---
-
-INSERT INTO `tbl_pendaftar` (`id`, `nik`, `email`, `id_pelatihan`, `status`, `wilayah`, `nama`, `alamat`, `jenis_kelamin`, `no_hp`, `pendidikan_terakhir`, `alasan_mengikuti`, `foto_ktp`) VALUES
-(211, '123', 'harits.abdullah19@gmail.com', 56, 2, 'kota', 'Abdullah Harits', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'laki-laki', '08123444499', 'SMA', 'Ingin Belajar...', '123.jpg'),
-(212, '123', 'Jonathan@maildummy.com', 56, 2, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'perempuan', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
-(213, '123', 'Jonathan@maildummy.com', 56, 4, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'perempuan', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
-(214, '123', 'Jonathan@maildummy.com', 56, 3, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'laki-laki', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
-(215, '123', 'Steven@maildummy.com', 56, 4, 'luar kota', 'Steven Al Kabupatenwi', 'JL. Raya Dringu, No. 901, Kabupaten Probolinggo, Jawa Timur', 'laki-laki', '08123444499', 'SMA', 'Ingin Belajar...', '123.jpg'),
-(216, '123', 'Jonathan@maildummy.com', 56, 4, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'perempuan', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
-(217, '123', 'Jonathan@maildummy.com', 56, 3, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'laki-laki', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
-(218, '123', 'Jonathan@maildummy.com', 56, 4, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'laki-laki', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
-(219, '123', 'Steven@maildummy.com', 56, 4, 'luar kota', 'Steven Al Kabupatenwi', 'JL. Raya Dringu, No. 901, Kabupaten Probolinggo, Jawa Timur', 'perempuan', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
-(220, '123', 'Jonathan@maildummy.com', 56, 3, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'perempuan', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
-(221, '123', 'Jonathan@maildummy.com', 56, 4, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'perempuan', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
-(222, '123', 'Jonathan@maildummy.com', 56, 4, 'kota', 'Jonathan Al Kotawi', 'JL. KH.SULTHON N0.1, Triwung Kidul, Kec. Kademangan Kota Probolinggo', 'laki-laki', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
-(223, '123', 'Steven@maildummy.com', 56, 3, 'luar kota', 'Steven Al Kabupatenwi', 'JL. Raya Dringu, No. 901, Kabupaten Probolinggo, Jawa Timur', 'laki-laki', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
-(225, '123', 'member@mail.com', 56, 4, 'kota', 'Jonathan Al Kotawi', 'Malang Kota', 'perempuan', '08123444499', 'SMA', 'Ingin Belajar...', '123.png'),
-(229, '123', 'ruwucucak@gmail.com', 59, 3, 'kota', 'harits', '123', 'laki-laki', '123', '123', '123', '');
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_role`
+-- Struktur dari tabel `tbl_role`
 --
 
 CREATE TABLE `tbl_role` (
@@ -139,7 +112,7 @@ CREATE TABLE `tbl_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `tbl_role`
+-- Dumping data untuk tabel `tbl_role`
 --
 
 INSERT INTO `tbl_role` (`id`, `name`, `description`) VALUES
@@ -149,7 +122,7 @@ INSERT INTO `tbl_role` (`id`, `name`, `description`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbl_user`
+-- Struktur dari tabel `tbl_user`
 --
 
 CREATE TABLE `tbl_user` (
@@ -170,20 +143,17 @@ CREATE TABLE `tbl_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `tbl_user`
+-- Dumping data untuk tabel `tbl_user`
 --
 
 INSERT INTO `tbl_user` (`id`, `id_role`, `username`, `password`, `password_reset_key`, `first_name`, `last_name`, `email`, `phone`, `photo`, `activated`, `last_login`, `created_at`, `updated_at`) VALUES
 (1, 1, 'admin', '$2y$05$OA.OoeNHoEkbGGKazYqPU.UOaI5jmgro8x2pRSV56ClTWlDf0EEn2', '', 'ADMIN', '', 'admin@mail.com', '081906515912', '1526456245974.png', 1, '2020-08-06 21:57:51', '2020-03-14 21:58:17', NULL),
-(2, 2, 'member', '$2y$05$C53Jmt2hAeqr0EnQPjsm6.XBlNkDE8l7aFllR72PY9zHSkAMLiixW', '', 'MEMBER', 'asd', 'member@mail.com', '081906515912', '1596468728042.png', 1, '2020-08-07 16:26:23', '2020-03-14 22:00:32', NULL),
-(23, 2, 'harits', '$2y$05$d64LQD00aY9aifl.K5qVJOZ7qpKA3kvDpY1kn2Lzn.BAGERln65TW', NULL, '', '', 'harits.abdullah19@gmail.com', '', 'member.png', 1, '2020-08-03 15:03:39', '2020-08-03 14:59:42', NULL),
-(24, 2, 'harits', '$2y$05$1YsJQDPH0ytpMcYTbg75oeK...3Dx4iyIvWHlQ.0m1HsTw5Ya1aN2', NULL, '', '', '_harits19@student.ub.ac.id', '', '1583991814826.png', 1, '2020-08-03 17:09:48', '2020-08-03 16:52:04', NULL),
-(25, 2, 'harits', '$2y$05$civG7Tm0h9XF0F.zMVXb4.2eldwKEAI376anbJiWkQeykS/Ki0YrS', NULL, '', '', 'ruwucucak@gmail.com', '', '1583991814826.png', 1, '2020-08-07 16:50:19', '2020-08-05 17:10:11', NULL);
+(2, 2, 'member', '$2y$05$C53Jmt2hAeqr0EnQPjsm6.XBlNkDE8l7aFllR72PY9zHSkAMLiixW', '', 'MEMBER', 'asd', 'member@mail.com', '081906515912', '1596468728042.png', 1, '2020-08-07 16:26:23', '2020-03-14 22:00:32', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tokens`
+-- Struktur dari tabel `tokens`
 --
 
 CREATE TABLE `tokens` (
@@ -194,7 +164,7 @@ CREATE TABLE `tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `tokens`
+-- Dumping data untuk tabel `tokens`
 --
 
 INSERT INTO `tokens` (`id`, `token`, `user_id`, `created`) VALUES
@@ -1009,87 +979,89 @@ INSERT INTO `tokens` (`id`, `token`, `user_id`, `created`) VALUES
 (813, 'a377348f4fb6f770655895d17a59fa', 225, '2020-08-06'),
 (814, 'fce995fc56e87d423e7939742ede7c', 222, '2020-08-06'),
 (815, 'e663a85e363dfac113e01726f76c7e', 25, '2020-08-07'),
-(816, '767c6c34b600a44f495bb79a21be8b', 25, '2020-08-07');
+(816, '767c6c34b600a44f495bb79a21be8b', 25, '2020-08-07'),
+(817, '9578923cf47dd49d9f68a0a4b7438f', 211, '2020-10-01'),
+(818, 'b90e4d13c781171021bd4b4107dfe8', 230, '2020-10-01');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `tbl_konfigurasi`
+-- Indeks untuk tabel `tbl_konfigurasi`
 --
 ALTER TABLE `tbl_konfigurasi`
   ADD PRIMARY KEY (`id_konfigurasi`);
 
 --
--- Indexes for table `tbl_pelatihan`
+-- Indeks untuk tabel `tbl_pelatihan`
 --
 ALTER TABLE `tbl_pelatihan`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `tbl_pendaftar`
+-- Indeks untuk tabel `tbl_pendaftar`
 --
 ALTER TABLE `tbl_pendaftar`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `tbl_role`
+-- Indeks untuk tabel `tbl_role`
 --
 ALTER TABLE `tbl_role`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `tbl_user`
+-- Indeks untuk tabel `tbl_user`
 --
 ALTER TABLE `tbl_user`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `tokens`
+-- Indeks untuk tabel `tokens`
 --
 ALTER TABLE `tokens`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `tbl_konfigurasi`
+-- AUTO_INCREMENT untuk tabel `tbl_konfigurasi`
 --
 ALTER TABLE `tbl_konfigurasi`
   MODIFY `id_konfigurasi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `tbl_pelatihan`
+-- AUTO_INCREMENT untuk tabel `tbl_pelatihan`
 --
 ALTER TABLE `tbl_pelatihan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
--- AUTO_INCREMENT for table `tbl_pendaftar`
+-- AUTO_INCREMENT untuk tabel `tbl_pendaftar`
 --
 ALTER TABLE `tbl_pendaftar`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=230;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=231;
 
 --
--- AUTO_INCREMENT for table `tbl_role`
+-- AUTO_INCREMENT untuk tabel `tbl_role`
 --
 ALTER TABLE `tbl_role`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `tbl_user`
+-- AUTO_INCREMENT untuk tabel `tbl_user`
 --
 ALTER TABLE `tbl_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
--- AUTO_INCREMENT for table `tokens`
+-- AUTO_INCREMENT untuk tabel `tokens`
 --
 ALTER TABLE `tokens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=817;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=819;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
