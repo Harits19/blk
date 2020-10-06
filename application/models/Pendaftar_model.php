@@ -111,7 +111,7 @@ class Pendaftar_model extends CI_Model
         // $config['smtp_host'] = 'ssl://smtp.gmail.com';
         // $config['smtp_port'] = '465';
         // $config['smtp_user'] = $from;
-        // $config['smtp_pass'] = 'prambanan';  //sender's password
+        // $config['smtp_pass'] = 'xx';  //sender's password
         // $config['mailtype'] = 'html';
         // $config['charset'] = 'iso-8859-1';
         // $config['wordwrap'] = 'TRUE';
