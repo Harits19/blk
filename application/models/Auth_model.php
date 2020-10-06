@@ -136,7 +136,7 @@ class Auth_model extends CI_Model
         // $config['smtp_host'] = 'ssl://smtp.gmail.com';
         // $config['smtp_port'] = '465';
         // $config['smtp_user'] = $from;
-        // $config['smtp_pass'] = 'xx';  //sender's password
+        // $config['smtp_pass'] = 'prambanan';  //sender's password
         // $config['mailtype'] = 'html';
         // $config['charset'] = 'iso-8859-1';
         // $config['wordwrap'] = 'TRUE';
@@ -192,7 +192,7 @@ class Auth_model extends CI_Model
 
         $q = $this->db->get_where('tokens', array(
             'tokens.token' => $tkn,
-            'tokens.user_id' => $uid
+            'tokens.id_fk' => $uid
         ), 1);
 
         if ($this->db->affected_rows() > 0) {
@@ -217,7 +217,7 @@ class Auth_model extends CI_Model
                 return false;
             }
 
-            $user_info = $this->getUserInfo($row->user_id);
+            $user_info = $this->getUserInfo($row->id_fk);
             return $user_info;
         } else {
             $this->session->set_flashdata('alert', '<p class="box-msg">
@@ -253,7 +253,7 @@ class Auth_model extends CI_Model
 
         $string = array(
             'token' => $token,
-            'user_id' => $user_id,
+            'id_fk' => $user_id,
             'created' => $date
         );
         $query = $this->db->insert_string('tokens', $string);

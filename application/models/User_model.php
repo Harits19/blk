@@ -36,7 +36,7 @@ class User_model extends CI_Model
 
     $string = array(
       'token' => $token,
-      'user_id' => $user_id,
+      'id_fk' => $user_id,
       'created' => $date
     );
     $query = $this->db->insert_string('tokens', $string);
@@ -51,7 +51,7 @@ class User_model extends CI_Model
 
     $q = $this->db->get_where('tokens', array(
       'tokens.token' => $tkn,
-      'tokens.user_id' => $uid
+      'tokens.id_fk' => $uid
     ), 1);
 
     if ($this->db->affected_rows() > 0) {

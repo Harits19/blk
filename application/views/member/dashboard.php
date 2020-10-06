@@ -254,12 +254,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
       <form class="form-horizontal" method="post" enctype="multipart/form-data" action="<?php echo base_url() . 'member/home/proses_daftar' ?>">
         <div class="modal-body">
           <input type="hidden" name="id_pelatihan" id="id_pelatihan" ?>
-
+          <input type="hidden" name="user_id" id="user_id" value="<?= $userdata->id; ?>" ?>
           <div class="form-group">
             <label class="control-label col-xs-3">NIK</label>
             <div class="col-xs-8">
               <input name="nik" class="form-control" type="number" placeholder="Isikan NIK Anda..." required>
-              <a href="#" class="text">Cek NIK</a>
+              <!-- <a href="#" class="text">Cek NIK</a> -->
             </div>
 
           </div>

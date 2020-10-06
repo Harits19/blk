@@ -156,7 +156,7 @@ class Pendaftar_model extends CI_Model
 
         $string = array(
             'token' => $token,
-            'user_id' => $pendaftar_id,
+            'id_fk' => $pendaftar_id,
             'created' => $date
         );
         $query = $this->db->insert_string('tokens', $string);
@@ -173,7 +173,7 @@ class Pendaftar_model extends CI_Model
 
         $q = $this->db->get_where('tokens', array(
             'tokens.token' => $tkn,
-            'tokens.user_id' => $uid
+            'tokens.id_fk' => $uid
         ), 1);
 
         if ($this->db->affected_rows() > 0) {
@@ -188,7 +188,7 @@ class Pendaftar_model extends CI_Model
             //     return false;
             // }
 
-            $user_info = $this->getUserInfo($row->user_id);
+            $user_info = $this->getUserInfo($row->id_fk);
             return $user_info;
         } else {
             return false;
@@ -274,6 +274,7 @@ class Pendaftar_model extends CI_Model
             'wilayah' => $this->input->post('wilayah'),
             'nama' => $this->input->post('nama'),
             'nik' => $this->input->post('nik'),
+            'user_id' => $this->input->post('user_id'),
             'status' => 3,
             'jenis_kelamin' => $this->input->post('jenis_kelamin'),
             'alamat' => $this->input->post('alamat'),
